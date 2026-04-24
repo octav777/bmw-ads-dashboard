@@ -290,6 +290,17 @@ html[data-theme="light"] body::before, html[data-theme="light"] body::after { di
   font-weight: 400;
 }
 
+.hero-sparkline {
+  position: absolute;
+  right: 0; bottom: 0;
+  width: 55%;
+  height: 100%;
+  pointer-events: none;
+  opacity: .55;
+}
+
+html[data-theme="light"] .hero-sparkline { opacity: .35; }
+
 .hero-stats {
   background: var(--panel2);
   display: flex;
@@ -1352,6 +1363,7 @@ function renderAll() {
         <div class="hero-eyebrow">// VENIT · ${periodLabel()}</div>
         <div class="hero-amount">${fmtS(ps.rev)}</div>
         <div class="hero-sub">▲ ALL TIME ${fmtS(totalRev())}</div>
+        <canvas id="heroSparkline" class="hero-sparkline"></canvas>
       </div>
       <div class="hero-stats">
         <div class="hstat"><div class="hstat-n">${fmt(ps.imp)}</div><div class="hstat-l">Impresii</div></div>
@@ -1485,7 +1497,47 @@ function buildCharts(data) {
     }
   };
 
-  ['cRev','cImp','cSess','cPie'].forEach(id => { if(charts[id]){charts[id].destroy();delete charts[id];} });
+  ['cRev','cImp','cSess','cPie','cSpark'].forEach(id => { if(charts[id]){charts[id].destroy();delete charts[id];} });
+
+  // ── HERO SPARKLINE ───────────────────────────
+  const sp = document.getElementById('heroSparkline');
+  if (sp) {
+    // Always show last 30 days as sparkline background
+    const daily = state.daily || {};
+    const sparkDays = [];
+    for (let i=29; i>=0; i--) { const d=new Date(); d.setDate(d.getDate()-i); sparkDays.push(ds(d)); }
+    const sparkData = sparkDays.map(d => parseFloat((daily[d]||{}).revenue)||0);
+    charts.cSpark = new Chart(sp, {
+      type: 'line',
+      data: {
+        labels: sparkDays,
+        datasets: [{
+          data: sparkData,
+          borderColor: 'rgba(96,165,250,0.5)',
+          backgroundColor: (ctx) => {
+            const canvas = ctx.chart.canvas;
+            const gradient = canvas.getContext('2d').createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, 'rgba(59,130,246,0.35)');
+            gradient.addColorStop(1, 'rgba(59,130,246,0.0)');
+            return gradient;
+          },
+          borderWidth: 1.5,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 0,
+          pointHoverRadius: 0,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        scales: { x: { display: false }, y: { display: false } },
+        animation: { duration: 800, easing: 'easeInOutQuart' },
+        layout: { padding: 0 },
+        elements: { line: { borderCapStyle: 'round', borderJoinStyle: 'round' } }
+      }
+    });
+  }
 
   const tot = state.total || {};
   const r = document.getElementById('cRev');
