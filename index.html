@@ -1,1777 +1,500 @@
-<!DOCTYPE html>
-<html lang="ro" data-theme="dark">
+!DOCTYPE html>
+<html lang="ro">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BMW Ads Dashboard</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root {
-  --bg:           #05070d;
-  --bg2:          #080b13;
-  --panel:        #0b0f1a;
-  --panel2:       #0e1322;
-  --panel3:       #111828;
-  --line:         rgba(255,255,255,0.055);
-  --line2:        rgba(255,255,255,0.09);
-  --blue:         #3b82f6;
-  --blue2:        #60a5fa;
-  --blue-dim:     rgba(59,130,246,0.15);
-  --blue-glow:    rgba(59,130,246,0.3);
-  --emerald:      #10b981;
-  --emerald-dim:  rgba(16,185,129,0.12);
-  --amber:        #f59e0b;
-  --violet:       #8b5cf6;
-  --rose:         #f43f5e;
-  --text:         #e2e8f4;
-  --text2:        #64748b;
-  --text3:        #334155;
-  --mono:         'Space Mono', monospace;
-  --sans:         'DM Sans', sans-serif;
+  --bg: #050508;
+  --surface: #0d0d14;
+  --surface2: #13131e;
+  --border: #1e1e2e;
+  --accent: #4fc3f7;
+  --accent2: #00e5ff;
+  --green: #00e676;
+  --yellow: #ffea00;
+  --purple: #ce93d8;
+  --red: #ff5252;
+  --orange: #ff9800;
+  --text: #e0e0e0;
+  --muted: #555570;
 }
-
-html[data-theme="light"] {
-  --bg:           #f1f5fb;
-  --bg2:          #e8edf6;
-  --panel:        #ffffff;
-  --panel2:       #f8fafd;
-  --panel3:       #f0f4fa;
-  --line:         rgba(0,0,0,0.06);
-  --line2:        rgba(0,0,0,0.1);
-  --blue:         #2563eb;
-  --blue2:        #3b82f6;
-  --blue-dim:     rgba(37,99,235,0.08);
-  --blue-glow:    rgba(37,99,235,0.2);
-  --emerald:      #059669;
-  --emerald-dim:  rgba(5,150,105,0.08);
-  --amber:        #d97706;
-  --violet:       #7c3aed;
-  --rose:         #e11d48;
-  --text:         #0f172a;
-  --text2:        #64748b;
-  --text3:        #94a3b8;
-}
-
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-
+* { margin:0; padding:0; box-sizing:border-box; }
 body {
-  font-family: var(--sans);
-  font-weight: 300;
   background: var(--bg);
   color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
   min-height: 100vh;
-  overflow-x: hidden;
-  transition: background .3s, color .3s;
 }
-
-/* ── NOISE TEXTURE ── */
 body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
-  opacity: .5;
-}
-
-/* ── SCAN LINE ── */
-body::after {
-  content: '';
-  position: fixed; inset: 0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.008) 2px, rgba(255,255,255,0.008) 4px);
-  pointer-events: none;
-  z-index: 0;
-}
-
-html[data-theme="light"] body::before, html[data-theme="light"] body::after { display: none; }
-
-.shell {
-  position: relative;
-  z-index: 1;
-  max-width: 1340px;
-  margin: 0 auto;
-  padding: 32px 28px 60px;
-}
-
-/* ════════════════════════════════════
-   HEADER
-════════════════════════════════════ */
-.hdr {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 40px;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.brand-mark {
-  width: 42px; height: 42px;
-  border-radius: 10px;
-  background: var(--blue-dim);
-  border: 1px solid rgba(59,130,246,0.3);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 19px;
-  box-shadow: 0 0 24px var(--blue-glow);
-}
-
-.brand-name {
-  font-family: var(--mono);
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: -0.01em;
-}
-
-.brand-sub {
-  font-size: 11px;
-  font-weight: 300;
-  color: var(--text2);
-  margin-top: 2px;
-  letter-spacing: 0.06em;
-}
-
-.hdr-right {
-  display: flex; align-items: center; gap: 10px;
-}
-
-.status-chip {
-  display: flex; align-items: center; gap: 7px;
-  padding: 7px 14px;
-  border: 1px solid rgba(16,185,129,0.25);
-  border-radius: 6px;
-  background: rgba(16,185,129,0.07);
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--emerald);
-  letter-spacing: 0.08em;
-}
-
-.pulse {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--emerald);
-  box-shadow: 0 0 8px var(--emerald);
-  animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%,100% { opacity:1; transform:scale(1); }
-  50% { opacity:.3; transform:scale(.7); }
-}
-
-.theme-sw {
-  display: flex;
-  background: var(--panel);
-  border: 1px solid var(--line2);
-  border-radius: 8px;
-  padding: 4px;
-  gap: 2px;
-}
-
-.tsw {
-  width: 32px; height: 32px;
-  border: none;
-  background: transparent;
-  border-radius: 5px;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: background .2s;
-}
-
-.tsw.on { background: var(--blue-dim); }
-
-/* ════════════════════════════════════
-   PERIOD BAR
-════════════════════════════════════ */
-.period-row {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-}
-
-.ptab {
-  padding: 8px 16px;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: transparent;
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.06em;
-  color: var(--text2);
-  cursor: pointer;
-  transition: all .2s;
-}
-
-.ptab:hover { border-color: var(--line2); color: var(--text); }
-
-.ptab.on {
-  background: var(--blue);
-  border-color: var(--blue);
-  color: #fff;
-  box-shadow: 0 2px 12px var(--blue-glow);
-}
-
-.period-info {
-  margin-left: auto;
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text3);
-  letter-spacing: 0.08em;
-}
-
-/* ════════════════════════════════════
-   HERO BLOCK
-════════════════════════════════════ */
-.hero {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line2);
-  border-radius: 14px;
-  overflow: hidden;
-  margin-bottom: 12px;
-}
-
-.hero-main {
-  background: var(--panel);
-  padding: 36px 40px;
-  position: relative;
-  overflow: hidden;
-}
-
-.hero-main::before {
-  content: '';
-  position: absolute;
-  top: -80px; left: -80px;
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, rgba(59,130,246,0.07) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.hero-eyebrow {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: var(--text3);
-  text-transform: uppercase;
-  margin-bottom: 12px;
-}
-
-.hero-amount {
-  font-family: var(--mono);
-  font-size: clamp(44px, 7vw, 68px);
-  font-weight: 700;
-  color: var(--blue2);
-  line-height: 1;
-  letter-spacing: -0.03em;
-}
-
-.hero-sub {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 12px;
-  font-size: 12px;
-  color: var(--emerald);
-  font-weight: 400;
-}
-
-.hero-sparkline {
-  position: absolute;
-  right: 0; bottom: 0;
-  width: 55%;
-  height: 100%;
-  opacity: .55;
-  cursor: crosshair;
-}
-
-html[data-theme="light"] .hero-sparkline { opacity: .35; }
-
-/* Sparkline tooltip */
-.spark-tooltip {
-  position: absolute;
-  background: rgba(11,15,26,0.92);
-  border: 1px solid var(--line2);
-  border-radius: 7px;
-  padding: 8px 12px;
-  pointer-events: none;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  z-index: 10;
-  transition: opacity .15s;
-}
-
-html[data-theme="light"] .spark-tooltip { background: rgba(255,255,255,0.95); }
-
-.spark-tooltip-date {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text3);
-  letter-spacing: 0.08em;
-  margin-bottom: 3px;
-}
-
-.spark-tooltip-val {
-  font-family: var(--mono);
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--blue2);
-}
-
-.spark-crosshair {
-  position: absolute;
-  top: 0; bottom: 0;
-  width: 1px;
-  background: rgba(96,165,250,0.5);
-  pointer-events: none;
-  display: none;
-}
-
-.hero-stats {
-  background: var(--panel2);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0;
-}
-
-.hstat {
-  padding: 16px 28px;
-  border-bottom: 1px solid var(--line);
-  cursor: pointer;
-  transition: background .2s;
-  position: relative;
-  overflow: hidden;
-}
-
-.hstat:last-child { border-bottom: none; }
-.hstat:hover { background: var(--panel3); }
-.hstat.active { background: var(--panel3); }
-
-.hstat-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.hstat-n {
-  font-family: var(--mono);
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 1;
-  color: var(--text);
-  transition: color .2s;
-}
-
-.hstat:hover .hstat-n, .hstat.active .hstat-n { color: var(--blue2); }
-
-.hstat-mini {
-  width: 60px;
-  height: 28px;
-  flex-shrink: 0;
-  opacity: .7;
-}
-
-.hstat-l {
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  color: var(--text3);
-  text-transform: uppercase;
-  margin-top: 5px;
-}
-
-/* ════════════════════════════════════
-   TARGET
-════════════════════════════════════ */
-.target-strip {
-  background: var(--panel);
-  border: 1px solid var(--line2);
-  border-radius: 12px;
-  padding: 22px 28px;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  flex-wrap: wrap;
-}
-
-.target-left { flex: 1; min-width: 200px; }
-
-.target-label {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  color: var(--text3);
-  text-transform: uppercase;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.target-label span { color: var(--blue2); }
-
-.track {
-  height: 4px;
-  background: var(--panel3);
-  border-radius: 100px;
-  overflow: hidden;
-  margin-bottom: 8px;
-}
-
-.fill {
-  height: 100%;
-  border-radius: 100px;
-  background: linear-gradient(90deg, var(--blue) 0%, var(--blue2) 100%);
-  box-shadow: 0 0 10px rgba(59,130,246,0.5);
-  transition: width 1.4s cubic-bezier(.22,1,.36,1);
-}
-
-.target-meta {
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text2);
-}
-
-.target-pct {
-  font-family: var(--mono);
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--blue);
-  min-width: 80px;
-  text-align: right;
-}
-
-.target-record {
-  font-size: 11px;
-  color: var(--text2);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.record-num {
-  font-family: var(--mono);
-  font-weight: 700;
-  color: var(--amber);
-}
-
-.edit-btn {
-  background: transparent;
-  border: 1px solid var(--line2);
-  border-radius: 6px;
-  padding: 8px 16px;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  color: var(--text2);
-  cursor: pointer;
-  transition: all .2s;
-  text-transform: uppercase;
-}
-
-.edit-btn:hover { border-color: var(--blue); color: var(--blue); }
-
-/* ════════════════════════════════════
-   AD CARDS
-════════════════════════════════════ */
-.divider {
-  display: flex; align-items: center; gap: 12px;
-  margin: 28px 0 14px;
-}
-
-.divider::after {
-  content: '';
-  flex: 1; height: 1px;
-  background: linear-gradient(90deg, var(--line2), transparent);
-}
-
-.divider span {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: var(--text3);
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.ad-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line2);
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: 12px;
-}
-
-.ad-card {
-  background: var(--panel);
-  padding: 28px 28px 24px;
-  position: relative;
-  transition: background .2s;
-}
-
-.ad-card:hover { background: var(--panel2); }
-
-.ad-top-line {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-}
-
-.ad-card.inter .ad-top-line { background: linear-gradient(90deg, var(--blue), transparent); }
-.ad-card.banner .ad-top-line { background: linear-gradient(90deg, var(--emerald), transparent); }
-.ad-card.reward .ad-top-line { background: linear-gradient(90deg, var(--violet), transparent); }
-
-.ad-tag {
-  display: inline-block;
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  padding: 3px 8px;
-  border-radius: 3px;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-}
-
-.ad-card.inter .ad-tag { background: rgba(59,130,246,0.1); color: var(--blue2); }
-.ad-card.banner .ad-tag { background: rgba(16,185,129,0.1); color: var(--emerald); }
-.ad-card.reward .ad-tag { background: rgba(139,92,246,0.1); color: var(--violet); }
-
-.ad-name {
-  font-family: var(--mono);
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 20px;
-}
-
-.ad-card.inter .ad-name { color: var(--blue2); }
-.ad-card.banner .ad-name { color: var(--emerald); }
-.ad-card.reward .ad-name { color: var(--violet); }
-
-.stat-line {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 9px 0;
-  border-top: 1px solid var(--line);
-}
-
-.sl-key {
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  color: var(--text3);
-  text-transform: uppercase;
-}
-
-.sl-val {
-  font-family: var(--mono);
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.sl-val.y { color: var(--amber); }
-.sl-val.b { color: var(--blue2); }
-.sl-val.r { color: var(--rose); }
-
-/* ════════════════════════════════════
-   CHARTS
-════════════════════════════════════ */
-.chart-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line2);
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: 12px;
-}
-
-.chart-panel {
-  background: var(--panel);
-  padding: 24px 26px;
-  transition: background .2s;
-}
-
-.chart-panel:hover { background: var(--panel2); }
-
-.chart-eyebrow {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  color: var(--text3);
-  text-transform: uppercase;
-  margin-bottom: 18px;
-}
-
-.chart-wrap { position: relative; height: 180px; }
-
-/* ════════════════════════════════════
-   BOTTOM ROW
-════════════════════════════════════ */
-.bottom-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line2);
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: 12px;
-}
-
-.list-panel {
-  background: var(--panel);
-  padding: 24px 26px;
-}
-
-.list-eyebrow {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  color: var(--text3);
-  text-transform: uppercase;
-  margin-bottom: 16px;
-}
-
-.list-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 0;
-  border-bottom: 1px solid var(--line);
-  transition: all .15s;
-}
-
-.list-row:last-child { border-bottom: none; }
-.list-row:hover .list-rname { color: var(--blue2); }
-
-.list-rk {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text3);
-  width: 18px;
-}
-
-.list-rname {
-  flex: 1;
-  font-size: 12px;
-  color: var(--text);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  transition: color .15s;
-}
-
-.mini-track {
-  width: 60px; height: 2px;
-  background: var(--panel3);
-  border-radius: 100px;
-  overflow: hidden;
-}
-
-.mini-fill {
-  height: 100%;
-  border-radius: 100px;
-  background: var(--blue);
-  transition: width .6s;
-}
-
-.list-rval {
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text);
-  min-width: 32px;
-  text-align: right;
-}
-
-/* ── TIMELINE ── */
-.timeline-panel {
-  background: var(--panel);
-  padding: 24px 26px;
-  grid-column: span 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.tl-scroll {
-  flex: 1;
-  overflow-y: auto;
-  max-height: 280px;
-  padding-right: 4px;
-}
-
-.tl-scroll::-webkit-scrollbar { width: 2px; }
-.tl-scroll::-webkit-scrollbar-track { background: transparent; }
-.tl-scroll::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 100px; }
-
-.tl-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 9px 0;
-  border-bottom: 1px solid var(--line);
-  animation: fadeSlide .3s ease;
-}
-
-@keyframes fadeSlide {
-  from { opacity: 0; transform: translateX(-6px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
-.tl-row:last-child { border-bottom: none; }
-
-.tl-indicator {
-  margin-top: 4px;
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: var(--blue);
-  box-shadow: 0 0 6px rgba(59,130,246,0.6);
-  flex-shrink: 0;
-}
-
-.tl-body { flex: 1; }
-
-.tl-ts {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--blue2);
-  letter-spacing: 0.04em;
-  margin-bottom: 2px;
-}
-
-.tl-msg {
-  font-size: 12px;
-  color: var(--text);
-  line-height: 1.4;
-}
-
-.tl-context {
-  font-size: 10px;
-  color: var(--text3);
-  margin-top: 2px;
-}
-
-.tl-empty {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text3);
-  letter-spacing: 0.1em;
-  padding: 20px 0;
-  text-align: center;
-}
-
-/* ════════════════════════════════════
-   FOOTER
-════════════════════════════════════ */
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding-top: 28px;
-  border-top: 1px solid var(--line);
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  color: var(--text3);
-  text-transform: uppercase;
-}
-
-.footer-sep { width: 2px; height: 2px; border-radius: 50%; background: var(--text3); }
-#last-update { color: var(--blue2); }
-
-/* ════════════════════════════════════
-   LOADING
-════════════════════════════════════ */
-.loader {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 70vh;
-  gap: 18px;
-}
-
-.loader-ring {
-  width: 36px; height: 36px;
-  border: 1px solid var(--line2);
-  border-top-color: var(--blue);
-  border-radius: 50%;
-  animation: spin .7s linear infinite;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.loader-txt {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: var(--text3);
-  text-transform: uppercase;
-}
-
-/* ════════════════════════════════════
-   MODAL
-════════════════════════════════════ */
-.modal-overlay {
-  display: none;
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.65);
-  backdrop-filter: blur(8px);
-  z-index: 500;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-overlay.open { display: flex; }
-
-.modal-box {
-  background: var(--panel2);
-  border: 1px solid var(--line2);
-  border-radius: 14px;
-  padding: 32px;
-  width: 320px;
-  box-shadow: 0 32px 64px rgba(0,0,0,0.5);
-  animation: appear .22s cubic-bezier(.34,1.56,.64,1);
-}
-
-@keyframes appear {
-  from { opacity: 0; transform: scale(.93) translateY(8px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-.modal-title {
-  font-family: var(--mono);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--blue2);
-  margin-bottom: 4px;
-}
-
-.modal-sub {
-  font-size: 12px;
-  color: var(--text2);
-  margin-bottom: 20px;
-}
-
-.modal-box input {
-  width: 100%;
-  background: var(--panel3);
-  border: 1px solid var(--line2);
-  border-radius: 8px;
-  color: var(--text);
-  font-family: var(--mono);
-  font-size: 24px;
-  font-weight: 700;
-  padding: 14px 16px;
-  margin-bottom: 18px;
-  outline: none;
-  transition: border-color .2s, box-shadow .2s;
-}
-
-.modal-box input:focus {
-  border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
-}
-
-.modal-row { display: flex; gap: 10px; justify-content: flex-end; }
-
-.mbtn {
-  background: transparent;
-  border: 1px solid var(--line2);
-  border-radius: 7px;
-  padding: 9px 18px;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  color: var(--text2);
-  cursor: pointer;
-  transition: all .2s;
-}
-
-.mbtn:hover { border-color: var(--blue); color: var(--blue); }
-
-.mbtn.ok {
-  background: var(--blue);
-  border-color: var(--blue);
-  color: #fff;
-}
-
-.mbtn.ok:hover { box-shadow: 0 4px 16px var(--blue-glow); }
-
-/* ════════════════════════════════════
-   CALENDAR MODAL
-════════════════════════════════════ */
-.cal-overlay {
-  display: none;
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.65);
-  backdrop-filter: blur(8px);
-  z-index: 600;
-  align-items: center;
-  justify-content: center;
-}
-
-.cal-overlay.open { display: flex; }
-
-.cal-box {
-  background: var(--panel2);
-  border: 1px solid var(--line2);
-  border-radius: 16px;
-  padding: 28px 32px;
-  width: 580px;
-  max-width: 95vw;
-  box-shadow: 0 32px 64px rgba(0,0,0,0.5);
-  animation: appear .22s cubic-bezier(.34,1.56,.64,1);
-}
-
-.cal-title {
-  font-family: var(--mono);
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--blue2);
-  margin-bottom: 22px;
-  letter-spacing: 0.06em;
-}
-
-.cal-months { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 22px; }
-
-.cal-mhd {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.cal-nav {
-  background: transparent;
-  border: 1px solid var(--line2);
-  border-radius: 5px;
-  width: 26px; height: 26px;
-  color: var(--text2);
-  font-size: 13px;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: all .2s;
-}
-
-.cal-nav:hover { border-color: var(--blue); color: var(--blue); }
-
-.cal-mname {
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: 0.04em;
-}
-
-.cal-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
-}
-
-.cal-dow {
-  text-align: center;
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  color: var(--text3);
-  padding: 3px 0 8px;
-  text-transform: uppercase;
-}
-
-.cal-day {
-  text-align: center;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text);
-  padding: 6px 2px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all .12s;
-  user-select: none;
-  position: relative;
-}
-
-.cal-day:hover:not(.empty):not(.dis) { background: var(--blue-dim); color: var(--blue2); }
-.cal-day.tod { color: var(--blue2); font-weight: 700; }
-.cal-day.tod::after { content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 3px; height: 3px; border-radius: 50%; background: var(--blue); }
-.cal-day.sel { background: var(--blue); color: #fff; font-weight: 700; box-shadow: 0 2px 10px var(--blue-glow); }
-.cal-day.inr { background: var(--blue-dim); color: var(--blue2); border-radius: 0; }
-.cal-day.rs  { border-radius: 5px 0 0 5px; }
-.cal-day.re  { border-radius: 0 5px 5px 0; }
-.cal-day.rs.re { border-radius: 5px; }
-.cal-day.empty { cursor: default; }
-.cal-day.dis { color: var(--text3); cursor: not-allowed; opacity: .3; }
-
-.cal-foot {
-  display: flex; align-items: center; justify-content: space-between;
-  border-top: 1px solid var(--line);
-  padding-top: 16px;
-}
-
-.cal-range-txt {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text2);
-}
-
-.cal-range-txt span { color: var(--blue2); }
-
-.cal-btns { display: flex; gap: 8px; }
-
-/* ════════════════════════════════════
-   RESPONSIVE
-════════════════════════════════════ */
-@media (max-width: 1100px) {
-  .bottom-grid { grid-template-columns: 1fr 1fr; }
-  .timeline-panel { grid-column: span 2; }
-}
-
-@media (max-width: 780px) {
-  .ad-grid { grid-template-columns: 1fr; }
-  .chart-grid { grid-template-columns: 1fr; }
-  .hero { grid-template-columns: 1fr; }
-  .hero-stats { flex-direction: row; flex-wrap: wrap; }
-  .hstat { flex: 1; min-width: 120px; }
-  .bottom-grid { grid-template-columns: 1fr; }
-  .timeline-panel { grid-column: span 1; }
-  .cal-months { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 520px) {
-  .shell { padding: 20px 14px 40px; }
-  .hero-main { padding: 24px; }
-  .hdr { flex-direction: column; align-items: flex-start; }
-  .hdr-right { width: 100%; justify-content: space-between; }
-}
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(79,195,247,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(79,195,247,0.03) 1px,transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;
+  z-index:0;
+}
+.wrap { position:relative; z-index:1; max-width:1200px; margin:0 auto; padding:32px 20px; }
+
+/* HEADER */
+header { display:flex; align-items:center; justify-content:space-between; margin-bottom:40px; flex-wrap:wrap; gap:12px; }
+.logo { font-family:'Orbitron',sans-serif; font-weight:900; font-size:clamp(16px,3vw,26px); color:var(--accent2); text-shadow:0 0 30px rgba(0,229,255,0.5); letter-spacing:0.1em; }
+.logo span { display:block; font-size:0.5em; color:var(--muted); letter-spacing:0.3em; margin-top:2px; }
+.live-badge { display:flex; align-items:center; gap:8px; background:rgba(0,230,118,0.08); border:1px solid rgba(0,230,118,0.3); border-radius:20px; padding:6px 16px; font-size:11px; color:var(--green); letter-spacing:0.2em; }
+.dot { width:8px; height:8px; border-radius:50%; background:var(--green); animation:pulse 1.5s ease-in-out infinite; box-shadow:0 0 8px var(--green); }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+
+/* HERO */
+.hero { background:linear-gradient(135deg,#0d1520,#0a0d1a); border:1px solid rgba(79,195,247,0.2); border-radius:16px; padding:32px; margin-bottom:24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:24px; position:relative; overflow:hidden; }
+.hero::before { content:''; position:absolute; top:-40%; right:-5%; width:300px; height:300px; background:radial-gradient(circle,rgba(79,195,247,0.06),transparent 70%); pointer-events:none; }
+.hero-lbl { font-size:10px; letter-spacing:0.3em; color:var(--muted); margin-bottom:6px; }
+.hero-val { font-family:'Orbitron',sans-serif; font-size:clamp(28px,5vw,48px); font-weight:900; color:var(--accent2); text-shadow:0 0 40px rgba(0,229,255,0.4); }
+.hero-today { font-size:12px; color:var(--green); margin-top:4px; }
+.hero-stats { display:flex; gap:28px; flex-wrap:wrap; }
+.hstat { text-align:center; }
+.hstat-v { font-family:'Orbitron',sans-serif; font-size:20px; font-weight:700; }
+.hstat-l { font-size:9px; color:var(--muted); letter-spacing:0.2em; margin-top:3px; }
+
+/* SECTION TITLE */
+.section-title { font-family:'Orbitron',sans-serif; font-size:11px; letter-spacing:0.3em; color:var(--muted); margin:28px 0 12px; border-bottom:1px solid var(--border); padding-bottom:8px; }
+
+/* AD CARDS */
+.cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-bottom:24px; }
+.card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; position:relative; overflow:hidden; transition:border-color .3s,transform .3s; }
+.card:hover { border-color:rgba(79,195,247,0.25); transform:translateY(-2px); }
+.card::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; border-radius:12px 12px 0 0; }
+.card.interstitial::after { background:linear-gradient(90deg,var(--accent),transparent); }
+.card.banner::after { background:linear-gradient(90deg,var(--green),transparent); }
+.card.rewarded::after { background:linear-gradient(90deg,var(--purple),transparent); }
+.card-hd { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+.card-title { font-family:'Orbitron',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.15em; }
+.card.interstitial .card-title { color:var(--accent); }
+.card.banner .card-title { color:var(--green); }
+.card.rewarded .card-title { color:var(--purple); }
+.card-icon { font-size:18px; opacity:.6; }
+.srow { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+.srow:last-child { border-bottom:none; }
+.slbl { font-size:10px; color:var(--muted); letter-spacing:0.15em; }
+.sval { font-family:'Orbitron',sans-serif; font-size:14px; font-weight:700; transition:color .3s; }
+.sval.rev { color:var(--yellow); }
+.sval.ecpm { color:var(--accent); }
+.sval.ctr { color:var(--orange); }
+
+/* TARGET PROGRESS */
+.target-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; margin-bottom:24px; }
+.target-hd { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+.target-title { font-family:'Orbitron',sans-serif; font-size:12px; color:var(--accent2); letter-spacing:0.15em; }
+.target-edit { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Share Tech Mono',monospace; font-size:11px; padding:4px 10px; border-radius:6px; cursor:pointer; }
+.target-edit:hover { border-color:var(--accent); color:var(--accent); }
+.progress-wrap { background:rgba(255,255,255,0.04); border-radius:8px; height:12px; overflow:hidden; margin-bottom:8px; }
+.progress-bar { height:100%; border-radius:8px; transition:width 1s ease; background:linear-gradient(90deg,var(--accent),var(--accent2)); box-shadow:0 0 10px rgba(0,229,255,0.3); }
+.progress-info { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); }
+.progress-pct { color:var(--accent2); font-family:'Orbitron',sans-serif; font-size:13px; }
+
+/* RECORD */
+.record-row { display:flex; align-items:center; gap:8px; margin-top:12px; font-size:11px; color:var(--muted); }
+.record-val { color:var(--yellow); font-family:'Orbitron',sans-serif; }
+
+/* CHARTS GRID */
+.charts-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:16px; margin-bottom:24px; }
+.chart-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; }
+.chart-title { font-family:'Orbitron',sans-serif; font-size:11px; color:var(--muted); letter-spacing:0.2em; margin-bottom:16px; }
+.chart-wrap { position:relative; height:200px; }
+
+/* TOP LISTS */
+.lists-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-bottom:24px; }
+.list-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; }
+.list-title { font-family:'Orbitron',sans-serif; font-size:11px; color:var(--muted); letter-spacing:0.2em; margin-bottom:16px; }
+.list-item { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+.list-item:last-child { border-bottom:none; }
+.list-rank { font-family:'Orbitron',sans-serif; font-size:11px; color:var(--muted); width:20px; }
+.list-name { flex:1; font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.list-bar-wrap { width:80px; height:4px; background:rgba(255,255,255,0.06); border-radius:4px; overflow:hidden; }
+.list-bar { height:100%; border-radius:4px; background:var(--accent); }
+.list-val { font-family:'Orbitron',sans-serif; font-size:12px; color:var(--text); min-width:32px; text-align:right; }
+
+/* TIMELINE */
+.timeline-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; margin-bottom:24px; }
+.timeline-title { font-family:'Orbitron',sans-serif; font-size:11px; color:var(--muted); letter-spacing:0.2em; margin-bottom:16px; }
+.timeline-list { max-height:280px; overflow-y:auto; }
+.timeline-list::-webkit-scrollbar { width:4px; }
+.timeline-list::-webkit-scrollbar-track { background:transparent; }
+.timeline-list::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
+.tl-item { display:flex; align-items:center; gap:12px; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.04); animation:fadeIn .4s ease; }
+.tl-item:last-child { border-bottom:none; }
+@keyframes fadeIn { from{opacity:0;transform:translateX(-10px)} to{opacity:1;transform:translateX(0)} }
+.tl-time { font-size:10px; color:var(--muted); min-width:60px; }
+.tl-text { flex:1; font-size:12px; }
+.tl-meta { font-size:10px; color:var(--muted); text-align:right; }
+
+/* FOOTER */
+.footer { text-align:center; font-size:10px; color:var(--muted); letter-spacing:0.2em; padding:20px 0; }
+#last-update { color:var(--accent); }
+
+/* LOADING */
+.loading { display:flex; flex-direction:column; align-items:center; justify-content:center; height:70vh; gap:16px; }
+.spinner { width:40px; height:40px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg)} }
+.loading-txt { font-size:11px; color:var(--muted); letter-spacing:0.3em; }
+
+/* MODAL */
+.modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:100; align-items:center; justify-content:center; }
+.modal-bg.open { display:flex; }
+.modal { background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:28px; width:320px; }
+.modal h3 { font-family:'Orbitron',sans-serif; font-size:13px; color:var(--accent); margin-bottom:16px; }
+.modal input { width:100%; background:var(--bg); border:1px solid var(--border); color:var(--text); font-family:'Share Tech Mono',monospace; font-size:14px; padding:10px; border-radius:8px; margin-bottom:16px; }
+.modal input:focus { outline:none; border-color:var(--accent); }
+.modal-btns { display:flex; gap:10px; justify-content:flex-end; }
+.btn { background:none; border:1px solid var(--border); color:var(--text); font-family:'Share Tech Mono',monospace; font-size:12px; padding:8px 16px; border-radius:8px; cursor:pointer; }
+.btn.primary { background:var(--accent); border-color:var(--accent); color:#000; font-weight:700; }
+.btn:hover { opacity:.8; }
 </style>
 </head>
 <body>
-<div id="root">
-  <div class="loader">
-    <div class="loader-ring"></div>
-    <div class="loader-txt">Connecting to Firebase...</div>
-  </div>
-</div>
+<div id="app"><div class="loading"><div class="spinner"></div><div class="loading-txt">CONNECTING TO FIREBASE...</div></div></div>
 
 <!-- TARGET MODAL -->
-<div class="modal-overlay" id="modalTarget">
-  <div class="modal-box">
-    <div class="modal-title">TARGET ZILNIC</div>
-    <div class="modal-sub">Setează venitul target pentru azi</div>
-    <input type="number" id="target-input" placeholder="0.00" step="0.01" min="0">
-    <div class="modal-row">
-      <button class="mbtn" onclick="closeModal()">Anulează</button>
-      <button class="mbtn ok" onclick="saveTarget()">Salvează</button>
-    </div>
-  </div>
-</div>
-
-<!-- CALENDAR MODAL -->
-<div class="cal-overlay" id="calModal">
-  <div class="cal-box">
-    <div class="cal-title">// SELECTEAZĂ PERIOADA</div>
-    <div class="cal-months" id="calMonths"></div>
-    <div class="cal-foot">
-      <div class="cal-range-txt" id="calRangeTxt">Selectează datele</div>
-      <div class="cal-btns">
-        <button class="mbtn" onclick="closeCal()">Anulează</button>
-        <button class="mbtn ok" id="calApplyBtn" onclick="applyCal()" disabled>Aplică</button>
-      </div>
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h3>SET DAILY TARGET</h3>
+    <input type="number" id="target-input" placeholder="Ex: 10.00" step="0.01" min="0">
+    <div class="modal-btns">
+      <button class="btn" onclick="closeModal()">CANCEL</button>
+      <button class="btn primary" onclick="saveTarget()">SAVE</button>
     </div>
   </div>
 </div>
 
 <script type="module">
-import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, onValue, query, limitToLast, orderByKey }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-/* ─── FIREBASE ─────────────────────────────── */
 const app = initializeApp({ databaseURL: "https://bmwadsstats-default-rtdb.firebaseio.com/" });
-const db  = getDatabase(app);
+const db = getDatabase(app);
 
-/* ─── STATE ────────────────────────────────── */
-let state       = {};
-let charts      = {};
+let state = {};
+let charts = {};
 let dailyTarget = parseFloat(localStorage.getItem('dailyTarget') || '10');
-let theme       = localStorage.getItem('theme') || 'dark';
 
-let activePeriod = 'today';
-let customStart  = null;
-let customEnd    = null;
-
-/* Calendar */
-let calYear  = new Date().getFullYear();
-let calMonth = new Date().getMonth();
-let calS = null, calE = null, calStep = 0;
-
-/* ─── THEME ────────────────────────────────── */
-function applyTheme(t) {
-  theme = t; localStorage.setItem('theme', t);
-  document.documentElement.setAttribute('data-theme', t);
-}
-window.toggleTheme = t => { applyTheme(t); renderAll(); };
-
-/* ─── MODAL ────────────────────────────────── */
-window.openModal  = () => { document.getElementById('target-input').value = dailyTarget; document.getElementById('modalTarget').classList.add('open'); };
-window.closeModal = () => document.getElementById('modalTarget').classList.remove('open');
+window.openModal = () => {
+  document.getElementById('target-input').value = dailyTarget;
+  document.getElementById('modal').classList.add('open');
+};
+window.closeModal = () => document.getElementById('modal').classList.remove('open');
 window.saveTarget = () => {
   const v = parseFloat(document.getElementById('target-input').value);
   if (!isNaN(v) && v > 0) { dailyTarget = v; localStorage.setItem('dailyTarget', v); }
-  closeModal(); renderAll();
+  closeModal();
+  renderAll();
 };
 
-/* ─── UTILS ────────────────────────────────── */
-const ds    = d => d.toISOString().split('T')[0];
-const today = () => ds(new Date());
-const fmt   = n => { n=parseFloat(n)||0; return n>=1e6?(n/1e6).toFixed(1)+'M':n>=1000?(n/1000).toFixed(1)+'K':Math.round(n)+''; };
-const fmtR  = n => '$'+(parseFloat(n)||0).toFixed(4);
-const fmtS  = n => '$'+(parseFloat(n)||0).toFixed(2);
-const fmtE  = n => '$'+(parseFloat(n)||0).toFixed(2);
-const fmtC  = n => (parseFloat(n)||0).toFixed(2)+'%';
+function fmt(n) {
+  n = parseFloat(n) || 0;
+  if (n >= 1000000) return (n/1000000).toFixed(1)+'M';
+  if (n >= 1000) return (n/1000).toFixed(1)+'K';
+  return Math.round(n).toString();
+}
+function fmtRev(n) { return '$'+(parseFloat(n)||0).toFixed(4); }
+function fmtRevShort(n) { return '$'+(parseFloat(n)||0).toFixed(2); }
+function fmtECPM(n) { return '$'+(parseFloat(n)||0).toFixed(2); }
+function fmtCTR(n) { return (parseFloat(n)||0).toFixed(2)+'%'; }
+function today() { return new Date().toISOString().split('T')[0]; }
 
-/* ─── PERIOD ───────────────────────────────── */
-function periodDays() {
-  const t = today();
-  if (activePeriod === 'today')     return [t];
-  if (activePeriod === 'yesterday') { const y=new Date(); y.setDate(y.getDate()-1); return [ds(y)]; }
-  if (activePeriod === '7d')  { const arr=[]; for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);arr.push(ds(d));} return arr; }
-  if (activePeriod === '30d') { const arr=[]; for(let i=29;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);arr.push(ds(d));} return arr; }
-  if (activePeriod==='custom'&&customStart&&customEnd) {
-    const arr=[]; let c=new Date(customStart); const e=new Date(customEnd);
-    while(c<=e){arr.push(ds(c));c.setDate(c.getDate()+1);}
-    return arr;
-  }
-  return [t];
+function getAdData(type) {
+  return (state.total && state.total[type]) || {};
+}
+function getDailyAdData(type) {
+  const d = state.daily && state.daily[today()];
+  return (d && d[type]) || {};
+}
+function getTotalRev() {
+  return (parseFloat((state.total||{}).revenue)||0);
+}
+function getTodayRev() {
+  const d = state.daily && state.daily[today()];
+  return parseFloat((d||{}).revenue)||0;
+}
+function getTotalSessions() { return parseInt((state.total||{}).sessions)||0; }
+function getTodaySessions() {
+  const d = state.daily && state.daily[today()];
+  return parseInt((d||{}).sessions)||0;
+}
+function getTotalImpressions() {
+  const t = state.total || {};
+  return (parseInt((t.interstitial||{}).impressions)||0) +
+         (parseInt((t.banner||{}).impressions)||0) +
+         (parseInt((t.rewarded||{}).impressions)||0);
+}
+function getTotalClicks() {
+  const t = state.total || {};
+  return (parseInt((t.interstitial||{}).clicks)||0) +
+         (parseInt((t.banner||{}).clicks)||0) +
+         (parseInt((t.rewarded||{}).clicks)||0);
 }
 
-function periodLabel() {
-  if (activePeriod==='today')     return 'AZI';
-  if (activePeriod==='yesterday') { const y=new Date();y.setDate(y.getDate()-1);return 'IERI · '+ds(y); }
-  if (activePeriod==='7d')  return 'ULTIMELE 7 ZILE';
-  if (activePeriod==='30d') return 'ULTIMELE 30 ZILE';
-  if (activePeriod==='custom'&&customStart&&customEnd) return customStart+' → '+customEnd;
-  return '';
-}
-
-window.setPeriod = p => {
-  if (p==='custom') { openCal(); return; }
-  activePeriod = p; renderAll();
-};
-
-/* ─── AGGREGATION ──────────────────────────── */
-function periodStats() {
+// DAILY CHART DATA
+function getDailyChartData() {
   const daily = state.daily || {};
-  const days  = periodDays();
-  let rev=0, intI=0, banI=0, rewI=0, intC=0, banC=0, rewC=0;
-  let intR=0, banR=0, rewR=0, sess=0;
-  let intEcpm=0, rewEcpm=0, intEc=0, rewEc=0;
-
-  days.forEach(d => {
-    const dd = daily[d] || {};
-    rev  += parseFloat(dd.revenue) || 0;
-    sess += parseInt(dd.sessions)  || 0;
-
-    const intr = dd.interstitial || {};
-    const ban  = dd.banner || {};
-    const rew  = dd.rewarded || {};
-
-    intI += parseInt(intr.impressions) || 0;
-    banI += parseInt(ban.impressions)  || 0;
-    rewI += parseInt(rew.impressions)  || 0;
-
-    intC += parseInt(intr.clicks) || 0;
-    banC += parseInt(ban.clicks)  || 0;
-    rewC += parseInt(rew.clicks)  || 0;
-
-    intR += parseFloat(intr.revenue) || 0;
-    banR += parseFloat(ban.revenue)  || 0;
-    rewR += parseFloat(rew.revenue)  || 0;
-
-    if (parseFloat(intr.ecpm)) { intEcpm += parseFloat(intr.ecpm); intEc++; }
-    if (parseFloat(rew.ecpm))  { rewEcpm += parseFloat(rew.ecpm);  rewEc++; }
-  });
-
+  const days = Object.keys(daily).sort().slice(-7);
   return {
-    rev, imp: intI+banI+rewI, clk: intC+banC+rewC, sess,
-    interstitial: { impressions:intI, clicks:intC, revenue:intR, ctr:intI>0?intC/intI*100:0, ecpm:intEc?intEcpm/intEc:0 },
-    banner:       { impressions:banI, clicks:banC, revenue:banR, ctr:banI>0?banC/banI*100:0, ecpm:0 },
-    rewarded:     { impressions:rewI, clicks:rewC, revenue:rewR, ctr:rewI>0?rewC/rewI*100:0, ecpm:rewEc?rewEcpm/rewEc:0 },
-  };
-}
-
-function chartData() {
-  const daily = state.daily || {};
-  const days  = periodDays();
-  const show  = days.length===1
-    ? (() => { const a=[]; for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);a.push(ds(d));} return a; })()
-    : days;
-  return {
-    labels:      show.map(d => d.slice(5)),
-    revenue:     show.map(d => parseFloat((daily[d]||{}).revenue)||0),
-    sessions:    show.map(d => parseInt((daily[d]||{}).sessions)||0),
-    impressions: show.map(d => {
-      const dd=daily[d]||{};
-      return (parseInt((dd.interstitial||{}).impressions)||0)+(parseInt((dd.banner||{}).impressions)||0)+(parseInt((dd.rewarded||{}).impressions)||0);
+    labels: days.map(d => d.slice(5)),
+    revenue: days.map(d => parseFloat((daily[d]||{}).revenue)||0),
+    sessions: days.map(d => parseInt((daily[d]||{}).sessions)||0),
+    impressions: days.map(d => {
+      const dd = daily[d] || {};
+      return (parseInt((dd.interstitial||{}).impressions)||0) +
+             (parseInt((dd.banner||{}).impressions)||0) +
+             (parseInt((dd.rewarded||{}).impressions)||0);
     })
   };
 }
 
-function bestDay() {
-  return Object.values(state.daily||{}).reduce((b,d)=>{ const r=parseFloat((d||{}).revenue)||0; return r>b?r:b; }, 0);
+// TOP LISTS
+function getTopList(node, max=8) {
+  const data = (state[node]) || {};
+  return Object.entries(data)
+    .map(([k,v]) => ({name: k.replace(/_/g,' '), val: parseInt(v)||0}))
+    .sort((a,b) => b.val - a.val)
+    .slice(0, max);
 }
 
-function totalRev()  { return parseFloat((state.total||{}).revenue)||0; }
-function totalSess() { return parseInt((state.total||{}).sessions)||0; }
-
-function topList(node, max=7) {
-  return Object.entries(state[node]||{})
-    .map(([k,v])=>({name:k.replace(/_/g,' '), val:parseInt(v)||0}))
-    .sort((a,b)=>b.val-a.val).slice(0,max);
-}
-
-/* ─── TIMELINE ─────────────────────────────── */
+// TIMELINE
 function getTimeline() {
   const tl = state.timeline || {};
-  return Object.values(tl)
-    .filter(e => e && (e.time || e.text))
-    .sort((a,b) => {
-      // Sort by time string descending
-      const ta = String(a.time||'');
-      const tb = String(b.time||'');
-      return tb.localeCompare(ta);
-    })
-    .slice(0, 20);
+  return Object.values(tl).sort((a,b) => b.time > a.time ? 1 : -1).slice(0,15);
 }
 
-function renderTimelineDOM() {
-  const container = document.querySelector('.tl-scroll');
-  if (!container) return;
-  const tl = getTimeline();
-  if (!tl.length) {
-    container.innerHTML = '<div class="tl-empty">// NICIO ACTIVITATE</div>';
-    return;
-  }
-  container.innerHTML = tl.map(e => `
-    <div class="tl-row">
-      <div class="tl-indicator"></div>
-      <div class="tl-body">
-        <div class="tl-ts">${e.time || ''}</div>
-        <div class="tl-msg">${e.text || ''}</div>
-        <div class="tl-context">${e.country || ''} ${e.device ? '· ' + String(e.device).substring(0,18) : ''}</div>
-      </div>
-    </div>`).join('');
+// RECORD
+function getBestDay() {
+  const daily = state.daily || {};
+  let best = 0;
+  Object.values(daily).forEach(d => {
+    const r = parseFloat((d||{}).revenue)||0;
+    if (r > best) best = r;
+  });
+  return best;
 }
 
-/* ─── CALENDAR ─────────────────────────────── */
-window.openCal = () => {
-  calS=null; calE=null; calStep=0;
-  calYear=new Date().getFullYear(); calMonth=new Date().getMonth();
-  renderCal(); document.getElementById('calModal').classList.add('open');
-};
-window.closeCal  = () => document.getElementById('calModal').classList.remove('open');
-window.applyCal  = () => {
-  if (calS && calE) {
-    customStart = calS < calE ? calS : calE;
-    customEnd   = calS < calE ? calE : calS;
-    activePeriod = 'custom';
-    closeCal(); renderAll();
-  }
-};
-window.calNav    = delta => {
-  calMonth += delta;
-  if (calMonth>11){calMonth=0;calYear++;}
-  if (calMonth<0) {calMonth=11;calYear--;}
-  renderCal();
-};
-window.calPick = dateS => {
-  if (calStep===0) { calS=dateS; calE=null; calStep=1; }
-  else             { calE=dateS; calStep=0; document.getElementById('calApplyBtn').disabled=false; }
-  updateCalRange(); renderCalGrids();
-};
-
-function updateCalRange() {
-  const el = document.getElementById('calRangeTxt');
-  if (!el) return;
-  if (!calS)    { el.textContent='Selectează data start'; return; }
-  if (!calE)    { el.innerHTML=`<span>${calS}</span> → ?`; return; }
-  const s = calS<calE?calS:calE, e = calS<calE?calE:calS;
-  el.innerHTML=`<span>${s}</span> → <span>${e}</span>`;
-}
-
-function renderCal() { renderCalGrids(); updateCalRange(); }
-
-function renderCalGrids() {
-  const container = document.getElementById('calMonths');
-  if (!container) return;
-  const todayS = today();
-  const MN = ['Ianuarie','Februarie','Martie','Aprilie','Mai','Iunie','Iulie','August','Septembrie','Octombrie','Noiembrie','Decembrie'];
-  const DW = ['Lu','Ma','Mi','Jo','Vi','Sâ','Du'];
-  const months = [
-    {y:calYear, m:calMonth},
-    {y:calMonth===11?calYear+1:calYear, m:calMonth===11?0:calMonth+1}
-  ];
-
-  container.innerHTML = months.map((mo, mi) => {
-    const firstDay = new Date(mo.y, mo.m, 1).getDay();
-    const offset   = (firstDay+6)%7;
-    const daysInM  = new Date(mo.y, mo.m+1, 0).getDate();
-    const cells    = [];
-    for (let i=0; i<offset; i++) cells.push('<div class="cal-day empty"></div>');
-    for (let d=1; d<=daysInM; d++) {
-      const ds2 = `${mo.y}-${String(mo.m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      const isFuture = ds2 > todayS;
-      let cls = 'cal-day';
-      if (ds2===todayS) cls+=' tod';
-      if (isFuture)     cls+=' dis';
-      if (calS && calE) {
-        const s=calS<calE?calS:calE, e=calS<calE?calE:calS;
-        if (ds2===s)       cls+=' sel rs';
-        else if (ds2===e)  cls+=' sel re';
-        else if (ds2>s&&ds2<e) cls+=' inr';
-      } else if (calS && ds2===calS) cls+=' sel rs re';
-      const click = isFuture ? '' : `onclick="calPick('${ds2}')"`;
-      cells.push(`<div class="${cls}" ${click}>${d}</div>`);
-    }
-    const nl  = mi===0 ? `<button class="cal-nav" onclick="calNav(-1)">‹</button>` : `<div style="width:26px"></div>`;
-    const nr  = mi===1 ? `<button class="cal-nav" onclick="calNav(1)">›</button>`  : `<div style="width:26px"></div>`;
-    return `<div>
-      <div class="cal-mhd">${nl}<div class="cal-mname">${MN[mo.m]} ${mo.y}</div>${nr}</div>
-      <div class="cal-grid">${DW.map(d=>`<div class="cal-dow">${d}</div>`).join('')}${cells.join('')}</div>
-    </div>`;
-  }).join('');
-}
-
-/* ─── RENDER ───────────────────────────────── */
 function renderAll() {
-  const ps  = periodStats();
-  const pct = Math.min((ps.rev/dailyTarget)*100, 100);
-  const cd  = chartData();
-  const cnt = topList('countries');
-  const dev = topList('devices');
-  const tl  = getTimeline();
-  const tot = state.total || {};
+  const todayRev = getTodayRev();
+  const pct = Math.min((todayRev / dailyTarget) * 100, 100);
+  const bestDay = getBestDay();
+  const chartData = getDailyChartData();
+  const topCountries = getTopList('countries');
+  const topDevices = getTopList('devices');
+  const timeline = getTimeline();
 
   const adTypes = [
-    {key:'interstitial', label:'Interstitial', cls:'inter'},
-    {key:'banner',       label:'Banner',       cls:'banner'},
-    {key:'rewarded',     label:'Rewarded',     cls:'reward'},
+    { key:'interstitial', label:'INTERSTITIAL', icon:'📺', cls:'interstitial' },
+    { key:'banner', label:'BANNER', icon:'🖼️', cls:'banner' },
+    { key:'rewarded', label:'REWARDED', icon:'🎁', cls:'rewarded' }
   ];
 
-  document.getElementById('root').innerHTML = `
-  <div class="shell">
-
-    <!-- HEADER -->
-    <div class="hdr">
-      <div class="brand">
-        <div class="brand-mark">🚗</div>
-        <div>
-          <div class="brand-name">BMW_ADS.STATS</div>
-          <div class="brand-sub">Realtime Dashboard</div>
-        </div>
-      </div>
-      <div class="hdr-right">
-        <div class="status-chip"><div class="pulse"></div>LIVE</div>
-        <div class="theme-sw">
-          <button class="tsw ${theme==='dark'?'on':''}" onclick="toggleTheme('dark')" title="Dark">🌙</button>
-          <button class="tsw ${theme==='light'?'on':''}" onclick="toggleTheme('light')" title="Light">☀️</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- PERIOD TABS -->
-    <div class="period-row">
-      <button class="ptab ${activePeriod==='today'?'on':''}" onclick="setPeriod('today')">AZI</button>
-      <button class="ptab ${activePeriod==='yesterday'?'on':''}" onclick="setPeriod('yesterday')">IERI</button>
-      <button class="ptab ${activePeriod==='7d'?'on':''}" onclick="setPeriod('7d')">7 ZILE</button>
-      <button class="ptab ${activePeriod==='30d'?'on':''}" onclick="setPeriod('30d')">30 ZILE</button>
-      <button class="ptab ${activePeriod==='custom'?'on':''}" onclick="setPeriod('custom')">📅 CUSTOM</button>
-      <span class="period-info">${periodLabel()}</span>
-    </div>
+  document.getElementById('app').innerHTML = `
+  <div class="wrap">
+    <header>
+      <div class="logo">BMW ADS STATS<span>REALTIME DASHBOARD</span></div>
+      <div class="live-badge"><div class="dot"></div>LIVE</div>
+    </header>
 
     <!-- HERO -->
     <div class="hero">
-      <div class="hero-main">
-        <div class="hero-eyebrow">// VENIT · ${periodLabel()}</div>
-        <div class="hero-amount">${fmtS(ps.rev)}</div>
-        <div class="hero-sub">▲ ALL TIME ${fmtS(totalRev())}</div>
-        <canvas id="heroSparkline" class="hero-sparkline"></canvas>
-        <div class="spark-crosshair" id="sparkCrosshair"></div>
-        <div class="spark-tooltip" id="sparkTooltip" style="display:none;top:12px;left:50%"></div>
+      <div>
+        <div class="hero-lbl">VENIT TOTAL</div>
+        <div class="hero-val">${fmtRevShort(getTotalRev())}</div>
+        <div class="hero-today">+${fmtRevShort(todayRev)} AZI</div>
       </div>
       <div class="hero-stats">
-        <div class="hstat" data-metric="imp" onclick="setActiveMetric('imp')">
-          <div class="hstat-top">
-            <div>
-              <div class="hstat-n">${fmt(ps.imp)}</div>
-              <div class="hstat-l">Impresii</div>
-            </div>
-            <canvas class="hstat-mini" id="miniImp"></canvas>
-          </div>
-        </div>
-        <div class="hstat" data-metric="clk" onclick="setActiveMetric('clk')">
-          <div class="hstat-top">
-            <div>
-              <div class="hstat-n">${fmt(ps.clk)}</div>
-              <div class="hstat-l">Clickuri</div>
-            </div>
-            <canvas class="hstat-mini" id="miniClk"></canvas>
-          </div>
-        </div>
-        <div class="hstat" data-metric="sess" onclick="setActiveMetric('sess')">
-          <div class="hstat-top">
-            <div>
-              <div class="hstat-n">${fmt(ps.sess)}</div>
-              <div class="hstat-l">Sesiuni</div>
-            </div>
-            <canvas class="hstat-mini" id="miniSess"></canvas>
-          </div>
-        </div>
-        <div class="hstat" data-metric="rev" onclick="setActiveMetric('rev')">
-          <div class="hstat-top">
-            <div>
-              <div class="hstat-n">${fmtS(totalRev())}</div>
-              <div class="hstat-l">All-Time $</div>
-            </div>
-            <canvas class="hstat-mini" id="miniRev"></canvas>
-          </div>
-        </div>
+        <div class="hstat"><div class="hstat-v">${fmt(getTotalImpressions())}</div><div class="hstat-l">IMPRESII</div></div>
+        <div class="hstat"><div class="hstat-v">${fmt(getTotalClicks())}</div><div class="hstat-l">CLICKURI</div></div>
+        <div class="hstat"><div class="hstat-v">${fmt(getTotalSessions())}</div><div class="hstat-l">SESIUNI</div></div>
+        <div class="hstat"><div class="hstat-v">${fmt(getTodaySessions())}</div><div class="hstat-l">AZI</div></div>
       </div>
     </div>
 
-    <!-- TARGET -->
-    <div class="target-strip">
-      <div class="target-left">
-        <div class="target-label">TARGET ZILNIC <span>${fmtS(ps.rev)} / ${fmtS(dailyTarget)}</span></div>
-        <div class="track"><div class="fill" style="width:${pct.toFixed(1)}%"></div></div>
-        <div class="target-meta">
-          <span>${pct.toFixed(1)}% atins</span>
-          <span class="target-record">🏆 Record: <span class="record-num">${fmtS(bestDay())}</span></span>
-        </div>
+    <!-- TARGET PROGRESS -->
+    <div class="target-card">
+      <div class="target-hd">
+        <div class="target-title">🎯 TARGET ZILNIC</div>
+        <button class="target-edit" onclick="openModal()">EDIT TARGET</button>
       </div>
-      <div class="target-pct">${pct.toFixed(0)}%</div>
-      <button class="edit-btn" onclick="openModal()">EDIT</button>
+      <div class="progress-wrap">
+        <div class="progress-bar" style="width:${pct.toFixed(1)}%"></div>
+      </div>
+      <div class="progress-info">
+        <span>${fmtRevShort(todayRev)} / ${fmtRevShort(dailyTarget)}</span>
+        <span class="progress-pct">${pct.toFixed(1)}%</span>
+      </div>
+      <div class="record-row">🏆 RECORD ZILNIC: <span class="record-val">&nbsp;${fmtRevShort(bestDay)}</span></div>
     </div>
 
-    <!-- AD TYPE CARDS -->
-    <div class="divider"><span>per tip de reclamă · ${periodLabel()}</span></div>
-    <div class="ad-grid">
+    <!-- AD CARDS -->
+    <div class="section-title">📊 STATISTICI PER TIP RECLAMĂ</div>
+    <div class="cards">
       ${adTypes.map(a => {
-        const pd = ps[a.key] || {};
-        return `<div class="ad-card ${a.cls}">
-          <div class="ad-top-line"></div>
-          <div class="ad-tag">${a.key}</div>
-          <div class="ad-name">${a.label}</div>
-          <div class="stat-line"><span class="sl-key">Impresii</span><span class="sl-val">${fmt(pd.impressions||0)}</span></div>
-          <div class="stat-line"><span class="sl-key">Clickuri</span><span class="sl-val">${fmt(pd.clicks||0)}</span></div>
-          <div class="stat-line"><span class="sl-key">CTR</span><span class="sl-val r">${fmtC(pd.ctr||0)}</span></div>
-          <div class="stat-line"><span class="sl-key">Venit</span><span class="sl-val y">${fmtR(pd.revenue||0)}</span></div>
-          <div class="stat-line"><span class="sl-key">eCPM mediu</span><span class="sl-val b">${fmtE(pd.ecpm||0)}</span></div>
+        const d = getAdData(a.key);
+        const dd = getDailyAdData(a.key);
+        return `
+        <div class="card ${a.cls}">
+          <div class="card-hd">
+            <div class="card-title">${a.label}</div>
+            <div class="card-icon">${a.icon}</div>
+          </div>
+          <div class="srow"><span class="slbl">IMPRESII TOTAL</span><span class="sval">${fmt(d.impressions||0)}</span></div>
+          <div class="srow"><span class="slbl">IMPRESII AZI</span><span class="sval">${fmt(dd.impressions||0)}</span></div>
+          <div class="srow"><span class="slbl">CLICKURI TOTAL</span><span class="sval">${fmt(d.clicks||0)}</span></div>
+          <div class="srow"><span class="slbl">CTR</span><span class="sval ctr">${fmtCTR(d.ctr||0)}</span></div>
+          <div class="srow"><span class="slbl">VENIT TOTAL</span><span class="sval rev">${fmtRev(d.revenue||0)}</span></div>
+          <div class="srow"><span class="slbl">VENIT AZI</span><span class="sval rev">${fmtRev(dd.revenue||0)}</span></div>
+          <div class="srow"><span class="slbl">eCPM</span><span class="sval ecpm">${fmtECPM(d.ecpm||0)}</span></div>
         </div>`;
       }).join('')}
     </div>
 
     <!-- CHARTS -->
-    <div class="divider"><span>grafice · ultimele 7 zile</span></div>
-    <div class="chart-grid">
-      <div class="chart-panel">
-        <div class="chart-eyebrow">// VENIT ($)</div>
-        <div class="chart-wrap"><canvas id="cRev"></canvas></div>
+    <div class="section-title">📈 GRAFICE ULTIMELE 7 ZILE</div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-title">💰 VENIT ZILNIC ($)</div>
+        <div class="chart-wrap"><canvas id="chartRevenue"></canvas></div>
       </div>
-      <div class="chart-panel">
-        <div class="chart-eyebrow">// IMPRESII</div>
-        <div class="chart-wrap"><canvas id="cImp"></canvas></div>
+      <div class="chart-card">
+        <div class="chart-title">👁️ IMPRESII ZILNICE</div>
+        <div class="chart-wrap"><canvas id="chartImpressions"></canvas></div>
       </div>
-      <div class="chart-panel">
-        <div class="chart-eyebrow">// SESIUNI</div>
-        <div class="chart-wrap"><canvas id="cSess"></canvas></div>
+      <div class="chart-card">
+        <div class="chart-title">👥 SESIUNI ZILNICE</div>
+        <div class="chart-wrap"><canvas id="chartSessions"></canvas></div>
       </div>
-      <div class="chart-panel">
-        <div class="chart-eyebrow">// DISTRIBUȚIE IMPRESII</div>
-        <div class="chart-wrap"><canvas id="cPie"></canvas></div>
+      <div class="chart-card">
+        <div class="chart-title">🥧 IMPRESII PE TIP</div>
+        <div class="chart-wrap"><canvas id="chartPie"></canvas></div>
       </div>
     </div>
 
-    <!-- BOTTOM: TOP LISTS + TIMELINE -->
-    <div class="divider"><span>țări · dispozitive · activitate live</span></div>
-    <div class="bottom-grid">
-
-      <div class="list-panel">
-        <div class="list-eyebrow">// TOP ȚĂRI</div>
-        ${cnt.length ? cnt.map((c,i)=>`
-          <div class="list-row">
-            <div class="list-rk">${i+1}</div>
-            <div class="list-rname">${c.name}</div>
-            <div class="mini-track"><div class="mini-fill" style="width:${cnt[0].val>0?(c.val/cnt[0].val*100).toFixed(0):0}%"></div></div>
-            <div class="list-rval">${fmt(c.val)}</div>
-          </div>`).join('') : '<div style="color:var(--text3);font-size:12px;padding:12px 0;font-family:var(--mono)">// FĂRĂ DATE</div>'}
+    <!-- TOP LISTS -->
+    <div class="section-title">🌍 TOP ȚĂRI & DISPOZITIVE</div>
+    <div class="lists-grid">
+      <div class="list-card">
+        <div class="list-title">🌍 TOP ȚĂRI</div>
+        ${topCountries.length ? topCountries.map((c,i) => `
+          <div class="list-item">
+            <div class="list-rank">#${i+1}</div>
+            <div class="list-name">${c.name}</div>
+            <div class="list-bar-wrap"><div class="list-bar" style="width:${topCountries[0].val>0?(c.val/topCountries[0].val*100).toFixed(0):0}%"></div></div>
+            <div class="list-val">${fmt(c.val)}</div>
+          </div>`).join('') : '<div style="color:var(--muted);font-size:12px">Nu sunt date încă</div>'}
       </div>
-
-      <div class="list-panel">
-        <div class="list-eyebrow">// TOP DISPOZITIVE</div>
-        ${dev.length ? dev.map((d,i)=>`
-          <div class="list-row">
-            <div class="list-rk">${i+1}</div>
-            <div class="list-rname">${d.name}</div>
-            <div class="mini-track"><div class="mini-fill" style="width:${dev[0].val>0?(d.val/dev[0].val*100).toFixed(0):0}%;background:var(--violet)"></div></div>
-            <div class="list-rval">${fmt(d.val)}</div>
-          </div>`).join('') : '<div style="color:var(--text3);font-size:12px;padding:12px 0;font-family:var(--mono)">// FĂRĂ DATE</div>'}
+      <div class="list-card">
+        <div class="list-title">📱 TOP DISPOZITIVE</div>
+        ${topDevices.length ? topDevices.map((d,i) => `
+          <div class="list-item">
+            <div class="list-rank">#${i+1}</div>
+            <div class="list-name">${d.name}</div>
+            <div class="list-bar-wrap"><div class="list-bar" style="width:${topDevices[0].val>0?(d.val/topDevices[0].val*100).toFixed(0):0}%;background:var(--purple)"></div></div>
+            <div class="list-val">${fmt(d.val)}</div>
+          </div>`).join('') : '<div style="color:var(--muted);font-size:12px">Nu sunt date încă</div>'}
       </div>
-
-      <div class="timeline-panel">
-        <div class="list-eyebrow">// ACTIVITATE LIVE</div>
-        <div class="tl-scroll">
-          ${tl.length ? tl.map(e => `
-            <div class="tl-row">
-              <div class="tl-indicator"></div>
-              <div class="tl-body">
-                <div class="tl-ts">${e.time||''}</div>
-                <div class="tl-msg">${e.text||''}</div>
-                <div class="tl-context">${e.country||''} ${e.device?'· '+String(e.device).substring(0,18):''}</div>
-              </div>
-            </div>`).join('') : '<div class="tl-empty">// NICIO ACTIVITATE</div>'}
-        </div>
-      </div>
-
     </div>
 
-    <div class="footer">
-      <span>UPDATED</span>
-      <div class="footer-sep"></div>
-      <span id="last-update">${new Date().toLocaleTimeString()}</span>
-      <div class="footer-sep"></div>
-      <span>AUTO-REFRESH LIVE</span>
+    <!-- TIMELINE -->
+    <div class="section-title">⚡ ACTIVITATE LIVE</div>
+    <div class="timeline-card">
+      <div class="timeline-title">ULTIMELE EVENIMENTE</div>
+      <div class="timeline-list">
+        ${timeline.length ? timeline.map(e => `
+          <div class="tl-item">
+            <div class="tl-time">${e.time||''}</div>
+            <div class="tl-text">${e.text||''}</div>
+            <div class="tl-meta">${e.country||''} · ${(e.device||'').substring(0,15)}</div>
+          </div>`).join('') : '<div style="color:var(--muted);font-size:12px;padding:8px 0">Nicio activitate încă</div>'}
+      </div>
     </div>
 
+    <div class="footer">LAST UPDATE: <span id="last-update">${new Date().toLocaleTimeString()}</span> &nbsp;·&nbsp; AUTO-REFRESH LIVE</div>
   </div>`;
 
-  buildCharts(cd);
+  // CHARTS
+  buildCharts(chartData);
 }
 
-/* ─── CHARTS ───────────────────────────────── */
 function buildCharts(data) {
-  const dark = theme === 'dark';
-  const gc   = dark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.05)';
-  const tc   = dark ? '#334155' : '#94a3b8';
-
-  const base = {
-    responsive: true, maintainAspectRatio: false,
+  const chartDefaults = {
+    responsive: true,
+    maintainAspectRatio: false,
     plugins: { legend: { display: false } },
     scales: {
-      x: { grid: { color: gc }, ticks: { color: tc, font: { family: 'Space Mono', size: 10 } } },
-      y: { grid: { color: gc }, ticks: { color: tc, font: { family: 'Space Mono', size: 10 } } }
+      x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555570', font: { family: 'Share Tech Mono', size: 10 } } },
+      y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555570', font: { family: 'Share Tech Mono', size: 10 } } }
     }
   };
 
-  ['cRev','cImp','cSess','cPie','cSpark','mImp','mClk','mSess','mRev'].forEach(id => { if(charts[id]){charts[id].destroy();delete charts[id];} });
+  // Destroy old charts
+  ['chartRevenue','chartImpressions','chartSessions','chartPie'].forEach(id => {
+    if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+  });
 
-  // ── PREP: last 30 days daily data ────────────
-  const daily30 = state.daily || {};
-  const days30  = [];
-  for (let i=29; i>=0; i--) { const d=new Date(); d.setDate(d.getDate()-i); days30.push(ds(d)); }
+  const revCtx = document.getElementById('chartRevenue');
+  if (revCtx) charts.chartRevenue = new Chart(revCtx, {
+    type: 'bar',
+    data: {
+      labels: data.labels,
+      datasets: [{ data: data.revenue, backgroundColor: 'rgba(255,234,0,0.5)', borderColor: '#ffea00', borderWidth: 1, borderRadius: 4 }]
+    },
+    options: chartDefaults
+  });
 
-  const spark30 = {
-    rev:  days30.map(d => parseFloat((daily30[d]||{}).revenue)||0),
-    imp:  days30.map(d => { const dd=daily30[d]||{}; return (parseInt((dd.interstitial||{}).impressions)||0)+(parseInt((dd.banner||{}).impressions)||0)+(parseInt((dd.rewarded||{}).impressions)||0); }),
-    clk:  days30.map(d => { const dd=daily30[d]||{}; return (parseInt((dd.interstitial||{}).clicks)||0)+(parseInt((dd.banner||{}).clicks)||0)+(parseInt((dd.rewarded||{}).clicks)||0); }),
-    sess: days30.map(d => parseInt((daily30[d]||{}).sessions)||0),
-  };
+  const impCtx = document.getElementById('chartImpressions');
+  if (impCtx) charts.chartImpressions = new Chart(impCtx, {
+    type: 'line',
+    data: {
+      labels: data.labels,
+      datasets: [{ data: data.impressions, borderColor: '#4fc3f7', backgroundColor: 'rgba(79,195,247,0.1)', borderWidth: 2, fill: true, tension: 0.4, pointBackgroundColor: '#4fc3f7' }]
+    },
+    options: chartDefaults
+  });
 
-  // ── HERO MAIN SPARKLINE (revenue, interactive) ─
-  const sp = document.getElementById('heroSparkline');
-  if (sp) {
-    charts.cSpark = new Chart(sp, {
-      type: 'line',
-      data: {
-        labels: days30,
-        datasets: [{
-          data: spark30[activeMetric] || spark30.rev,
-          borderColor: 'rgba(96,165,250,0.55)',
-          backgroundColor: (ctx) => {
-            const g = ctx.chart.canvas.getContext('2d').createLinearGradient(0, 0, 0, ctx.chart.canvas.height);
-            g.addColorStop(0, 'rgba(59,130,246,0.4)');
-            g.addColorStop(1, 'rgba(59,130,246,0.0)');
-            return g;
-          },
-          borderWidth: 1.5,
-          fill: true,
-          tension: 0.4,
-          pointRadius: 0,
-          pointHoverRadius: 5,
-          pointHoverBackgroundColor: '#60a5fa',
-          pointHoverBorderColor: '#fff',
-          pointHoverBorderWidth: 2,
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            enabled: false,
-            external(ctx) {
-              const tt  = document.getElementById('sparkTooltip');
-              const ch  = document.getElementById('sparkCrosshair');
-              const sp  = document.getElementById('heroSparkline');
-              if (!tt || !ch || !sp) return;
-              if (ctx.tooltip.opacity === 0) {
-                tt.style.display = 'none';
-                ch.style.display = 'none';
-                return;
-              }
-              const dp    = ctx.tooltip.dataPoints[0];
-              const label = dp.label;
-              const val   = dp.raw;
-              const metricLabels = { rev:'Venit', imp:'Impresii', clk:'Clickuri', sess:'Sesiuni' };
-              const metricFmt    = { rev: v=>'$'+parseFloat(v).toFixed(4), imp: v=>fmt(v), clk: v=>fmt(v), sess: v=>fmt(v) };
-              tt.style.display   = 'block';
-              tt.style.left      = ctx.tooltip.caretX + 'px';
-              tt.style.top       = '10px';
-              tt.innerHTML       = `<div class="spark-tooltip-date">${label} · ${metricLabels[activeMetric]||''}</div><div class="spark-tooltip-val">${(metricFmt[activeMetric]||fmt)(val)}</div>`;
-              ch.style.display   = 'block';
-              ch.style.left      = ctx.tooltip.caretX + 'px';
-            }
-          }
-        },
-        scales: { x: { display: false }, y: { display: false } },
-        animation: { duration: 600 },
-        layout: { padding: 0 },
-      }
-    });
-  }
+  const sesCtx = document.getElementById('chartSessions');
+  if (sesCtx) charts.chartSessions = new Chart(sesCtx, {
+    type: 'line',
+    data: {
+      labels: data.labels,
+      datasets: [{ data: data.sessions, borderColor: '#00e676', backgroundColor: 'rgba(0,230,118,0.1)', borderWidth: 2, fill: true, tension: 0.4, pointBackgroundColor: '#00e676' }]
+    },
+    options: chartDefaults
+  });
 
-  // ── MINI SPARKLINES in hstat ────────────────
-  function buildMini(id, dataArr, color) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const mini = new Chart(el, {
-      type: 'line',
-      data: {
-        labels: days30,
-        datasets: [{ data: dataArr, borderColor: color, backgroundColor: 'transparent', borderWidth: 1.2, tension: 0.4, pointRadius: 0 }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend:{display:false}, tooltip:{enabled:false} },
-        scales: { x:{display:false}, y:{display:false} },
-        animation: { duration: 400 },
-        layout: { padding: 1 },
-      }
-    });
-    charts[id] = mini;
-  }
-
-  buildMini('miniImp',  spark30.imp,  '#60a5fa');
-  buildMini('miniClk',  spark30.clk,  '#f43f5e');
-  buildMini('miniSess', spark30.sess, '#10b981');
-  buildMini('miniRev',  spark30.rev,  '#f59e0b');
-
-  // ── STANDARD CHARTS ─────────────────────────
-  const tot = state.total || {};
-  const r = document.getElementById('cRev');
-  if(r) charts.cRev = new Chart(r, { type:'bar', data:{labels:data.labels,datasets:[{data:data.revenue,backgroundColor:'rgba(245,158,11,0.4)',borderColor:'#f59e0b',borderWidth:0,borderRadius:4,borderSkipped:false}]}, options:base });
-
-  const i = document.getElementById('cImp');
-  if(i) charts.cImp = new Chart(i, { type:'line', data:{labels:data.labels,datasets:[{data:data.impressions,borderColor:'#60a5fa',backgroundColor:'rgba(96,165,250,0.07)',borderWidth:1.5,fill:true,tension:.4,pointRadius:3,pointBackgroundColor:'#60a5fa'}]}, options:base });
-
-  const s = document.getElementById('cSess');
-  if(s) charts.cSess = new Chart(s, { type:'line', data:{labels:data.labels,datasets:[{data:data.sessions,borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.07)',borderWidth:1.5,fill:true,tension:.4,pointRadius:3,pointBackgroundColor:'#10b981'}]}, options:base });
-
-  const p = document.getElementById('cPie');
-  if(p) charts.cPie = new Chart(p, {
+  const t = state.total || {};
+  const intImp = parseInt((t.interstitial||{}).impressions)||0;
+  const banImp = parseInt((t.banner||{}).impressions)||0;
+  const rewImp = parseInt((t.rewarded||{}).impressions)||0;
+  const pieCtx = document.getElementById('chartPie');
+  if (pieCtx) charts.chartPie = new Chart(pieCtx, {
     type: 'doughnut',
     data: {
       labels: ['Interstitial','Banner','Rewarded'],
-      datasets:[{
-        data: [parseInt((tot.interstitial||{}).impressions)||0, parseInt((tot.banner||{}).impressions)||0, parseInt((tot.rewarded||{}).impressions)||0],
-        backgroundColor: ['rgba(59,130,246,0.65)','rgba(16,185,129,0.65)','rgba(139,92,246,0.65)'],
-        borderColor:     ['#3b82f6','#10b981','#8b5cf6'],
-        borderWidth: 1
-      }]
+      datasets: [{ data: [intImp, banImp, rewImp], backgroundColor: ['rgba(79,195,247,0.7)','rgba(0,230,118,0.7)','rgba(206,147,216,0.7)'], borderColor: ['#4fc3f7','#00e676','#ce93d8'], borderWidth: 1 }]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
-      cutout: '65%',
+      responsive: true,
+      maintainAspectRatio: false,
       plugins: {
-        legend: { position:'bottom', labels:{ color:tc, font:{family:'Space Mono',size:10}, padding:14, boxWidth:10 } }
+        legend: { position: 'bottom', labels: { color: '#555570', font: { family: 'Share Tech Mono', size: 10 }, padding: 12 } }
       }
     }
   });
-
-  // ── MARK ACTIVE HSTAT ────────────────────────
-  document.querySelectorAll('.hstat').forEach(el => {
-    el.classList.toggle('active', el.dataset.metric === activeMetric);
-  });
 }
 
-/* ─── ACTIVE METRIC ────────────────────────── */
-let activeMetric = 'rev';
-
-window.setActiveMetric = (metric) => {
-  activeMetric = metric;
-  // Rebuild only the hero sparkline data — fast, no full re-render
-  if (charts.cSpark) {
-    const daily30 = state.daily || {};
-    const days30  = [];
-    for (let i=29; i>=0; i--) { const d=new Date(); d.setDate(d.getDate()-i); days30.push(ds(d)); }
-    const spark30 = {
-      rev:  days30.map(d => parseFloat((daily30[d]||{}).revenue)||0),
-      imp:  days30.map(d => { const dd=daily30[d]||{}; return (parseInt((dd.interstitial||{}).impressions)||0)+(parseInt((dd.banner||{}).impressions)||0)+(parseInt((dd.rewarded||{}).impressions)||0); }),
-      clk:  days30.map(d => { const dd=daily30[d]||{}; return (parseInt((dd.interstitial||{}).clicks)||0)+(parseInt((dd.banner||{}).clicks)||0)+(parseInt((dd.rewarded||{}).clicks)||0); }),
-      sess: days30.map(d => parseInt((daily30[d]||{}).sessions)||0),
-    };
-    charts.cSpark.data.datasets[0].data = spark30[metric] || spark30.rev;
-    charts.cSpark.update('active');
-  }
-  document.querySelectorAll('.hstat').forEach(el => {
-    el.classList.toggle('active', el.dataset.metric === metric);
-  });
-};
-
-/* ─── FIREBASE LISTENERS ───────────────────── */
-applyTheme(theme);
-
-// Root listener
-onValue(ref(db, '/'), snap => {
+// FIREBASE LISTENER
+onValue(ref(db, '/'), (snap) => {
   state = snap.val() || {};
   renderAll();
-});
-
-// Timeline: listener DEDICAT — fix pentru activitate live
-// Folosim ref simplu fără query complex ca să evităm probleme cu indexing
-onValue(ref(db, '/timeline'), snap => {
-  const data = snap.val();
-  // data poate fi null dacă nu există niciun eveniment
-  state.timeline = data || {};
-  renderTimelineDOM();
-  const lu = document.getElementById('last-update');
-  if (lu) lu.textContent = new Date().toLocaleTimeString();
 });
 </script>
 </body>
