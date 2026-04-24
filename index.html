@@ -1060,6 +1060,8 @@ const totalSess  = () => parseInt((state.total||{}).sessions)||0;
 const todaySess  = () => { const d=state.daily&&state.daily[today()]; return parseInt((d||{}).sessions)||0; };
 const totalImp   = () => { const t=state.total||{}; return (parseInt((t.interstitial||{}).impressions)||0)+(parseInt((t.banner||{}).impressions)||0)+(parseInt((t.rewarded||{}).impressions)||0); };
 const totalClk   = () => { const t=state.total||{}; return (parseInt((t.interstitial||{}).clicks)||0)+(parseInt((t.banner||{}).clicks)||0)+(parseInt((t.rewarded||{}).clicks)||0); };
+const todayImp   = () => { const d=state.daily&&state.daily[today()]; const dd=d||{}; return (parseInt((dd.interstitial||{}).impressions)||0)+(parseInt((dd.banner||{}).impressions)||0)+(parseInt((dd.rewarded||{}).impressions)||0); };
+const todayClk   = () => { const d=state.daily&&state.daily[today()]; const dd=d||{}; return (parseInt((dd.interstitial||{}).clicks)||0)+(parseInt((dd.banner||{}).clicks)||0)+(parseInt((dd.rewarded||{}).clicks)||0); };
 
 function chartData() {
   const daily = state.daily||{};
@@ -1126,16 +1128,16 @@ function renderAll() {
     <!-- HERO -->
     <div class="hero">
       <div class="hero-main">
-        <div class="hero-lbl">Venit Total</div>
-        <div class="hero-val">${fmtShort(totalRev())}</div>
-        <div class="hero-today">▲ ${fmtShort(rev)} azi</div>
+        <div class="hero-lbl">Venit Azi &nbsp;&middot;&nbsp; 00:00 &rarr; acum</div>
+        <div class="hero-val">${fmtShort(rev)}</div>
+        <div class="hero-today">▲ All-time: ${fmtShort(totalRev())}</div>
       </div>
       <div class="hero-divider"></div>
       <div class="hero-stats">
-        <div class="hstat"><div class="hstat-v">${fmt(totalImp())}</div><div class="hstat-l">Impresii</div></div>
-        <div class="hstat"><div class="hstat-v">${fmt(totalClk())}</div><div class="hstat-l">Clickuri</div></div>
-        <div class="hstat"><div class="hstat-v">${fmt(totalSess())}</div><div class="hstat-l">Sesiuni</div></div>
-        <div class="hstat"><div class="hstat-v">${fmt(todaySess())}</div><div class="hstat-l">Azi</div></div>
+        <div class="hstat"><div class="hstat-v">${fmt(todayImp())}</div><div class="hstat-l">Impresii Azi</div></div>
+        <div class="hstat"><div class="hstat-v">${fmt(todayClk())}</div><div class="hstat-l">Clickuri Azi</div></div>
+        <div class="hstat"><div class="hstat-v">${fmt(todaySess())}</div><div class="hstat-l">Sesiuni Azi</div></div>
+        <div class="hstat"><div class="hstat-v">${fmt(totalSess())}</div><div class="hstat-l">Total Sesiuni</div></div>
       </div>
     </div>
 
