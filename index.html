@@ -1297,7 +1297,7 @@ header {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, onValue, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const app = initializeApp({ databaseURL: "https://bmwadsstats-default-rtdb.firebaseio.com/" });
 const db = getDatabase(app);
@@ -1584,23 +1584,10 @@ function topList(node, max=8) {
     .sort((a,b)=>b.val-a.val).slice(0,max);
 }
 
-function convertToLocalTime(timeStr) {
-  if (!timeStr) return '';
-  try {
-    // timeStr is HH:MM:SS from Firebase (assumed UTC or server time)
-    // We use today's date + that time as UTC, then convert to local
-    const todayDate = new Date().toISOString().split('T')[0];
-    const utcDate = new Date(todayDate + 'T' + timeStr + 'Z');
-    if (isNaN(utcDate)) return timeStr; // fallback if parse fails
-    return utcDate.toLocaleTimeString('ro-RO', {hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false});
-  } catch(e) { return timeStr; }
-}
-
 function getTimeline() {
   return Object.values(state.timeline||{})
     .sort((a,b)=>b.time>a.time?1:-1)
-    .slice(0,15)
-    .map(e => ({...e, timeLocal: convertToLocalTime(e.time)}));
+    .slice(0,15);
 }
 
 function bestDay() {
@@ -1764,7 +1751,7 @@ function renderAll() {
         ${tl.length ? tl.map(e=>`
           <div class="tl-item">
             <div class="tl-dot"></div>
-            <div class="tl-time">${e.timeLocal||e.time||''}</div>
+            <div class="tl-time">${e.time||''}</div>
             <div class="tl-text">${e.text||''}</div>
             <div class="tl-meta">${e.country||''} · ${(e.device||'').substring(0,15)}</div>
           </div>`).join('') : '<div style="color:var(--text3);font-size:13px;padding:8px 0">Nicio activitate</div>'}
@@ -1826,9 +1813,32 @@ function buildCharts(data) {
 // ── INIT ───────────────────────────────────
 applyTheme(currentTheme);
 
+// Ascultam root pentru stats generale
 onValue(ref(db, '/'), snap => {
   state = snap.val() || {};
   renderAll();
+});
+
+// Ascultam /timeline separat pentru update live instant
+
+const timelineRef = query(ref(db, '/timeline'), limitToLast(15));
+onValue(timelineRef, snap => {
+  const data = snap.val();
+  if (data) {
+    state.timeline = data;
+    // Update doar timeline-ul fara sa re-render totul
+    const container = document.querySelector('.timeline-list');
+    if (container) {
+      const tl = getTimeline();
+      container.innerHTML = tl.length ? tl.map(e => `
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-time">${e.time||''}</div>
+          <div class="tl-text">${e.text||''}</div>
+          <div class="tl-meta">${e.country||''} · ${(e.device||'').substring(0,15)}</div>
+        </div>`).join('') : '<div style="color:var(--text3);font-size:13px;padding:8px 0">Nicio activitate</div>';
+    }
+  }
 });
 </script>
 </body>
