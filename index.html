@@ -1331,7 +1331,6 @@ const fmtRev   = n => '$'+(parseFloat(n)||0).toFixed(4);
 const fmtShort = n => '$'+(parseFloat(n)||0).toFixed(2);
 const fmtECPM  = n => '$'+(parseFloat(n)||0).toFixed(2);
 const fmtCTR   = n => (parseFloat(n)||0).toFixed(2)+'%';
-const today    = () => new Date().toISOString().split('T')[0];
 
 // ── PERIOD STATE ───────────────────────────
 let activePeriod = 'today'; // today | yesterday | 7d | 30d | custom
