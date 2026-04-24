@@ -991,6 +991,273 @@ header {
   header { flex-direction: column; align-items: flex-start; }
   .header-right { width: 100%; justify-content: space-between; }
 }
+
+/* ═══════════════════════════════════════
+   PERIOD TABS
+═══════════════════════════════════════ */
+.period-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.p-tab {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 18px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .25s;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.p-tab:hover {
+  border-color: var(--border2);
+  color: var(--text);
+}
+
+.p-tab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+.p-tab.custom-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.period-label {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text3);
+  letter-spacing: 0.05em;
+  margin-left: auto;
+}
+
+/* ═══════════════════════════════════════
+   CALENDAR MODAL
+═══════════════════════════════════════ */
+.cal-modal-bg {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(6px);
+  z-index: 300;
+  align-items: center;
+  justify-content: center;
+}
+
+.cal-modal-bg.open { display: flex; }
+
+.cal-modal {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 28px 32px;
+  width: 560px;
+  max-width: 95vw;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+  animation: popIn .25s cubic-bezier(.34,1.56,.64,1);
+}
+
+.cal-modal h3 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--accent2);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.cal-months {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.cal-month {}
+
+.cal-month-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.cal-nav {
+  background: none;
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  width: 28px; height: 28px;
+  color: var(--text2);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s;
+}
+
+.cal-nav:hover { border-color: var(--accent); color: var(--accent); }
+
+.cal-month-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.05em;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.cal-dow {
+  text-align: center;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  padding: 4px 0 8px;
+  text-transform: uppercase;
+}
+
+.cal-day {
+  text-align: center;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text);
+  padding: 6px 2px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all .15s;
+  position: relative;
+  user-select: none;
+}
+
+.cal-day:hover:not(.empty):not(.disabled) {
+  background: var(--accent-glow);
+  color: var(--accent2);
+}
+
+.cal-day.today {
+  color: var(--accent2);
+  font-weight: 700;
+}
+
+.cal-day.today::after {
+  content: '';
+  position: absolute;
+  bottom: 2px; left: 50%;
+  transform: translateX(-50%);
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.cal-day.selected {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 2px 10px var(--accent-glow);
+}
+
+.cal-day.in-range {
+  background: var(--accent-glow);
+  color: var(--accent2);
+  border-radius: 0;
+}
+
+.cal-day.range-start { border-radius: 8px 0 0 8px; }
+.cal-day.range-end { border-radius: 0 8px 8px 0; }
+.cal-day.range-start.range-end { border-radius: 8px; }
+
+.cal-day.empty { cursor: default; }
+.cal-day.disabled { color: var(--text3); cursor: not-allowed; opacity: 0.4; }
+
+.cal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+}
+
+.cal-selected-range {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text2);
+  letter-spacing: 0.05em;
+}
+
+.cal-selected-range span { color: var(--accent2); }
+
+.cal-btns { display: flex; gap: 10px; }
+
+/* ═══════════════════════════════════════
+   SUMMARY STATS ROW (sub hero, per period)
+═══════════════════════════════════════ */
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.sum-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  transition: all .3s;
+}
+
+.sum-card:hover {
+  border-color: var(--border2);
+  transform: translateY(-2px);
+}
+
+.sum-lbl {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.sum-val {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+
+.sum-val.accent { color: var(--accent2); }
+.sum-val.green { color: var(--green); }
+.sum-val.yellow { color: var(--yellow); }
+.sum-val.orange { color: var(--orange); }
+
 </style>
 </head>
 <body>
@@ -1009,6 +1276,21 @@ header {
     <div class="modal-btns">
       <button class="btn" onclick="closeModal()">Anulează</button>
       <button class="btn primary" onclick="saveTarget()">Salvează</button>
+    </div>
+  </div>
+</div>
+
+<!-- CALENDAR MODAL -->
+<div class="cal-modal-bg" id="calModal">
+  <div class="cal-modal">
+    <h3>📅 Selectează Perioada</h3>
+    <div class="cal-months" id="calMonths"></div>
+    <div class="cal-footer">
+      <div class="cal-selected-range" id="calRange">Selectează datele</div>
+      <div class="cal-btns">
+        <button class="btn" onclick="closeCal()">Anulează</button>
+        <button class="btn primary" id="calApply" onclick="applyCal()" disabled>Aplică</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1051,27 +1333,250 @@ const fmtECPM  = n => '$'+(parseFloat(n)||0).toFixed(2);
 const fmtCTR   = n => (parseFloat(n)||0).toFixed(2)+'%';
 const today    = () => new Date().toISOString().split('T')[0];
 
-// ── GETTERS ────────────────────────────────
-const getAd      = t => (state.total&&state.total[t])||{};
-const getDayAd   = t => { const d=state.daily&&state.daily[today()]; return (d&&d[t])||{}; };
-const totalRev   = () => parseFloat((state.total||{}).revenue)||0;
-const todayRev   = () => { const d=state.daily&&state.daily[today()]; return parseFloat((d||{}).revenue)||0; };
-const totalSess  = () => parseInt((state.total||{}).sessions)||0;
-const todaySess  = () => { const d=state.daily&&state.daily[today()]; return parseInt((d||{}).sessions)||0; };
-const totalImp   = () => { const t=state.total||{}; return (parseInt((t.interstitial||{}).impressions)||0)+(parseInt((t.banner||{}).impressions)||0)+(parseInt((t.rewarded||{}).impressions)||0); };
-const totalClk   = () => { const t=state.total||{}; return (parseInt((t.interstitial||{}).clicks)||0)+(parseInt((t.banner||{}).clicks)||0)+(parseInt((t.rewarded||{}).clicks)||0); };
-const todayImp   = () => { const d=state.daily&&state.daily[today()]; const dd=d||{}; return (parseInt((dd.interstitial||{}).impressions)||0)+(parseInt((dd.banner||{}).impressions)||0)+(parseInt((dd.rewarded||{}).impressions)||0); };
-const todayClk   = () => { const d=state.daily&&state.daily[today()]; const dd=d||{}; return (parseInt((dd.interstitial||{}).clicks)||0)+(parseInt((dd.banner||{}).clicks)||0)+(parseInt((dd.rewarded||{}).clicks)||0); };
+// ── PERIOD STATE ───────────────────────────
+let activePeriod = 'today'; // today | yesterday | 7d | 30d | custom
+let customStart  = null;    // 'YYYY-MM-DD'
+let customEnd    = null;
 
-function chartData() {
+// Calendar state
+let calViewYear  = new Date().getFullYear();
+let calViewMonth = new Date().getMonth(); // 0-based
+let calPickStart = null;
+let calPickEnd   = null;
+let calPickStep  = 0; // 0=pick start, 1=pick end
+
+// ── HELPERS ────────────────────────────────
+const today    = () => new Date().toISOString().split('T')[0];
+const dateStr  = d => d.toISOString().split('T')[0];
+
+function addDays(dateStr, n) {
+  const d = new Date(dateStr); d.setDate(d.getDate()+n); return dateStr_(d);
+}
+function dateStr_(d) { return d.toISOString().split('T')[0]; }
+
+function getPeriodDays() {
+  const daily = state.daily || {};
+  const allDays = Object.keys(daily).sort();
+  const t = today();
+
+  if (activePeriod === 'today') return [t];
+
+  if (activePeriod === 'yesterday') {
+    const y = new Date(); y.setDate(y.getDate()-1);
+    return [dateStr_(y)];
+  }
+
+  if (activePeriod === '7d') {
+    const days = [];
+    for (let i=6; i>=0; i--) { const d=new Date(); d.setDate(d.getDate()-i); days.push(dateStr_(d)); }
+    return days;
+  }
+
+  if (activePeriod === '30d') {
+    const days = [];
+    for (let i=29; i>=0; i--) { const d=new Date(); d.setDate(d.getDate()-i); days.push(dateStr_(d)); }
+    return days;
+  }
+
+  if (activePeriod === 'custom' && customStart && customEnd) {
+    const days = []; let cur = new Date(customStart); const end = new Date(customEnd);
+    while (cur <= end) { days.push(dateStr_(cur)); cur.setDate(cur.getDate()+1); }
+    return days;
+  }
+
+  return [t];
+}
+
+function periodLabel() {
+  if (activePeriod === 'today') return 'Azi (00:00 → acum)';
+  if (activePeriod === 'yesterday') { const y=new Date(); y.setDate(y.getDate()-1); return 'Ieri · '+dateStr_(y); }
+  if (activePeriod === '7d') return 'Ultimele 7 Zile';
+  if (activePeriod === '30d') return 'Ultimele 30 Zile';
+  if (activePeriod === 'custom' && customStart && customEnd) return customStart+' → '+customEnd;
+  return '';
+}
+
+// ── AGGREGATE period data ───────────────────
+function getPeriodStats() {
   const daily = state.daily||{};
-  const days  = Object.keys(daily).sort().slice(-7);
+  const days  = getPeriodDays();
+  let rev=0, imp=0, clk=0, sess=0;
+  let intRev=0, banRev=0, rewRev=0;
+  let intImp=0, banImp=0, rewImp=0;
+  let intClk=0, banClk=0, rewClk=0;
+  let intEcpmSum=0, rewEcpmSum=0, intEcpmCount=0, rewEcpmCount=0;
+
+  days.forEach(d => {
+    const dd = daily[d] || {};
+    rev  += parseFloat(dd.revenue)||0;
+    sess += parseInt(dd.sessions)||0;
+
+    const intr = dd.interstitial||{};
+    const ban  = dd.banner||{};
+    const rew  = dd.rewarded||{};
+
+    intImp += parseInt(intr.impressions)||0;
+    banImp += parseInt(ban.impressions)||0;
+    rewImp += parseInt(rew.impressions)||0;
+
+    intClk += parseInt(intr.clicks)||0;
+    banClk += parseInt(ban.clicks)||0;
+    rewClk += parseInt(rew.clicks)||0;
+
+    intRev += parseFloat(intr.revenue)||0;
+    banRev += parseFloat(ban.revenue)||0;
+    rewRev += parseFloat(rew.revenue)||0;
+
+    if (parseFloat(intr.ecpm)) { intEcpmSum+=parseFloat(intr.ecpm); intEcpmCount++; }
+    if (parseFloat(rew.ecpm))  { rewEcpmSum+=parseFloat(rew.ecpm);  rewEcpmCount++; }
+  });
+
+  imp = intImp + banImp + rewImp;
+  clk = intClk + banClk + rewClk;
+
   return {
-    labels:      days.map(d=>d.slice(5)),
-    revenue:     days.map(d=>parseFloat((daily[d]||{}).revenue)||0),
-    sessions:    days.map(d=>parseInt((daily[d]||{}).sessions)||0),
-    impressions: days.map(d=>{ const dd=daily[d]||{}; return (parseInt((dd.interstitial||{}).impressions)||0)+(parseInt((dd.banner||{}).impressions)||0)+(parseInt((dd.rewarded||{}).impressions)||0); })
+    rev, imp, clk, sess,
+    interstitial: { impressions:intImp, clicks:intClk, revenue:intRev, ctr: intImp>0?(intClk/intImp*100):0, ecpm: intEcpmCount?intEcpmSum/intEcpmCount:0 },
+    banner:       { impressions:banImp, clicks:banClk, revenue:banRev, ctr: banImp>0?(banClk/banImp*100):0, ecpm: 0 },
+    rewarded:     { impressions:rewImp, clicks:rewClk, revenue:rewRev, ctr: rewImp>0?(rewClk/rewImp*100):0, ecpm: rewEcpmCount?rewEcpmSum/rewEcpmCount:0 },
   };
+}
+
+function getChartData() {
+  const daily = state.daily||{};
+  const days  = getPeriodDays();
+  // If only 1 day, show hourly is not possible from Firebase structure, show that day vs prev days
+  const displayDays = days.length === 1
+    ? (() => { const arr=[]; for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);arr.push(dateStr_(d));} return arr; })()
+    : days;
+
+  return {
+    labels:      displayDays.map(d=>d.slice(5)),
+    revenue:     displayDays.map(d=>parseFloat((daily[d]||{}).revenue)||0),
+    sessions:    displayDays.map(d=>parseInt((daily[d]||{}).sessions)||0),
+    impressions: displayDays.map(d=>{ const dd=daily[d]||{}; return (parseInt((dd.interstitial||{}).impressions)||0)+(parseInt((dd.banner||{}).impressions)||0)+(parseInt((dd.rewarded||{}).impressions)||0); })
+  };
+}
+
+// ── GETTERS (kept for compat) ───────────────
+const totalRev  = () => parseFloat((state.total||{}).revenue)||0;
+const totalSess = () => parseInt((state.total||{}).sessions)||0;
+
+// ── PERIOD SWITCH ───────────────────────────
+window.setPeriod = (p) => {
+  if (p === 'custom') { openCal(); return; }
+  activePeriod = p;
+  renderAll();
+};
+
+// ── CALENDAR LOGIC ──────────────────────────
+window.openCal = () => {
+  calPickStart=null; calPickEnd=null; calPickStep=0;
+  calViewYear=new Date().getFullYear(); calViewMonth=new Date().getMonth();
+  renderCal();
+  document.getElementById('calModal').classList.add('open');
+};
+window.closeCal = () => document.getElementById('calModal').classList.remove('open');
+
+window.applyCal = () => {
+  if (calPickStart && calPickEnd) {
+    customStart = calPickStart < calPickEnd ? calPickStart : calPickEnd;
+    customEnd   = calPickStart < calPickEnd ? calPickEnd   : calPickStart;
+    activePeriod = 'custom';
+    closeCal();
+    renderAll();
+  }
+};
+
+window.calNav = (delta) => {
+  calViewMonth += delta;
+  if (calViewMonth > 11) { calViewMonth=0; calViewYear++; }
+  if (calViewMonth < 0)  { calViewMonth=11; calViewYear--; }
+  renderCal();
+};
+
+window.calPickDay = (dateS) => {
+  if (calPickStep === 0) {
+    calPickStart = dateS; calPickEnd = null; calPickStep = 1;
+  } else {
+    calPickEnd = dateS; calPickStep = 0;
+    document.getElementById('calApply').disabled = false;
+  }
+  updateCalRange();
+  renderCalGrids();
+};
+
+function updateCalRange() {
+  const el = document.getElementById('calRange');
+  if (!calPickStart) { el.textContent='Selectează data start'; return; }
+  if (!calPickEnd)   { el.innerHTML=`<span>${calPickStart}</span> → ?`; return; }
+  const s = calPickStart < calPickEnd ? calPickStart : calPickEnd;
+  const e = calPickStart < calPickEnd ? calPickEnd   : calPickStart;
+  el.innerHTML=`<span>${s}</span> → <span>${e}</span>`;
+}
+
+function renderCal() {
+  renderCalGrids();
+  updateCalRange();
+}
+
+function renderCalGrids() {
+  const container = document.getElementById('calMonths');
+  if (!container) return;
+  // Show 2 months: current calViewMonth and next
+  const months = [
+    {y: calViewYear, m: calViewMonth},
+    {y: calViewMonth===11?calViewYear+1:calViewYear, m: calViewMonth===11?0:calViewMonth+1}
+  ];
+  const todayS = today();
+  const MONTHS = ['Ianuarie','Februarie','Martie','Aprilie','Mai','Iunie','Iulie','August','Septembrie','Octombrie','Noiembrie','Decembrie'];
+  const DOWS   = ['Lu','Ma','Mi','Jo','Vi','Sa','Du'];
+
+  container.innerHTML = months.map((mo, mi) => {
+    const firstDay = new Date(mo.y, mo.m, 1).getDay(); // 0=Sun
+    const offset   = (firstDay + 6) % 7; // Mon-based
+    const daysInM  = new Date(mo.y, mo.m+1, 0).getDate();
+
+    const cells = [];
+    for (let i=0; i<offset; i++) cells.push('<div class="cal-day empty"></div>');
+    for (let d=1; d<=daysInM; d++) {
+      const ds = `${mo.y}-${String(mo.m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const isFuture = ds > todayS;
+      let cls = 'cal-day';
+      if (ds === todayS) cls += ' today';
+      if (isFuture) cls += ' disabled';
+
+      // Range highlighting
+      if (calPickStart && calPickEnd) {
+        const s = calPickStart<calPickEnd?calPickStart:calPickEnd;
+        const e = calPickStart<calPickEnd?calPickEnd:calPickStart;
+        if (ds===s) cls += ' selected range-start';
+        else if (ds===e) cls += ' selected range-end';
+        else if (ds>s && ds<e) cls += ' in-range';
+      } else if (calPickStart && ds===calPickStart) {
+        cls += ' selected range-start range-end';
+      }
+
+      const click = isFuture ? '' : `onclick="calPickDay('${ds}')"`;
+      cells.push(`<div class="${cls}" ${click}>${d}</div>`);
+    }
+
+    const navLeft  = mi===0 ? `<button class="cal-nav" onclick="calNav(-1)">‹</button>` : `<div style="width:28px"></div>`;
+    const navRight = mi===1 ? `<button class="cal-nav" onclick="calNav(1)">›</button>` : `<div style="width:28px"></div>`;
+
+    return `
+    <div class="cal-month">
+      <div class="cal-month-hd">
+        ${navLeft}
+        <div class="cal-month-name">${MONTHS[mo.m]} ${mo.y}</div>
+        ${navRight}
+      </div>
+      <div class="cal-grid">
+        ${DOWS.map(d=>`<div class="cal-dow">${d}</div>`).join('')}
+        ${cells.join('')}
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function topList(node, max=8) {
@@ -1090,10 +1595,11 @@ function bestDay() {
 
 // ── RENDER ─────────────────────────────────
 function renderAll() {
-  const rev   = todayRev();
+  const ps    = getPeriodStats();
+  const rev   = ps.rev;
   const pct   = Math.min((rev/dailyTarget)*100,100);
   const best  = bestDay();
-  const cd    = chartData();
+  const cd    = getChartData();
   const cntry = topList('countries');
   const devs  = topList('devices');
   const tl    = getTimeline();
@@ -1125,19 +1631,29 @@ function renderAll() {
       </div>
     </header>
 
+    <!-- PERIOD TABS -->
+    <div class="period-bar">
+      <button class="p-tab ${activePeriod==='today'?'active':''}" onclick="setPeriod('today')">Azi</button>
+      <button class="p-tab ${activePeriod==='yesterday'?'active':''}" onclick="setPeriod('yesterday')">Ieri</button>
+      <button class="p-tab ${activePeriod==='7d'?'active':''}" onclick="setPeriod('7d')">7 Zile</button>
+      <button class="p-tab ${activePeriod==='30d'?'active':''}" onclick="setPeriod('30d')">30 Zile</button>
+      <button class="p-tab custom-tab ${activePeriod==='custom'?'active':''}" onclick="setPeriod('custom')">📅 Custom</button>
+      <span class="period-label">${periodLabel()}</span>
+    </div>
+
     <!-- HERO -->
     <div class="hero">
       <div class="hero-main">
-        <div class="hero-lbl">Venit Azi &nbsp;&middot;&nbsp; 00:00 &rarr; acum</div>
+        <div class="hero-lbl">Venit · ${periodLabel()}</div>
         <div class="hero-val">${fmtShort(rev)}</div>
-        <div class="hero-today">▲ All-time: ${fmtShort(totalRev())}</div>
+        <div class="hero-today">&#x25B2; All-time: ${fmtShort(totalRev())}</div>
       </div>
       <div class="hero-divider"></div>
       <div class="hero-stats">
-        <div class="hstat"><div class="hstat-v">${fmt(todayImp())}</div><div class="hstat-l">Impresii Azi</div></div>
-        <div class="hstat"><div class="hstat-v">${fmt(todayClk())}</div><div class="hstat-l">Clickuri Azi</div></div>
-        <div class="hstat"><div class="hstat-v">${fmt(todaySess())}</div><div class="hstat-l">Sesiuni Azi</div></div>
-        <div class="hstat"><div class="hstat-v">${fmt(totalSess())}</div><div class="hstat-l">Total Sesiuni</div></div>
+        <div class="hstat"><div class="hstat-v">${fmt(ps.imp)}</div><div class="hstat-l">Impresii</div></div>
+        <div class="hstat"><div class="hstat-v">${fmt(ps.clk)}</div><div class="hstat-l">Clickuri</div></div>
+        <div class="hstat"><div class="hstat-v">${fmt(ps.sess)}</div><div class="hstat-l">Sesiuni</div></div>
+        <div class="hstat"><div class="hstat-v">${fmtShort(totalRev())}</div><div class="hstat-l">Total All-Time</div></div>
       </div>
     </div>
 
@@ -1161,7 +1677,7 @@ function renderAll() {
     <div class="section-label"><span>Statistici per tip reclamă</span></div>
     <div class="cards">
       ${adTypes.map(a=>{
-        const d=getAd(a.key), dd=getDayAd(a.key);
+        const pd = ps[a.key] || {};
         return `
         <div class="card ${a.cls}">
           <div class="card-hd">
@@ -1171,13 +1687,11 @@ function renderAll() {
             </div>
             <div class="card-icon">${a.icon}</div>
           </div>
-          <div class="srow"><span class="slbl">Impresii Total</span><span class="sval neutral">${fmt(d.impressions||0)}</span></div>
-          <div class="srow"><span class="slbl">Impresii Azi</span><span class="sval neutral">${fmt(dd.impressions||0)}</span></div>
-          <div class="srow"><span class="slbl">Clickuri</span><span class="sval neutral">${fmt(d.clicks||0)}</span></div>
-          <div class="srow"><span class="slbl">CTR</span><span class="sval ctr">${fmtCTR(d.ctr||0)}</span></div>
-          <div class="srow"><span class="slbl">Venit Total</span><span class="sval rev">${fmtRev(d.revenue||0)}</span></div>
-          <div class="srow"><span class="slbl">Venit Azi</span><span class="sval rev">${fmtRev(dd.revenue||0)}</span></div>
-          <div class="srow"><span class="slbl">eCPM</span><span class="sval ecpm">${fmtECPM(d.ecpm||0)}</span></div>
+          <div class="srow"><span class="slbl">Impresii</span><span class="sval neutral">${fmt(pd.impressions||0)}</span></div>
+          <div class="srow"><span class="slbl">Clickuri</span><span class="sval neutral">${fmt(pd.clicks||0)}</span></div>
+          <div class="srow"><span class="slbl">CTR</span><span class="sval ctr">${fmtCTR(pd.ctr||0)}</span></div>
+          <div class="srow"><span class="slbl">Venit Perioadă</span><span class="sval rev">${fmtRev(pd.revenue||0)}</span></div>
+          <div class="srow"><span class="slbl">eCPM Mediu</span><span class="sval ecpm">${fmtECPM(pd.ecpm||0)}</span></div>
         </div>`;
       }).join('')}
     </div>
