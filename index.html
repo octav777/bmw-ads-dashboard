@@ -295,11 +295,51 @@ html[data-theme="light"] body::before, html[data-theme="light"] body::after { di
   right: 0; bottom: 0;
   width: 55%;
   height: 100%;
-  pointer-events: none;
   opacity: .55;
+  cursor: crosshair;
 }
 
 html[data-theme="light"] .hero-sparkline { opacity: .35; }
+
+/* Sparkline tooltip */
+.spark-tooltip {
+  position: absolute;
+  background: rgba(11,15,26,0.92);
+  border: 1px solid var(--line2);
+  border-radius: 7px;
+  padding: 8px 12px;
+  pointer-events: none;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 10;
+  transition: opacity .15s;
+}
+
+html[data-theme="light"] .spark-tooltip { background: rgba(255,255,255,0.95); }
+
+.spark-tooltip-date {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.08em;
+  margin-bottom: 3px;
+}
+
+.spark-tooltip-val {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--blue2);
+}
+
+.spark-crosshair {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 1px;
+  background: rgba(96,165,250,0.5);
+  pointer-events: none;
+  display: none;
+}
 
 .hero-stats {
   background: var(--panel2);
@@ -310,25 +350,42 @@ html[data-theme="light"] .hero-sparkline { opacity: .35; }
 }
 
 .hstat {
-  padding: 20px 36px;
+  padding: 16px 28px;
   border-bottom: 1px solid var(--line);
-  cursor: default;
+  cursor: pointer;
   transition: background .2s;
+  position: relative;
+  overflow: hidden;
 }
 
 .hstat:last-child { border-bottom: none; }
 .hstat:hover { background: var(--panel3); }
+.hstat.active { background: var(--panel3); }
+
+.hstat-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
 
 .hstat-n {
   font-family: var(--mono);
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
   line-height: 1;
   color: var(--text);
   transition: color .2s;
 }
 
-.hstat:hover .hstat-n { color: var(--blue2); }
+.hstat:hover .hstat-n, .hstat.active .hstat-n { color: var(--blue2); }
+
+.hstat-mini {
+  width: 60px;
+  height: 28px;
+  flex-shrink: 0;
+  opacity: .7;
+}
 
 .hstat-l {
   font-size: 10px;
@@ -1364,12 +1421,46 @@ function renderAll() {
         <div class="hero-amount">${fmtS(ps.rev)}</div>
         <div class="hero-sub">▲ ALL TIME ${fmtS(totalRev())}</div>
         <canvas id="heroSparkline" class="hero-sparkline"></canvas>
+        <div class="spark-crosshair" id="sparkCrosshair"></div>
+        <div class="spark-tooltip" id="sparkTooltip" style="display:none;top:12px;left:50%"></div>
       </div>
       <div class="hero-stats">
-        <div class="hstat"><div class="hstat-n">${fmt(ps.imp)}</div><div class="hstat-l">Impresii</div></div>
-        <div class="hstat"><div class="hstat-n">${fmt(ps.clk)}</div><div class="hstat-l">Clickuri</div></div>
-        <div class="hstat"><div class="hstat-n">${fmt(ps.sess)}</div><div class="hstat-l">Sesiuni</div></div>
-        <div class="hstat"><div class="hstat-n">${fmtS(totalRev())}</div><div class="hstat-l">All-Time $</div></div>
+        <div class="hstat" data-metric="imp" onclick="setActiveMetric('imp')">
+          <div class="hstat-top">
+            <div>
+              <div class="hstat-n">${fmt(ps.imp)}</div>
+              <div class="hstat-l">Impresii</div>
+            </div>
+            <canvas class="hstat-mini" id="miniImp"></canvas>
+          </div>
+        </div>
+        <div class="hstat" data-metric="clk" onclick="setActiveMetric('clk')">
+          <div class="hstat-top">
+            <div>
+              <div class="hstat-n">${fmt(ps.clk)}</div>
+              <div class="hstat-l">Clickuri</div>
+            </div>
+            <canvas class="hstat-mini" id="miniClk"></canvas>
+          </div>
+        </div>
+        <div class="hstat" data-metric="sess" onclick="setActiveMetric('sess')">
+          <div class="hstat-top">
+            <div>
+              <div class="hstat-n">${fmt(ps.sess)}</div>
+              <div class="hstat-l">Sesiuni</div>
+            </div>
+            <canvas class="hstat-mini" id="miniSess"></canvas>
+          </div>
+        </div>
+        <div class="hstat" data-metric="rev" onclick="setActiveMetric('rev')">
+          <div class="hstat-top">
+            <div>
+              <div class="hstat-n">${fmtS(totalRev())}</div>
+              <div class="hstat-l">All-Time $</div>
+            </div>
+            <canvas class="hstat-mini" id="miniRev"></canvas>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1497,48 +1588,111 @@ function buildCharts(data) {
     }
   };
 
-  ['cRev','cImp','cSess','cPie','cSpark'].forEach(id => { if(charts[id]){charts[id].destroy();delete charts[id];} });
+  ['cRev','cImp','cSess','cPie','cSpark','mImp','mClk','mSess','mRev'].forEach(id => { if(charts[id]){charts[id].destroy();delete charts[id];} });
 
-  // ── HERO SPARKLINE ───────────────────────────
+  // ── PREP: last 30 days daily data ────────────
+  const daily30 = state.daily || {};
+  const days30  = [];
+  for (let i=29; i>=0; i--) { const d=new Date(); d.setDate(d.getDate()-i); days30.push(ds(d)); }
+
+  const spark30 = {
+    rev:  days30.map(d => parseFloat((daily30[d]||{}).revenue)||0),
+    imp:  days30.map(d => { const dd=daily30[d]||{}; return (parseInt((dd.interstitial||{}).impressions)||0)+(parseInt((dd.banner||{}).impressions)||0)+(parseInt((dd.rewarded||{}).impressions)||0); }),
+    clk:  days30.map(d => { const dd=daily30[d]||{}; return (parseInt((dd.interstitial||{}).clicks)||0)+(parseInt((dd.banner||{}).clicks)||0)+(parseInt((dd.rewarded||{}).clicks)||0); }),
+    sess: days30.map(d => parseInt((daily30[d]||{}).sessions)||0),
+  };
+
+  // ── HERO MAIN SPARKLINE (revenue, interactive) ─
   const sp = document.getElementById('heroSparkline');
   if (sp) {
-    // Always show last 30 days as sparkline background
-    const daily = state.daily || {};
-    const sparkDays = [];
-    for (let i=29; i>=0; i--) { const d=new Date(); d.setDate(d.getDate()-i); sparkDays.push(ds(d)); }
-    const sparkData = sparkDays.map(d => parseFloat((daily[d]||{}).revenue)||0);
     charts.cSpark = new Chart(sp, {
       type: 'line',
       data: {
-        labels: sparkDays,
+        labels: days30,
         datasets: [{
-          data: sparkData,
-          borderColor: 'rgba(96,165,250,0.5)',
+          data: spark30[activeMetric] || spark30.rev,
+          borderColor: 'rgba(96,165,250,0.55)',
           backgroundColor: (ctx) => {
-            const canvas = ctx.chart.canvas;
-            const gradient = canvas.getContext('2d').createLinearGradient(0, 0, 0, canvas.height);
-            gradient.addColorStop(0, 'rgba(59,130,246,0.35)');
-            gradient.addColorStop(1, 'rgba(59,130,246,0.0)');
-            return gradient;
+            const g = ctx.chart.canvas.getContext('2d').createLinearGradient(0, 0, 0, ctx.chart.canvas.height);
+            g.addColorStop(0, 'rgba(59,130,246,0.4)');
+            g.addColorStop(1, 'rgba(59,130,246,0.0)');
+            return g;
           },
           borderWidth: 1.5,
           fill: true,
           tension: 0.4,
           pointRadius: 0,
-          pointHoverRadius: 0,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: '#60a5fa',
+          pointHoverBorderColor: '#fff',
+          pointHoverBorderWidth: 2,
         }]
       },
       options: {
         responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            enabled: false,
+            external(ctx) {
+              const tt  = document.getElementById('sparkTooltip');
+              const ch  = document.getElementById('sparkCrosshair');
+              const sp  = document.getElementById('heroSparkline');
+              if (!tt || !ch || !sp) return;
+              if (ctx.tooltip.opacity === 0) {
+                tt.style.display = 'none';
+                ch.style.display = 'none';
+                return;
+              }
+              const dp    = ctx.tooltip.dataPoints[0];
+              const label = dp.label;
+              const val   = dp.raw;
+              const metricLabels = { rev:'Venit', imp:'Impresii', clk:'Clickuri', sess:'Sesiuni' };
+              const metricFmt    = { rev: v=>'$'+parseFloat(v).toFixed(4), imp: v=>fmt(v), clk: v=>fmt(v), sess: v=>fmt(v) };
+              tt.style.display   = 'block';
+              tt.style.left      = ctx.tooltip.caretX + 'px';
+              tt.style.top       = '10px';
+              tt.innerHTML       = `<div class="spark-tooltip-date">${label} · ${metricLabels[activeMetric]||''}</div><div class="spark-tooltip-val">${(metricFmt[activeMetric]||fmt)(val)}</div>`;
+              ch.style.display   = 'block';
+              ch.style.left      = ctx.tooltip.caretX + 'px';
+            }
+          }
+        },
         scales: { x: { display: false }, y: { display: false } },
-        animation: { duration: 800, easing: 'easeInOutQuart' },
+        animation: { duration: 600 },
         layout: { padding: 0 },
-        elements: { line: { borderCapStyle: 'round', borderJoinStyle: 'round' } }
       }
     });
   }
 
+  // ── MINI SPARKLINES in hstat ────────────────
+  function buildMini(id, dataArr, color) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const mini = new Chart(el, {
+      type: 'line',
+      data: {
+        labels: days30,
+        datasets: [{ data: dataArr, borderColor: color, backgroundColor: 'transparent', borderWidth: 1.2, tension: 0.4, pointRadius: 0 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend:{display:false}, tooltip:{enabled:false} },
+        scales: { x:{display:false}, y:{display:false} },
+        animation: { duration: 400 },
+        layout: { padding: 1 },
+      }
+    });
+    charts[id] = mini;
+  }
+
+  buildMini('miniImp',  spark30.imp,  '#60a5fa');
+  buildMini('miniClk',  spark30.clk,  '#f43f5e');
+  buildMini('miniSess', spark30.sess, '#10b981');
+  buildMini('miniRev',  spark30.rev,  '#f59e0b');
+
+  // ── STANDARD CHARTS ─────────────────────────
   const tot = state.total || {};
   const r = document.getElementById('cRev');
   if(r) charts.cRev = new Chart(r, { type:'bar', data:{labels:data.labels,datasets:[{data:data.revenue,backgroundColor:'rgba(245,158,11,0.4)',borderColor:'#f59e0b',borderWidth:0,borderRadius:4,borderSkipped:false}]}, options:base });
@@ -1569,32 +1723,55 @@ function buildCharts(data) {
       }
     }
   });
+
+  // ── MARK ACTIVE HSTAT ────────────────────────
+  document.querySelectorAll('.hstat').forEach(el => {
+    el.classList.toggle('active', el.dataset.metric === activeMetric);
+  });
 }
+
+/* ─── ACTIVE METRIC ────────────────────────── */
+let activeMetric = 'rev';
+
+window.setActiveMetric = (metric) => {
+  activeMetric = metric;
+  // Rebuild only the hero sparkline data — fast, no full re-render
+  if (charts.cSpark) {
+    const daily30 = state.daily || {};
+    const days30  = [];
+    for (let i=29; i>=0; i--) { const d=new Date(); d.setDate(d.getDate()-i); days30.push(ds(d)); }
+    const spark30 = {
+      rev:  days30.map(d => parseFloat((daily30[d]||{}).revenue)||0),
+      imp:  days30.map(d => { const dd=daily30[d]||{}; return (parseInt((dd.interstitial||{}).impressions)||0)+(parseInt((dd.banner||{}).impressions)||0)+(parseInt((dd.rewarded||{}).impressions)||0); }),
+      clk:  days30.map(d => { const dd=daily30[d]||{}; return (parseInt((dd.interstitial||{}).clicks)||0)+(parseInt((dd.banner||{}).clicks)||0)+(parseInt((dd.rewarded||{}).clicks)||0); }),
+      sess: days30.map(d => parseInt((daily30[d]||{}).sessions)||0),
+    };
+    charts.cSpark.data.datasets[0].data = spark30[metric] || spark30.rev;
+    charts.cSpark.update('active');
+  }
+  document.querySelectorAll('.hstat').forEach(el => {
+    el.classList.toggle('active', el.dataset.metric === metric);
+  });
+};
 
 /* ─── FIREBASE LISTENERS ───────────────────── */
 applyTheme(theme);
 
-// Root listener — primește tot arborele
+// Root listener
 onValue(ref(db, '/'), snap => {
-  const fresh = snap.val() || {};
-  // Merge timeline în state (nu override-ui dacă avem deja mai nou din listener dedicat)
-  state = fresh;
+  state = snap.val() || {};
   renderAll();
 });
 
-// Timeline listener separat — FIX: limitToLast + orderByKey
-// Acesta va actualiza DOAR timeline-ul în DOM fără full re-render
-const tlRef = query(ref(db, '/timeline'), orderByKey(), limitToLast(20));
-onValue(tlRef, snap => {
+// Timeline: listener DEDICAT — fix pentru activitate live
+// Folosim ref simplu fără query complex ca să evităm probleme cu indexing
+onValue(ref(db, '/timeline'), snap => {
   const data = snap.val();
-  if (data) {
-    state.timeline = data;
-    // Actualizăm NUMAI lista din DOM dacă există deja (post-render)
-    renderTimelineDOM();
-    // Update timestamp
-    const lu = document.getElementById('last-update');
-    if (lu) lu.textContent = new Date().toLocaleTimeString();
-  }
+  // data poate fi null dacă nu există niciun eveniment
+  state.timeline = data || {};
+  renderTimelineDOM();
+  const lu = document.getElementById('last-update');
+  if (lu) lu.textContent = new Date().toLocaleTimeString();
 });
 </script>
 </body>
