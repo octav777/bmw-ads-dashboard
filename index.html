@@ -1,1126 +1,922 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="ro" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BMW Ads Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-/* ═══════════════════════════════════════
-   DARK THEME (default)
-═══════════════════════════════════════ */
 :root {
-  --bg:        #080b12;
-  --bg2:       #0c1018;
-  --surface:   #0f1520;
-  --surface2:  #131c2b;
-  --surface3:  #192235;
-  --border:    rgba(255,255,255,0.06);
-  --border2:   rgba(255,255,255,0.10);
-  --accent:    #1e90ff;
-  --accent2:   #00c6ff;
-  --accent-glow: rgba(30,144,255,0.25);
-  --green:     #00d68f;
-  --green-glow: rgba(0,214,143,0.2);
-  --yellow:    #ffc947;
-  --purple:    #b07cff;
-  --orange:    #ff7c4a;
-  --text:      #dde4f0;
-  --text2:     #8898b0;
-  --text3:     #4d6080;
-  --card-shine: rgba(255,255,255,0.03);
+  --bg:           #05070d;
+  --bg2:          #080b13;
+  --panel:        #0b0f1a;
+  --panel2:       #0e1322;
+  --panel3:       #111828;
+  --line:         rgba(255,255,255,0.055);
+  --line2:        rgba(255,255,255,0.09);
+  --blue:         #3b82f6;
+  --blue2:        #60a5fa;
+  --blue-dim:     rgba(59,130,246,0.15);
+  --blue-glow:    rgba(59,130,246,0.3);
+  --emerald:      #10b981;
+  --emerald-dim:  rgba(16,185,129,0.12);
+  --amber:        #f59e0b;
+  --violet:       #8b5cf6;
+  --rose:         #f43f5e;
+  --text:         #e2e8f4;
+  --text2:        #64748b;
+  --text3:        #334155;
+  --mono:         'Space Mono', monospace;
+  --sans:         'DM Sans', sans-serif;
 }
 
 html[data-theme="light"] {
-  --bg:        #eef2f8;
-  --bg2:       #e6ecf5;
-  --surface:   #ffffff;
-  --surface2:  #f4f7fc;
-  --surface3:  #eef1f8;
-  --border:    rgba(0,0,0,0.07);
-  --border2:   rgba(0,0,0,0.12);
-  --accent:    #0070e0;
-  --accent2:   #0099cc;
-  --accent-glow: rgba(0,112,224,0.15);
-  --green:     #00a86b;
-  --green-glow: rgba(0,168,107,0.15);
-  --yellow:    #e08800;
-  --purple:    #7a4fd8;
-  --orange:    #d9581e;
-  --text:      #1a2540;
-  --text2:     #4d6080;
-  --text3:     #8898b0;
-  --card-shine: rgba(255,255,255,0.7);
+  --bg:           #f1f5fb;
+  --bg2:          #e8edf6;
+  --panel:        #ffffff;
+  --panel2:       #f8fafd;
+  --panel3:       #f0f4fa;
+  --line:         rgba(0,0,0,0.06);
+  --line2:        rgba(0,0,0,0.1);
+  --blue:         #2563eb;
+  --blue2:        #3b82f6;
+  --blue-dim:     rgba(37,99,235,0.08);
+  --blue-glow:    rgba(37,99,235,0.2);
+  --emerald:      #059669;
+  --emerald-dim:  rgba(5,150,105,0.08);
+  --amber:        #d97706;
+  --violet:       #7c3aed;
+  --rose:         #e11d48;
+  --text:         #0f172a;
+  --text2:        #64748b;
+  --text3:        #94a3b8;
 }
 
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
 body {
+  font-family: var(--sans);
+  font-weight: 300;
   background: var(--bg);
   color: var(--text);
-  font-family: 'Exo 2', sans-serif;
-  font-weight: 300;
   min-height: 100vh;
-  transition: background .4s, color .4s;
-  position: relative;
   overflow-x: hidden;
+  transition: background .3s, color .3s;
 }
 
-/* Subtle ambient glow background */
-body::after {
-  content: '';
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background:
-    radial-gradient(ellipse 60% 40% at 10% 10%, rgba(30,144,255,0.04) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 30% at 90% 80%, rgba(0,198,255,0.03) 0%, transparent 60%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Fine grid pattern */
+/* ── NOISE TEXTURE ── */
 body::before {
   content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
-  background-size: 48px 48px;
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: .5;
+}
+
+/* ── SCAN LINE ── */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.008) 2px, rgba(255,255,255,0.008) 4px);
   pointer-events: none;
   z-index: 0;
 }
 
-html[data-theme="light"] body::before {
-  background-image:
-    linear-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,0,0.025) 1px, transparent 1px);
-}
+html[data-theme="light"] body::before, html[data-theme="light"] body::after { display: none; }
 
-.wrap {
+.shell {
   position: relative;
   z-index: 1;
-  max-width: 1280px;
+  max-width: 1340px;
   margin: 0 auto;
-  padding: 36px 28px;
+  padding: 32px 28px 60px;
 }
 
-/* ═══════════════════════════════════════
+/* ════════════════════════════════════
    HEADER
-═══════════════════════════════════════ */
-header {
+════════════════════════════════════ */
+.hdr {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 44px;
+  margin-bottom: 40px;
+  gap: 16px;
   flex-wrap: wrap;
-  gap: 16px;
 }
 
-.logo-wrap {
+.brand {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
-.logo-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  box-shadow: 0 0 20px var(--accent-glow);
-  flex-shrink: 0;
+.brand-mark {
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  background: var(--blue-dim);
+  border: 1px solid rgba(59,130,246,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px;
+  box-shadow: 0 0 24px var(--blue-glow);
 }
 
-.logo-text {
-  font-family: 'Rajdhani', sans-serif;
+.brand-name {
+  font-family: var(--mono);
+  font-size: 15px;
   font-weight: 700;
-  font-size: clamp(18px, 3vw, 26px);
   color: var(--text);
-  letter-spacing: 0.05em;
-  line-height: 1;
+  letter-spacing: -0.01em;
 }
 
-.logo-sub {
-  font-family: 'Exo 2', sans-serif;
+.brand-sub {
   font-size: 11px;
-  font-weight: 400;
-  color: var(--text3);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  margin-top: 4px;
+  font-weight: 300;
+  color: var(--text2);
+  margin-top: 2px;
+  letter-spacing: 0.06em;
 }
 
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.hdr-right {
+  display: flex; align-items: center; gap: 10px;
 }
 
-.live-pill {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(0,214,143,0.08);
-  border: 1px solid rgba(0,214,143,0.2);
-  border-radius: 100px;
-  padding: 8px 18px;
-  font-family: 'Rajdhani', sans-serif;
-  font-weight: 600;
-  font-size: 13px;
-  color: var(--green);
-  letter-spacing: 0.1em;
-  transition: all .3s;
+.status-chip {
+  display: flex; align-items: center; gap: 7px;
+  padding: 7px 14px;
+  border: 1px solid rgba(16,185,129,0.25);
+  border-radius: 6px;
+  background: rgba(16,185,129,0.07);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--emerald);
+  letter-spacing: 0.08em;
 }
 
-.live-pill:hover {
-  background: rgba(0,214,143,0.15);
-  border-color: var(--green);
-  box-shadow: 0 0 20px var(--green-glow);
-}
-
-.dot {
-  width: 7px; height: 7px;
+.pulse {
+  width: 6px; height: 6px;
   border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 8px var(--green);
-  animation: blink 1.8s ease-in-out infinite;
+  background: var(--emerald);
+  box-shadow: 0 0 8px var(--emerald);
+  animation: pulse 2s ease-in-out infinite;
 }
 
-@keyframes blink {
+@keyframes pulse {
   0%,100% { opacity:1; transform:scale(1); }
-  50% { opacity:0.3; transform:scale(0.7); }
+  50% { opacity:.3; transform:scale(.7); }
 }
 
-/* THEME TOGGLE */
-.theme-toggle {
+.theme-sw {
   display: flex;
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 12px;
-  padding: 5px;
-  gap: 3px;
-  transition: border-color .3s;
+  background: var(--panel);
+  border: 1px solid var(--line2);
+  border-radius: 8px;
+  padding: 4px;
+  gap: 2px;
 }
 
-.theme-toggle:hover { border-color: var(--accent); }
-
-.t-btn {
-  width: 34px; height: 34px;
+.tsw {
+  width: 32px; height: 32px;
   border: none;
   background: transparent;
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: 5px;
+  font-size: 14px;
   cursor: pointer;
-  transition: all .3s;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s;
+}
+
+.tsw.on { background: var(--blue-dim); }
+
+/* ════════════════════════════════════
+   PERIOD BAR
+════════════════════════════════════ */
+.period-row {
   display: flex;
   align-items: center;
-  justify-content: center;
-}
-
-.t-btn.on {
-  background: var(--accent-glow);
-  border: 1px solid rgba(30,144,255,0.3);
-}
-
-/* ═══════════════════════════════════════
-   HERO BAND
-═══════════════════════════════════════ */
-.hero {
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 20px;
-  padding: 36px 40px;
-  margin-bottom: 20px;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 48px;
-  position: relative;
-  overflow: hidden;
-  transition: border-color .3s, box-shadow .3s;
-}
-
-.hero:hover {
-  border-color: rgba(30,144,255,0.25);
-  box-shadow: 0 0 40px rgba(30,144,255,0.06);
-}
-
-/* Decorative accent line */
-.hero::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 3px;
-  background: linear-gradient(180deg, var(--accent), var(--accent2), transparent);
-  border-radius: 20px 0 0 20px;
-}
-
-/* Top-right glow blob */
-.hero::after {
-  content: '';
-  position: absolute;
-  top: -60px; right: -60px;
-  width: 280px; height: 280px;
-  background: radial-gradient(circle, var(--accent-glow), transparent 70%);
-  pointer-events: none;
-}
-
-.hero-main {}
-
-.hero-lbl {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  color: var(--text3);
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-
-.hero-val {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: clamp(36px, 6vw, 58px);
-  font-weight: 700;
-  color: var(--accent2);
-  letter-spacing: -0.01em;
-  line-height: 1;
-  text-shadow: 0 0 40px var(--accent-glow);
-}
-
-.hero-today {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 10px;
-  background: rgba(0,214,143,0.08);
-  border: 1px solid rgba(0,214,143,0.2);
-  border-radius: 100px;
-  padding: 4px 12px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--green);
-  letter-spacing: 0.05em;
-}
-
-.hero-divider {
-  width: 1px;
-  height: 80px;
-  background: linear-gradient(180deg, transparent, var(--border2), transparent);
-}
-
-.hero-stats {
-  display: flex;
-  gap: 40px;
+  gap: 4px;
+  margin-bottom: 24px;
   flex-wrap: wrap;
 }
 
-.hstat {
-  text-align: center;
-  cursor: default;
-}
-
-.hstat-v {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1;
-  transition: color .3s;
-}
-
-.hstat:hover .hstat-v { color: var(--accent2); }
-
-.hstat-l {
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  color: var(--text3);
-  text-transform: uppercase;
-  margin-top: 6px;
-}
-
-/* ═══════════════════════════════════════
-   SECTION LABEL
-═══════════════════════════════════════ */
-.section-label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 36px 0 16px;
-}
-
-.section-label::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, var(--border2), transparent);
-}
-
-.section-label span {
-  font-family: 'Rajdhani', sans-serif;
+.ptab {
+  padding: 8px 16px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  font-family: var(--mono);
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  color: var(--text3);
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-/* ═══════════════════════════════════════
-   TARGET PROGRESS
-═══════════════════════════════════════ */
-.target-card {
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 16px;
-  padding: 28px 32px;
-  margin-bottom: 20px;
-  transition: all .3s;
-}
-
-.target-card:hover {
-  border-color: rgba(30,144,255,0.2);
-  box-shadow: 0 4px 24px rgba(30,144,255,0.05);
-}
-
-.target-hd {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.target-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  color: var(--accent2);
-  text-transform: uppercase;
-}
-
-.target-edit {
-  background: var(--surface3);
-  border: 1px solid var(--border2);
+  font-weight: 400;
+  letter-spacing: 0.06em;
   color: var(--text2);
-  font-family: 'Exo 2', sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  padding: 7px 14px;
-  border-radius: 8px;
   cursor: pointer;
-  transition: all .3s;
-  text-transform: uppercase;
-}
-
-.target-edit:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-glow);
-}
-
-.progress-track {
-  background: var(--surface3);
-  border-radius: 100px;
-  height: 8px;
-  overflow: hidden;
-  margin-bottom: 10px;
-}
-
-.progress-fill {
-  height: 100%;
-  border-radius: 100px;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
-  box-shadow: 0 0 12px var(--accent-glow);
-  transition: width 1.2s cubic-bezier(.4,0,.2,1);
-  position: relative;
-}
-
-.progress-fill::after {
-  content: '';
-  position: absolute;
-  right: 0; top: 0; bottom: 0;
-  width: 24px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
-  border-radius: 100px;
-}
-
-.progress-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.progress-meta span {
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--text3);
-}
-
-.progress-pct {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--accent);
-}
-
-.record-row {
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--text3);
-  font-weight: 400;
-  letter-spacing: 0.05em;
-}
-
-.record-val {
-  font-family: 'Rajdhani', sans-serif;
-  font-weight: 700;
-  font-size: 15px;
-  color: var(--yellow);
-}
-
-/* ═══════════════════════════════════════
-   AD TYPE CARDS
-═══════════════════════════════════════ */
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 26px 28px;
-  position: relative;
-  overflow: hidden;
-  transition: all .35s cubic-bezier(.4,0,.2,1);
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  border-color: var(--border2);
-  box-shadow: 0 16px 40px rgba(0,0,0,0.3);
-}
-
-/* Top accent stripe */
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  border-radius: 16px 16px 0 0;
-  opacity: 0.8;
-  transition: opacity .3s;
-}
-
-.card:hover::before { opacity: 1; }
-
-.card.interstitial::before { background: linear-gradient(90deg, var(--accent), transparent 70%); }
-.card.banner::before { background: linear-gradient(90deg, var(--green), transparent 70%); }
-.card.rewarded::before { background: linear-gradient(90deg, var(--purple), transparent 70%); }
-
-/* Corner shine */
-.card::after {
-  content: '';
-  position: absolute;
-  top: 0; right: 0;
-  width: 120px; height: 120px;
-  background: var(--card-shine);
-  border-radius: 50%;
-  transform: translate(40%, -40%);
-  pointer-events: none;
-}
-
-.card-hd {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 22px;
-}
-
-.card-label-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.card-badge {
-  display: inline-block;
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 4px;
-  width: fit-content;
-}
-
-.card.interstitial .card-badge { background: rgba(30,144,255,0.12); color: var(--accent); }
-.card.banner .card-badge { background: rgba(0,214,143,0.12); color: var(--green); }
-.card.rewarded .card-badge { background: rgba(176,124,255,0.12); color: var(--purple); }
-
-.card-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  margin-top: 2px;
-}
-
-.card.interstitial .card-title { color: var(--accent); }
-.card.banner .card-title { color: var(--green); }
-.card.rewarded .card-title { color: var(--purple); }
-
-.card-icon { font-size: 22px; opacity: 0.5; margin-top: 2px; }
-
-.srow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.srow:last-child { border-bottom: none; }
-
-.slbl {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  color: var(--text3);
-  text-transform: uppercase;
-}
-
-.sval {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-.sval.neutral { color: var(--text); }
-.sval.rev { color: var(--yellow); }
-.sval.ecpm { color: var(--accent2); }
-.sval.ctr { color: var(--orange); }
-
-/* ═══════════════════════════════════════
-   CHARTS
-═══════════════════════════════════════ */
-.charts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.chart-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 26px 28px;
-  transition: all .3s;
-}
-
-.chart-card:hover {
-  border-color: var(--border2);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-}
-
-.chart-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.chart-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  color: var(--text2);
-  text-transform: uppercase;
-}
-
-.chart-wrap { position: relative; height: 200px; }
-
-/* ═══════════════════════════════════════
-   TOP LISTS
-═══════════════════════════════════════ */
-.lists-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.list-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 26px 28px;
-  transition: all .3s;
-}
-
-.list-card:hover {
-  border-color: var(--border2);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-}
-
-.list-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  color: var(--text2);
-  text-transform: uppercase;
-  margin-bottom: 18px;
-}
-
-.list-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
   transition: all .2s;
 }
 
-.list-item:last-child { border-bottom: none; }
-.list-item:hover .list-name { color: var(--accent2); }
+.ptab:hover { border-color: var(--line2); color: var(--text); }
 
-.list-rank {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text3);
-  width: 22px;
+.ptab.on {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+  box-shadow: 0 2px 12px var(--blue-glow);
 }
 
-.list-name {
-  flex: 1;
-  font-size: 13px;
-  font-weight: 400;
+.period-info {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.08em;
+}
+
+/* ════════════════════════════════════
+   HERO BLOCK
+════════════════════════════════════ */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line2);
+  border-radius: 14px;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  margin-bottom: 12px;
+}
+
+.hero-main {
+  background: var(--panel);
+  padding: 36px 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-main::before {
+  content: '';
+  position: absolute;
+  top: -80px; left: -80px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(59,130,246,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.hero-amount {
+  font-family: var(--mono);
+  font-size: clamp(44px, 7vw, 68px);
+  font-weight: 700;
+  color: var(--blue2);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.hero-sub {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--emerald);
+  font-weight: 400;
+}
+
+.hero-stats {
+  background: var(--panel2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0;
+}
+
+.hstat {
+  padding: 20px 36px;
+  border-bottom: 1px solid var(--line);
+  cursor: default;
+  transition: background .2s;
+}
+
+.hstat:last-child { border-bottom: none; }
+.hstat:hover { background: var(--panel3); }
+
+.hstat-n {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
   color: var(--text);
   transition: color .2s;
 }
 
-.list-bar-wrap {
-  width: 72px;
-  height: 3px;
-  background: var(--surface3);
+.hstat:hover .hstat-n { color: var(--blue2); }
+
+.hstat-l {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-top: 5px;
+}
+
+/* ════════════════════════════════════
+   TARGET
+════════════════════════════════════ */
+.target-strip {
+  background: var(--panel);
+  border: 1px solid var(--line2);
+  border-radius: 12px;
+  padding: 22px 28px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.target-left { flex: 1; min-width: 200px; }
+
+.target-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.target-label span { color: var(--blue2); }
+
+.track {
+  height: 4px;
+  background: var(--panel3);
   border-radius: 100px;
   overflow: hidden;
+  margin-bottom: 8px;
 }
 
-.list-bar {
+.fill {
   height: 100%;
   border-radius: 100px;
-  background: var(--accent);
-  transition: width .6s cubic-bezier(.4,0,.2,1);
+  background: linear-gradient(90deg, var(--blue) 0%, var(--blue2) 100%);
+  box-shadow: 0 0 10px rgba(59,130,246,0.5);
+  transition: width 1.4s cubic-bezier(.22,1,.36,1);
 }
 
-.list-val {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 14px;
+.target-meta {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text2);
+}
+
+.target-pct {
+  font-family: var(--mono);
+  font-size: 32px;
   font-weight: 700;
-  color: var(--text);
-  min-width: 36px;
+  color: var(--blue);
+  min-width: 80px;
   text-align: right;
 }
 
-/* ═══════════════════════════════════════
-   TIMELINE
-═══════════════════════════════════════ */
-.timeline-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 26px 28px;
-  margin-bottom: 20px;
-  transition: all .3s;
-}
-
-.timeline-card:hover {
-  border-color: var(--border2);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-}
-
-.timeline-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+.target-record {
+  font-size: 11px;
   color: var(--text2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.record-num {
+  font-family: var(--mono);
+  font-weight: 700;
+  color: var(--amber);
+}
+
+.edit-btn {
+  background: transparent;
+  border: 1px solid var(--line2);
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .2s;
+  text-transform: uppercase;
+}
+
+.edit-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+/* ════════════════════════════════════
+   AD CARDS
+════════════════════════════════════ */
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 28px 0 14px;
+}
+
+.divider::after {
+  content: '';
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, var(--line2), transparent);
+}
+
+.divider span {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--text3);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line2);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.ad-card {
+  background: var(--panel);
+  padding: 28px 28px 24px;
+  position: relative;
+  transition: background .2s;
+}
+
+.ad-card:hover { background: var(--panel2); }
+
+.ad-top-line {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+
+.ad-card.inter .ad-top-line { background: linear-gradient(90deg, var(--blue), transparent); }
+.ad-card.banner .ad-top-line { background: linear-gradient(90deg, var(--emerald), transparent); }
+.ad-card.reward .ad-top-line { background: linear-gradient(90deg, var(--violet), transparent); }
+
+.ad-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  padding: 3px 8px;
+  border-radius: 3px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.ad-card.inter .ad-tag { background: rgba(59,130,246,0.1); color: var(--blue2); }
+.ad-card.banner .ad-tag { background: rgba(16,185,129,0.1); color: var(--emerald); }
+.ad-card.reward .ad-tag { background: rgba(139,92,246,0.1); color: var(--violet); }
+
+.ad-name {
+  font-family: var(--mono);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.ad-card.inter .ad-name { color: var(--blue2); }
+.ad-card.banner .ad-name { color: var(--emerald); }
+.ad-card.reward .ad-name { color: var(--violet); }
+
+.stat-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 0;
+  border-top: 1px solid var(--line);
+}
+
+.sl-key {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--text3);
+  text-transform: uppercase;
+}
+
+.sl-val {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.sl-val.y { color: var(--amber); }
+.sl-val.b { color: var(--blue2); }
+.sl-val.r { color: var(--rose); }
+
+/* ════════════════════════════════════
+   CHARTS
+════════════════════════════════════ */
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line2);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.chart-panel {
+  background: var(--panel);
+  padding: 24px 26px;
+  transition: background .2s;
+}
+
+.chart-panel:hover { background: var(--panel2); }
+
+.chart-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--text3);
   text-transform: uppercase;
   margin-bottom: 18px;
 }
 
-.timeline-list {
-  max-height: 280px;
-  overflow-y: auto;
-  padding-right: 4px;
+.chart-wrap { position: relative; height: 180px; }
+
+/* ════════════════════════════════════
+   BOTTOM ROW
+════════════════════════════════════ */
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line2);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
 }
 
-.timeline-list::-webkit-scrollbar { width: 3px; }
-.timeline-list::-webkit-scrollbar-track { background: transparent; }
-.timeline-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 100px; }
-.timeline-list::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+.list-panel {
+  background: var(--panel);
+  padding: 24px 26px;
+}
 
-.tl-item {
+.list-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.list-row {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-  animation: slideIn .35s ease;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  transition: all .15s;
 }
 
-.tl-item:last-child { border-bottom: none; }
+.list-row:last-child { border-bottom: none; }
+.list-row:hover .list-rname { color: var(--blue2); }
 
-@keyframes slideIn {
-  from { opacity:0; transform:translateX(-8px); }
-  to { opacity:1; transform:translateX(0); }
-}
-
-.tl-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 6px var(--accent-glow);
-  flex-shrink: 0;
-}
-
-.tl-time {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--accent2);
-  min-width: 62px;
-  letter-spacing: 0.05em;
-}
-
-.tl-text {
-  flex: 1;
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--text);
-}
-
-.tl-meta {
+.list-rk {
+  font-family: var(--mono);
   font-size: 11px;
   color: var(--text3);
+  width: 18px;
+}
+
+.list-rname {
+  flex: 1;
+  font-size: 12px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color .15s;
+}
+
+.mini-track {
+  width: 60px; height: 2px;
+  background: var(--panel3);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.mini-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: var(--blue);
+  transition: width .6s;
+}
+
+.list-rval {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  min-width: 32px;
   text-align: right;
 }
 
-/* ═══════════════════════════════════════
+/* ── TIMELINE ── */
+.timeline-panel {
+  background: var(--panel);
+  padding: 24px 26px;
+  grid-column: span 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.tl-scroll {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 280px;
+  padding-right: 4px;
+}
+
+.tl-scroll::-webkit-scrollbar { width: 2px; }
+.tl-scroll::-webkit-scrollbar-track { background: transparent; }
+.tl-scroll::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 100px; }
+
+.tl-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  animation: fadeSlide .3s ease;
+}
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.tl-row:last-child { border-bottom: none; }
+
+.tl-indicator {
+  margin-top: 4px;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 6px rgba(59,130,246,0.6);
+  flex-shrink: 0;
+}
+
+.tl-body { flex: 1; }
+
+.tl-ts {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--blue2);
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
+}
+
+.tl-msg {
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.tl-context {
+  font-size: 10px;
+  color: var(--text3);
+  margin-top: 2px;
+}
+
+.tl-empty {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: 0.1em;
+  padding: 20px 0;
+  text-align: center;
+}
+
+/* ════════════════════════════════════
    FOOTER
-═══════════════════════════════════════ */
+════════════════════════════════════ */
 .footer {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 16px;
-  padding: 28px 0 8px;
-  border-top: 1px solid var(--border);
-  font-size: 11px;
-  font-weight: 400;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
   color: var(--text3);
-  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
-.footer-dot { width:3px; height:3px; border-radius:50%; background:var(--border2); }
-#last-update { color: var(--accent); font-weight: 600; }
+.footer-sep { width: 2px; height: 2px; border-radius: 50%; background: var(--text3); }
+#last-update { color: var(--blue2); }
 
-/* ═══════════════════════════════════════
+/* ════════════════════════════════════
    LOADING
-═══════════════════════════════════════ */
-.loading {
+════════════════════════════════════ */
+.loader {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 70vh;
-  gap: 20px;
+  gap: 18px;
 }
 
-.spin-ring {
-  width: 44px; height: 44px;
-  border: 2px solid var(--border2);
-  border-top-color: var(--accent);
+.loader-ring {
+  width: 36px; height: 36px;
+  border: 1px solid var(--line2);
+  border-top-color: var(--blue);
   border-radius: 50%;
-  animation: spin .75s linear infinite;
+  animation: spin .7s linear infinite;
 }
 
-@keyframes spin { to { transform:rotate(360deg); } }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-.loading-txt {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text3);
+.loader-txt {
+  font-family: var(--mono);
+  font-size: 10px;
   letter-spacing: 0.2em;
+  color: var(--text3);
   text-transform: uppercase;
 }
 
-/* ═══════════════════════════════════════
+/* ════════════════════════════════════
    MODAL
-═══════════════════════════════════════ */
-.modal-bg {
+════════════════════════════════════ */
+.modal-overlay {
   display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(6px);
-  z-index: 200;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(8px);
+  z-index: 500;
   align-items: center;
   justify-content: center;
 }
 
-.modal-bg.open { display: flex; }
+.modal-overlay.open { display: flex; }
 
-.modal {
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 18px;
+.modal-box {
+  background: var(--panel2);
+  border: 1px solid var(--line2);
+  border-radius: 14px;
   padding: 32px;
-  width: 340px;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.4);
-  animation: popIn .25s cubic-bezier(.34,1.56,.64,1);
+  width: 320px;
+  box-shadow: 0 32px 64px rgba(0,0,0,0.5);
+  animation: appear .22s cubic-bezier(.34,1.56,.64,1);
 }
 
-@keyframes popIn {
-  from { opacity:0; transform:scale(0.92); }
-  to { opacity:1; transform:scale(1); }
+@keyframes appear {
+  from { opacity: 0; transform: scale(.93) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-.modal h3 {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--accent2);
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-
-.modal p {
-  font-size: 12px;
-  color: var(--text3);
-  margin-bottom: 20px;
-}
-
-.modal input {
-  width: 100%;
-  background: var(--surface3);
-  border: 1px solid var(--border2);
-  color: var(--text);
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 22px;
-  font-weight: 700;
-  padding: 14px 18px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  transition: all .3s;
-  outline: none;
-}
-
-.modal input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 20px var(--accent-glow);
-}
-
-.modal-btns { display:flex; gap:10px; justify-content:flex-end; }
-
-.btn {
-  background: transparent;
-  border: 1px solid var(--border2);
-  color: var(--text2);
-  font-family: 'Exo 2', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 10px 20px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all .3s;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.btn:hover { border-color: var(--accent); color: var(--accent); }
-
-.btn.primary {
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  border: none;
-  color: #fff;
-  font-weight: 700;
-}
-
-.btn.primary:hover {
-  box-shadow: 0 8px 24px var(--accent-glow);
-  transform: translateY(-1px);
-}
-
-/* ═══════════════════════════════════════
-   RESPONSIVE
-═══════════════════════════════════════ */
-@media (max-width: 900px) {
-  .hero { grid-template-columns: 1fr; gap: 24px; }
-  .hero-divider { display: none; }
-  .hero-stats { gap: 16px; }
-}
-
-@media (max-width: 600px) {
-  .wrap { padding: 20px 16px; }
-  .hero { padding: 24px; }
-  header { flex-direction: column; align-items: flex-start; }
-  .header-right { width: 100%; justify-content: space-between; }
-}
-
-/* ═══════════════════════════════════════
-   PERIOD TABS
-═══════════════════════════════════════ */
-.period-bar {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.p-tab {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 9px 18px;
-  font-family: 'Rajdhani', sans-serif;
+.modal-title {
+  font-family: var(--mono);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--blue2);
+  margin-bottom: 4px;
+}
+
+.modal-sub {
+  font-size: 12px;
+  color: var(--text2);
+  margin-bottom: 20px;
+}
+
+.modal-box input {
+  width: 100%;
+  background: var(--panel3);
+  border: 1px solid var(--line2);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 24px;
+  font-weight: 700;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.modal-box input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+}
+
+.modal-row { display: flex; gap: 10px; justify-content: flex-end; }
+
+.mbtn {
+  background: transparent;
+  border: 1px solid var(--line2);
+  border-radius: 7px;
+  padding: 9px 18px;
+  font-family: var(--mono);
+  font-size: 11px;
   letter-spacing: 0.08em;
   color: var(--text2);
   cursor: pointer;
-  transition: all .25s;
-  text-transform: uppercase;
-  white-space: nowrap;
+  transition: all .2s;
 }
 
-.p-tab:hover {
-  border-color: var(--border2);
-  color: var(--text);
-}
+.mbtn:hover { border-color: var(--blue); color: var(--blue); }
 
-.p-tab.active {
-  background: var(--accent);
-  border-color: var(--accent);
+.mbtn.ok {
+  background: var(--blue);
+  border-color: var(--blue);
   color: #fff;
-  box-shadow: 0 4px 16px var(--accent-glow);
 }
 
-.p-tab.custom-tab {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
+.mbtn.ok:hover { box-shadow: 0 4px 16px var(--blue-glow); }
 
-.period-label {
-  font-family: 'Exo 2', sans-serif;
-  font-size: 11px;
-  font-weight: 400;
-  color: var(--text3);
-  letter-spacing: 0.05em;
-  margin-left: auto;
-}
-
-/* ═══════════════════════════════════════
+/* ════════════════════════════════════
    CALENDAR MODAL
-═══════════════════════════════════════ */
-.cal-modal-bg {
+════════════════════════════════════ */
+.cal-overlay {
   display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(6px);
-  z-index: 300;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(8px);
+  z-index: 600;
   align-items: center;
   justify-content: center;
 }
 
-.cal-modal-bg.open { display: flex; }
+.cal-overlay.open { display: flex; }
 
-.cal-modal {
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 20px;
+.cal-box {
+  background: var(--panel2);
+  border: 1px solid var(--line2);
+  border-radius: 16px;
   padding: 28px 32px;
-  width: 560px;
+  width: 580px;
   max-width: 95vw;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.4);
-  animation: popIn .25s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 32px 64px rgba(0,0,0,0.5);
+  animation: appear .22s cubic-bezier(.34,1.56,.64,1);
 }
 
-.cal-modal h3 {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 16px;
+.cal-title {
+  font-family: var(--mono);
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--accent2);
-  text-transform: uppercase;
-  margin-bottom: 20px;
+  color: var(--blue2);
+  margin-bottom: 22px;
+  letter-spacing: 0.06em;
 }
 
-.cal-months {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-bottom: 24px;
-}
+.cal-months { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 22px; }
 
-.cal-month {}
-
-.cal-month-hd {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.cal-mhd {
+  display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 12px;
 }
 
 .cal-nav {
-  background: none;
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  width: 28px; height: 28px;
+  background: transparent;
+  border: 1px solid var(--line2);
+  border-radius: 5px;
+  width: 26px; height: 26px;
   color: var(--text2);
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   transition: all .2s;
 }
 
-.cal-nav:hover { border-color: var(--accent); color: var(--accent); }
+.cal-nav:hover { border-color: var(--blue); color: var(--blue); }
 
-.cal-month-name {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 14px;
+.cal-mname {
+  font-family: var(--mono);
+  font-size: 12px;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
 }
 
 .cal-grid {
@@ -1131,713 +927,621 @@ header {
 
 .cal-dow {
   text-align: center;
-  font-size: 10px;
-  font-weight: 600;
+  font-family: var(--mono);
+  font-size: 9px;
   letter-spacing: 0.1em;
   color: var(--text3);
-  padding: 4px 0 8px;
+  padding: 3px 0 8px;
   text-transform: uppercase;
 }
 
 .cal-day {
   text-align: center;
-  font-family: 'Exo 2', sans-serif;
-  font-size: 12px;
-  font-weight: 400;
+  font-family: var(--mono);
+  font-size: 11px;
   color: var(--text);
   padding: 6px 2px;
-  border-radius: 8px;
+  border-radius: 5px;
   cursor: pointer;
-  transition: all .15s;
-  position: relative;
+  transition: all .12s;
   user-select: none;
+  position: relative;
 }
 
-.cal-day:hover:not(.empty):not(.disabled) {
-  background: var(--accent-glow);
-  color: var(--accent2);
-}
-
-.cal-day.today {
-  color: var(--accent2);
-  font-weight: 700;
-}
-
-.cal-day.today::after {
-  content: '';
-  position: absolute;
-  bottom: 2px; left: 50%;
-  transform: translateX(-50%);
-  width: 4px; height: 4px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-
-.cal-day.selected {
-  background: var(--accent);
-  color: #fff;
-  font-weight: 700;
-  box-shadow: 0 2px 10px var(--accent-glow);
-}
-
-.cal-day.in-range {
-  background: var(--accent-glow);
-  color: var(--accent2);
-  border-radius: 0;
-}
-
-.cal-day.range-start { border-radius: 8px 0 0 8px; }
-.cal-day.range-end { border-radius: 0 8px 8px 0; }
-.cal-day.range-start.range-end { border-radius: 8px; }
-
+.cal-day:hover:not(.empty):not(.dis) { background: var(--blue-dim); color: var(--blue2); }
+.cal-day.tod { color: var(--blue2); font-weight: 700; }
+.cal-day.tod::after { content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 3px; height: 3px; border-radius: 50%; background: var(--blue); }
+.cal-day.sel { background: var(--blue); color: #fff; font-weight: 700; box-shadow: 0 2px 10px var(--blue-glow); }
+.cal-day.inr { background: var(--blue-dim); color: var(--blue2); border-radius: 0; }
+.cal-day.rs  { border-radius: 5px 0 0 5px; }
+.cal-day.re  { border-radius: 0 5px 5px 0; }
+.cal-day.rs.re { border-radius: 5px; }
 .cal-day.empty { cursor: default; }
-.cal-day.disabled { color: var(--text3); cursor: not-allowed; opacity: 0.4; }
+.cal-day.dis { color: var(--text3); cursor: not-allowed; opacity: .3; }
 
-.cal-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-top: 1px solid var(--border);
-  padding-top: 18px;
+.cal-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
 }
 
-.cal-selected-range {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
+.cal-range-txt {
+  font-family: var(--mono);
+  font-size: 11px;
   color: var(--text2);
-  letter-spacing: 0.05em;
 }
 
-.cal-selected-range span { color: var(--accent2); }
+.cal-range-txt span { color: var(--blue2); }
 
-.cal-btns { display: flex; gap: 10px; }
+.cal-btns { display: flex; gap: 8px; }
 
-/* ═══════════════════════════════════════
-   SUMMARY STATS ROW (sub hero, per period)
-═══════════════════════════════════════ */
-.summary-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
-  margin-bottom: 20px;
+/* ════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════ */
+@media (max-width: 1100px) {
+  .bottom-grid { grid-template-columns: 1fr 1fr; }
+  .timeline-panel { grid-column: span 2; }
 }
 
-.sum-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 18px 20px;
-  transition: all .3s;
+@media (max-width: 780px) {
+  .ad-grid { grid-template-columns: 1fr; }
+  .chart-grid { grid-template-columns: 1fr; }
+  .hero { grid-template-columns: 1fr; }
+  .hero-stats { flex-direction: row; flex-wrap: wrap; }
+  .hstat { flex: 1; min-width: 120px; }
+  .bottom-grid { grid-template-columns: 1fr; }
+  .timeline-panel { grid-column: span 1; }
+  .cal-months { grid-template-columns: 1fr; }
 }
 
-.sum-card:hover {
-  border-color: var(--border2);
-  transform: translateY(-2px);
+@media (max-width: 520px) {
+  .shell { padding: 20px 14px 40px; }
+  .hero-main { padding: 24px; }
+  .hdr { flex-direction: column; align-items: flex-start; }
+  .hdr-right { width: 100%; justify-content: space-between; }
 }
-
-.sum-lbl {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.15em;
-  color: var(--text3);
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-.sum-val {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1;
-}
-
-.sum-val.accent { color: var(--accent2); }
-.sum-val.green { color: var(--green); }
-.sum-val.yellow { color: var(--yellow); }
-.sum-val.orange { color: var(--orange); }
-
 </style>
 </head>
 <body>
-<div id="app">
-  <div class="loading">
-    <div class="spin-ring"></div>
-    <div class="loading-txt">Connecting to Firebase...</div>
+<div id="root">
+  <div class="loader">
+    <div class="loader-ring"></div>
+    <div class="loader-txt">Connecting to Firebase...</div>
   </div>
 </div>
 
-<div class="modal-bg" id="modal">
-  <div class="modal">
-    <h3>Target Zilnic</h3>
-    <p>Setează venitul target pentru ziua de azi</p>
+<!-- TARGET MODAL -->
+<div class="modal-overlay" id="modalTarget">
+  <div class="modal-box">
+    <div class="modal-title">TARGET ZILNIC</div>
+    <div class="modal-sub">Setează venitul target pentru azi</div>
     <input type="number" id="target-input" placeholder="0.00" step="0.01" min="0">
-    <div class="modal-btns">
-      <button class="btn" onclick="closeModal()">Anulează</button>
-      <button class="btn primary" onclick="saveTarget()">Salvează</button>
+    <div class="modal-row">
+      <button class="mbtn" onclick="closeModal()">Anulează</button>
+      <button class="mbtn ok" onclick="saveTarget()">Salvează</button>
     </div>
   </div>
 </div>
 
 <!-- CALENDAR MODAL -->
-<div class="cal-modal-bg" id="calModal">
-  <div class="cal-modal">
-    <h3>📅 Selectează Perioada</h3>
+<div class="cal-overlay" id="calModal">
+  <div class="cal-box">
+    <div class="cal-title">// SELECTEAZĂ PERIOADA</div>
     <div class="cal-months" id="calMonths"></div>
-    <div class="cal-footer">
-      <div class="cal-selected-range" id="calRange">Selectează datele</div>
+    <div class="cal-foot">
+      <div class="cal-range-txt" id="calRangeTxt">Selectează datele</div>
       <div class="cal-btns">
-        <button class="btn" onclick="closeCal()">Anulează</button>
-        <button class="btn primary" id="calApply" onclick="applyCal()" disabled>Aplică</button>
+        <button class="mbtn" onclick="closeCal()">Anulează</button>
+        <button class="mbtn ok" id="calApplyBtn" onclick="applyCal()" disabled>Aplică</button>
       </div>
     </div>
   </div>
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, onValue, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue, query, limitToLast, orderByKey }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
+/* ─── FIREBASE ─────────────────────────────── */
 const app = initializeApp({ databaseURL: "https://bmwadsstats-default-rtdb.firebaseio.com/" });
-const db = getDatabase(app);
+const db  = getDatabase(app);
 
-let state = {};
-let charts = {};
+/* ─── STATE ────────────────────────────────── */
+let state       = {};
+let charts      = {};
 let dailyTarget = parseFloat(localStorage.getItem('dailyTarget') || '10');
-let currentTheme = localStorage.getItem('theme') || 'dark';
+let theme       = localStorage.getItem('theme') || 'dark';
 
-// ── THEME ──────────────────────────────────
+let activePeriod = 'today';
+let customStart  = null;
+let customEnd    = null;
+
+/* Calendar */
+let calYear  = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+let calS = null, calE = null, calStep = 0;
+
+/* ─── THEME ────────────────────────────────── */
 function applyTheme(t) {
-  currentTheme = t;
-  localStorage.setItem('theme', t);
+  theme = t; localStorage.setItem('theme', t);
   document.documentElement.setAttribute('data-theme', t);
 }
+window.toggleTheme = t => { applyTheme(t); renderAll(); };
 
-window.toggleTheme = (t) => { applyTheme(t); renderAll(); };
-
-// ── MODAL ──────────────────────────────────
-window.openModal  = () => { document.getElementById('target-input').value = dailyTarget; document.getElementById('modal').classList.add('open'); };
-window.closeModal = () => document.getElementById('modal').classList.remove('open');
+/* ─── MODAL ────────────────────────────────── */
+window.openModal  = () => { document.getElementById('target-input').value = dailyTarget; document.getElementById('modalTarget').classList.add('open'); };
+window.closeModal = () => document.getElementById('modalTarget').classList.remove('open');
 window.saveTarget = () => {
   const v = parseFloat(document.getElementById('target-input').value);
   if (!isNaN(v) && v > 0) { dailyTarget = v; localStorage.setItem('dailyTarget', v); }
   closeModal(); renderAll();
 };
 
-// ── FORMAT ─────────────────────────────────
-const fmt      = n => { n=parseFloat(n)||0; return n>=1e6?(n/1e6).toFixed(1)+'M':n>=1000?(n/1000).toFixed(1)+'K':Math.round(n)+''; };
-const fmtRev   = n => '$'+(parseFloat(n)||0).toFixed(4);
-const fmtShort = n => '$'+(parseFloat(n)||0).toFixed(2);
-const fmtECPM  = n => '$'+(parseFloat(n)||0).toFixed(2);
-const fmtCTR   = n => (parseFloat(n)||0).toFixed(2)+'%';
+/* ─── UTILS ────────────────────────────────── */
+const ds    = d => d.toISOString().split('T')[0];
+const today = () => ds(new Date());
+const fmt   = n => { n=parseFloat(n)||0; return n>=1e6?(n/1e6).toFixed(1)+'M':n>=1000?(n/1000).toFixed(1)+'K':Math.round(n)+''; };
+const fmtR  = n => '$'+(parseFloat(n)||0).toFixed(4);
+const fmtS  = n => '$'+(parseFloat(n)||0).toFixed(2);
+const fmtE  = n => '$'+(parseFloat(n)||0).toFixed(2);
+const fmtC  = n => (parseFloat(n)||0).toFixed(2)+'%';
 
-// ── PERIOD STATE ───────────────────────────
-let activePeriod = 'today'; // today | yesterday | 7d | 30d | custom
-let customStart  = null;    // 'YYYY-MM-DD'
-let customEnd    = null;
-
-// Calendar state
-let calViewYear  = new Date().getFullYear();
-let calViewMonth = new Date().getMonth(); // 0-based
-let calPickStart = null;
-let calPickEnd   = null;
-let calPickStep  = 0; // 0=pick start, 1=pick end
-
-// ── HELPERS ────────────────────────────────
-const today    = () => new Date().toISOString().split('T')[0];
-const dateStr  = d => d.toISOString().split('T')[0];
-
-function addDays(dateStr, n) {
-  const d = new Date(dateStr); d.setDate(d.getDate()+n); return dateStr_(d);
-}
-function dateStr_(d) { return d.toISOString().split('T')[0]; }
-
-function getPeriodDays() {
-  const daily = state.daily || {};
-  const allDays = Object.keys(daily).sort();
+/* ─── PERIOD ───────────────────────────────── */
+function periodDays() {
   const t = today();
-
-  if (activePeriod === 'today') return [t];
-
-  if (activePeriod === 'yesterday') {
-    const y = new Date(); y.setDate(y.getDate()-1);
-    return [dateStr_(y)];
+  if (activePeriod === 'today')     return [t];
+  if (activePeriod === 'yesterday') { const y=new Date(); y.setDate(y.getDate()-1); return [ds(y)]; }
+  if (activePeriod === '7d')  { const arr=[]; for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);arr.push(ds(d));} return arr; }
+  if (activePeriod === '30d') { const arr=[]; for(let i=29;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);arr.push(ds(d));} return arr; }
+  if (activePeriod==='custom'&&customStart&&customEnd) {
+    const arr=[]; let c=new Date(customStart); const e=new Date(customEnd);
+    while(c<=e){arr.push(ds(c));c.setDate(c.getDate()+1);}
+    return arr;
   }
-
-  if (activePeriod === '7d') {
-    const days = [];
-    for (let i=6; i>=0; i--) { const d=new Date(); d.setDate(d.getDate()-i); days.push(dateStr_(d)); }
-    return days;
-  }
-
-  if (activePeriod === '30d') {
-    const days = [];
-    for (let i=29; i>=0; i--) { const d=new Date(); d.setDate(d.getDate()-i); days.push(dateStr_(d)); }
-    return days;
-  }
-
-  if (activePeriod === 'custom' && customStart && customEnd) {
-    const days = []; let cur = new Date(customStart); const end = new Date(customEnd);
-    while (cur <= end) { days.push(dateStr_(cur)); cur.setDate(cur.getDate()+1); }
-    return days;
-  }
-
   return [t];
 }
 
 function periodLabel() {
-  if (activePeriod === 'today') return 'Azi (00:00 → acum)';
-  if (activePeriod === 'yesterday') { const y=new Date(); y.setDate(y.getDate()-1); return 'Ieri · '+dateStr_(y); }
-  if (activePeriod === '7d') return 'Ultimele 7 Zile';
-  if (activePeriod === '30d') return 'Ultimele 30 Zile';
-  if (activePeriod === 'custom' && customStart && customEnd) return customStart+' → '+customEnd;
+  if (activePeriod==='today')     return 'AZI';
+  if (activePeriod==='yesterday') { const y=new Date();y.setDate(y.getDate()-1);return 'IERI · '+ds(y); }
+  if (activePeriod==='7d')  return 'ULTIMELE 7 ZILE';
+  if (activePeriod==='30d') return 'ULTIMELE 30 ZILE';
+  if (activePeriod==='custom'&&customStart&&customEnd) return customStart+' → '+customEnd;
   return '';
 }
 
-// ── AGGREGATE period data ───────────────────
-function getPeriodStats() {
-  const daily = state.daily||{};
-  const days  = getPeriodDays();
-  let rev=0, imp=0, clk=0, sess=0;
-  let intRev=0, banRev=0, rewRev=0;
-  let intImp=0, banImp=0, rewImp=0;
-  let intClk=0, banClk=0, rewClk=0;
-  let intEcpmSum=0, rewEcpmSum=0, intEcpmCount=0, rewEcpmCount=0;
+window.setPeriod = p => {
+  if (p==='custom') { openCal(); return; }
+  activePeriod = p; renderAll();
+};
+
+/* ─── AGGREGATION ──────────────────────────── */
+function periodStats() {
+  const daily = state.daily || {};
+  const days  = periodDays();
+  let rev=0, intI=0, banI=0, rewI=0, intC=0, banC=0, rewC=0;
+  let intR=0, banR=0, rewR=0, sess=0;
+  let intEcpm=0, rewEcpm=0, intEc=0, rewEc=0;
 
   days.forEach(d => {
     const dd = daily[d] || {};
-    rev  += parseFloat(dd.revenue)||0;
-    sess += parseInt(dd.sessions)||0;
+    rev  += parseFloat(dd.revenue) || 0;
+    sess += parseInt(dd.sessions)  || 0;
 
-    const intr = dd.interstitial||{};
-    const ban  = dd.banner||{};
-    const rew  = dd.rewarded||{};
+    const intr = dd.interstitial || {};
+    const ban  = dd.banner || {};
+    const rew  = dd.rewarded || {};
 
-    intImp += parseInt(intr.impressions)||0;
-    banImp += parseInt(ban.impressions)||0;
-    rewImp += parseInt(rew.impressions)||0;
+    intI += parseInt(intr.impressions) || 0;
+    banI += parseInt(ban.impressions)  || 0;
+    rewI += parseInt(rew.impressions)  || 0;
 
-    intClk += parseInt(intr.clicks)||0;
-    banClk += parseInt(ban.clicks)||0;
-    rewClk += parseInt(rew.clicks)||0;
+    intC += parseInt(intr.clicks) || 0;
+    banC += parseInt(ban.clicks)  || 0;
+    rewC += parseInt(rew.clicks)  || 0;
 
-    intRev += parseFloat(intr.revenue)||0;
-    banRev += parseFloat(ban.revenue)||0;
-    rewRev += parseFloat(rew.revenue)||0;
+    intR += parseFloat(intr.revenue) || 0;
+    banR += parseFloat(ban.revenue)  || 0;
+    rewR += parseFloat(rew.revenue)  || 0;
 
-    if (parseFloat(intr.ecpm)) { intEcpmSum+=parseFloat(intr.ecpm); intEcpmCount++; }
-    if (parseFloat(rew.ecpm))  { rewEcpmSum+=parseFloat(rew.ecpm);  rewEcpmCount++; }
+    if (parseFloat(intr.ecpm)) { intEcpm += parseFloat(intr.ecpm); intEc++; }
+    if (parseFloat(rew.ecpm))  { rewEcpm += parseFloat(rew.ecpm);  rewEc++; }
   });
 
-  imp = intImp + banImp + rewImp;
-  clk = intClk + banClk + rewClk;
-
   return {
-    rev, imp, clk, sess,
-    interstitial: { impressions:intImp, clicks:intClk, revenue:intRev, ctr: intImp>0?(intClk/intImp*100):0, ecpm: intEcpmCount?intEcpmSum/intEcpmCount:0 },
-    banner:       { impressions:banImp, clicks:banClk, revenue:banRev, ctr: banImp>0?(banClk/banImp*100):0, ecpm: 0 },
-    rewarded:     { impressions:rewImp, clicks:rewClk, revenue:rewRev, ctr: rewImp>0?(rewClk/rewImp*100):0, ecpm: rewEcpmCount?rewEcpmSum/rewEcpmCount:0 },
+    rev, imp: intI+banI+rewI, clk: intC+banC+rewC, sess,
+    interstitial: { impressions:intI, clicks:intC, revenue:intR, ctr:intI>0?intC/intI*100:0, ecpm:intEc?intEcpm/intEc:0 },
+    banner:       { impressions:banI, clicks:banC, revenue:banR, ctr:banI>0?banC/banI*100:0, ecpm:0 },
+    rewarded:     { impressions:rewI, clicks:rewC, revenue:rewR, ctr:rewI>0?rewC/rewI*100:0, ecpm:rewEc?rewEcpm/rewEc:0 },
   };
 }
 
-function getChartData() {
-  const daily = state.daily||{};
-  const days  = getPeriodDays();
-  // If only 1 day, show hourly is not possible from Firebase structure, show that day vs prev days
-  const displayDays = days.length === 1
-    ? (() => { const arr=[]; for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);arr.push(dateStr_(d));} return arr; })()
+function chartData() {
+  const daily = state.daily || {};
+  const days  = periodDays();
+  const show  = days.length===1
+    ? (() => { const a=[]; for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);a.push(ds(d));} return a; })()
     : days;
-
   return {
-    labels:      displayDays.map(d=>d.slice(5)),
-    revenue:     displayDays.map(d=>parseFloat((daily[d]||{}).revenue)||0),
-    sessions:    displayDays.map(d=>parseInt((daily[d]||{}).sessions)||0),
-    impressions: displayDays.map(d=>{ const dd=daily[d]||{}; return (parseInt((dd.interstitial||{}).impressions)||0)+(parseInt((dd.banner||{}).impressions)||0)+(parseInt((dd.rewarded||{}).impressions)||0); })
+    labels:      show.map(d => d.slice(5)),
+    revenue:     show.map(d => parseFloat((daily[d]||{}).revenue)||0),
+    sessions:    show.map(d => parseInt((daily[d]||{}).sessions)||0),
+    impressions: show.map(d => {
+      const dd=daily[d]||{};
+      return (parseInt((dd.interstitial||{}).impressions)||0)+(parseInt((dd.banner||{}).impressions)||0)+(parseInt((dd.rewarded||{}).impressions)||0);
+    })
   };
 }
 
-// ── GETTERS (kept for compat) ───────────────
-const totalRev  = () => parseFloat((state.total||{}).revenue)||0;
-const totalSess = () => parseInt((state.total||{}).sessions)||0;
+function bestDay() {
+  return Object.values(state.daily||{}).reduce((b,d)=>{ const r=parseFloat((d||{}).revenue)||0; return r>b?r:b; }, 0);
+}
 
-// ── PERIOD SWITCH ───────────────────────────
-window.setPeriod = (p) => {
-  if (p === 'custom') { openCal(); return; }
-  activePeriod = p;
-  renderAll();
-};
+function totalRev()  { return parseFloat((state.total||{}).revenue)||0; }
+function totalSess() { return parseInt((state.total||{}).sessions)||0; }
 
-// ── CALENDAR LOGIC ──────────────────────────
+function topList(node, max=7) {
+  return Object.entries(state[node]||{})
+    .map(([k,v])=>({name:k.replace(/_/g,' '), val:parseInt(v)||0}))
+    .sort((a,b)=>b.val-a.val).slice(0,max);
+}
+
+/* ─── TIMELINE ─────────────────────────────── */
+function getTimeline() {
+  const tl = state.timeline || {};
+  return Object.values(tl)
+    .filter(e => e && (e.time || e.text))
+    .sort((a,b) => {
+      // Sort by time string descending
+      const ta = String(a.time||'');
+      const tb = String(b.time||'');
+      return tb.localeCompare(ta);
+    })
+    .slice(0, 20);
+}
+
+function renderTimelineDOM() {
+  const container = document.querySelector('.tl-scroll');
+  if (!container) return;
+  const tl = getTimeline();
+  if (!tl.length) {
+    container.innerHTML = '<div class="tl-empty">// NICIO ACTIVITATE</div>';
+    return;
+  }
+  container.innerHTML = tl.map(e => `
+    <div class="tl-row">
+      <div class="tl-indicator"></div>
+      <div class="tl-body">
+        <div class="tl-ts">${e.time || ''}</div>
+        <div class="tl-msg">${e.text || ''}</div>
+        <div class="tl-context">${e.country || ''} ${e.device ? '· ' + String(e.device).substring(0,18) : ''}</div>
+      </div>
+    </div>`).join('');
+}
+
+/* ─── CALENDAR ─────────────────────────────── */
 window.openCal = () => {
-  calPickStart=null; calPickEnd=null; calPickStep=0;
-  calViewYear=new Date().getFullYear(); calViewMonth=new Date().getMonth();
-  renderCal();
-  document.getElementById('calModal').classList.add('open');
+  calS=null; calE=null; calStep=0;
+  calYear=new Date().getFullYear(); calMonth=new Date().getMonth();
+  renderCal(); document.getElementById('calModal').classList.add('open');
 };
-window.closeCal = () => document.getElementById('calModal').classList.remove('open');
-
-window.applyCal = () => {
-  if (calPickStart && calPickEnd) {
-    customStart = calPickStart < calPickEnd ? calPickStart : calPickEnd;
-    customEnd   = calPickStart < calPickEnd ? calPickEnd   : calPickStart;
+window.closeCal  = () => document.getElementById('calModal').classList.remove('open');
+window.applyCal  = () => {
+  if (calS && calE) {
+    customStart = calS < calE ? calS : calE;
+    customEnd   = calS < calE ? calE : calS;
     activePeriod = 'custom';
-    closeCal();
-    renderAll();
+    closeCal(); renderAll();
   }
 };
-
-window.calNav = (delta) => {
-  calViewMonth += delta;
-  if (calViewMonth > 11) { calViewMonth=0; calViewYear++; }
-  if (calViewMonth < 0)  { calViewMonth=11; calViewYear--; }
+window.calNav    = delta => {
+  calMonth += delta;
+  if (calMonth>11){calMonth=0;calYear++;}
+  if (calMonth<0) {calMonth=11;calYear--;}
   renderCal();
 };
-
-window.calPickDay = (dateS) => {
-  if (calPickStep === 0) {
-    calPickStart = dateS; calPickEnd = null; calPickStep = 1;
-  } else {
-    calPickEnd = dateS; calPickStep = 0;
-    document.getElementById('calApply').disabled = false;
-  }
-  updateCalRange();
-  renderCalGrids();
+window.calPick = dateS => {
+  if (calStep===0) { calS=dateS; calE=null; calStep=1; }
+  else             { calE=dateS; calStep=0; document.getElementById('calApplyBtn').disabled=false; }
+  updateCalRange(); renderCalGrids();
 };
 
 function updateCalRange() {
-  const el = document.getElementById('calRange');
-  if (!calPickStart) { el.textContent='Selectează data start'; return; }
-  if (!calPickEnd)   { el.innerHTML=`<span>${calPickStart}</span> → ?`; return; }
-  const s = calPickStart < calPickEnd ? calPickStart : calPickEnd;
-  const e = calPickStart < calPickEnd ? calPickEnd   : calPickStart;
+  const el = document.getElementById('calRangeTxt');
+  if (!el) return;
+  if (!calS)    { el.textContent='Selectează data start'; return; }
+  if (!calE)    { el.innerHTML=`<span>${calS}</span> → ?`; return; }
+  const s = calS<calE?calS:calE, e = calS<calE?calE:calS;
   el.innerHTML=`<span>${s}</span> → <span>${e}</span>`;
 }
 
-function renderCal() {
-  renderCalGrids();
-  updateCalRange();
-}
+function renderCal() { renderCalGrids(); updateCalRange(); }
 
 function renderCalGrids() {
   const container = document.getElementById('calMonths');
   if (!container) return;
-  // Show 2 months: current calViewMonth and next
-  const months = [
-    {y: calViewYear, m: calViewMonth},
-    {y: calViewMonth===11?calViewYear+1:calViewYear, m: calViewMonth===11?0:calViewMonth+1}
-  ];
   const todayS = today();
-  const MONTHS = ['Ianuarie','Februarie','Martie','Aprilie','Mai','Iunie','Iulie','August','Septembrie','Octombrie','Noiembrie','Decembrie'];
-  const DOWS   = ['Lu','Ma','Mi','Jo','Vi','Sa','Du'];
+  const MN = ['Ianuarie','Februarie','Martie','Aprilie','Mai','Iunie','Iulie','August','Septembrie','Octombrie','Noiembrie','Decembrie'];
+  const DW = ['Lu','Ma','Mi','Jo','Vi','Sâ','Du'];
+  const months = [
+    {y:calYear, m:calMonth},
+    {y:calMonth===11?calYear+1:calYear, m:calMonth===11?0:calMonth+1}
+  ];
 
   container.innerHTML = months.map((mo, mi) => {
-    const firstDay = new Date(mo.y, mo.m, 1).getDay(); // 0=Sun
-    const offset   = (firstDay + 6) % 7; // Mon-based
+    const firstDay = new Date(mo.y, mo.m, 1).getDay();
+    const offset   = (firstDay+6)%7;
     const daysInM  = new Date(mo.y, mo.m+1, 0).getDate();
-
-    const cells = [];
+    const cells    = [];
     for (let i=0; i<offset; i++) cells.push('<div class="cal-day empty"></div>');
     for (let d=1; d<=daysInM; d++) {
-      const ds = `${mo.y}-${String(mo.m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      const isFuture = ds > todayS;
+      const ds2 = `${mo.y}-${String(mo.m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const isFuture = ds2 > todayS;
       let cls = 'cal-day';
-      if (ds === todayS) cls += ' today';
-      if (isFuture) cls += ' disabled';
-
-      // Range highlighting
-      if (calPickStart && calPickEnd) {
-        const s = calPickStart<calPickEnd?calPickStart:calPickEnd;
-        const e = calPickStart<calPickEnd?calPickEnd:calPickStart;
-        if (ds===s) cls += ' selected range-start';
-        else if (ds===e) cls += ' selected range-end';
-        else if (ds>s && ds<e) cls += ' in-range';
-      } else if (calPickStart && ds===calPickStart) {
-        cls += ' selected range-start range-end';
-      }
-
-      const click = isFuture ? '' : `onclick="calPickDay('${ds}')"`;
+      if (ds2===todayS) cls+=' tod';
+      if (isFuture)     cls+=' dis';
+      if (calS && calE) {
+        const s=calS<calE?calS:calE, e=calS<calE?calE:calS;
+        if (ds2===s)       cls+=' sel rs';
+        else if (ds2===e)  cls+=' sel re';
+        else if (ds2>s&&ds2<e) cls+=' inr';
+      } else if (calS && ds2===calS) cls+=' sel rs re';
+      const click = isFuture ? '' : `onclick="calPick('${ds2}')"`;
       cells.push(`<div class="${cls}" ${click}>${d}</div>`);
     }
-
-    const navLeft  = mi===0 ? `<button class="cal-nav" onclick="calNav(-1)">‹</button>` : `<div style="width:28px"></div>`;
-    const navRight = mi===1 ? `<button class="cal-nav" onclick="calNav(1)">›</button>` : `<div style="width:28px"></div>`;
-
-    return `
-    <div class="cal-month">
-      <div class="cal-month-hd">
-        ${navLeft}
-        <div class="cal-month-name">${MONTHS[mo.m]} ${mo.y}</div>
-        ${navRight}
-      </div>
-      <div class="cal-grid">
-        ${DOWS.map(d=>`<div class="cal-dow">${d}</div>`).join('')}
-        ${cells.join('')}
-      </div>
+    const nl  = mi===0 ? `<button class="cal-nav" onclick="calNav(-1)">‹</button>` : `<div style="width:26px"></div>`;
+    const nr  = mi===1 ? `<button class="cal-nav" onclick="calNav(1)">›</button>`  : `<div style="width:26px"></div>`;
+    return `<div>
+      <div class="cal-mhd">${nl}<div class="cal-mname">${MN[mo.m]} ${mo.y}</div>${nr}</div>
+      <div class="cal-grid">${DW.map(d=>`<div class="cal-dow">${d}</div>`).join('')}${cells.join('')}</div>
     </div>`;
   }).join('');
 }
 
-function topList(node, max=8) {
-  return Object.entries(state[node]||{})
-    .map(([k,v])=>({name:k.replace(/_/g,' '),val:parseInt(v)||0}))
-    .sort((a,b)=>b.val-a.val).slice(0,max);
-}
-
-function getTimeline() {
-  return Object.values(state.timeline||{})
-    .sort((a,b)=>b.time>a.time?1:-1)
-    .slice(0,15);
-}
-
-function bestDay() {
-  return Object.values(state.daily||{}).reduce((b,d)=>{ const r=parseFloat((d||{}).revenue)||0; return r>b?r:b; },0);
-}
-
-// ── RENDER ─────────────────────────────────
+/* ─── RENDER ───────────────────────────────── */
 function renderAll() {
-  const ps    = getPeriodStats();
-  const rev   = ps.rev;
-  const pct   = Math.min((rev/dailyTarget)*100,100);
-  const best  = bestDay();
-  const cd    = getChartData();
-  const cntry = topList('countries');
-  const devs  = topList('devices');
-  const tl    = getTimeline();
+  const ps  = periodStats();
+  const pct = Math.min((ps.rev/dailyTarget)*100, 100);
+  const cd  = chartData();
+  const cnt = topList('countries');
+  const dev = topList('devices');
+  const tl  = getTimeline();
+  const tot = state.total || {};
 
   const adTypes = [
-    {key:'interstitial', label:'Interstitial', icon:'📺', cls:'interstitial'},
-    {key:'banner',       label:'Banner',       icon:'🖼️', cls:'banner'},
-    {key:'rewarded',     label:'Rewarded',     icon:'🎁', cls:'rewarded'},
+    {key:'interstitial', label:'Interstitial', cls:'inter'},
+    {key:'banner',       label:'Banner',       cls:'banner'},
+    {key:'rewarded',     label:'Rewarded',     cls:'reward'},
   ];
 
-  document.getElementById('app').innerHTML = `
-  <div class="wrap">
+  document.getElementById('root').innerHTML = `
+  <div class="shell">
 
     <!-- HEADER -->
-    <header>
-      <div class="logo-wrap">
-        <div class="logo-icon">🚗</div>
+    <div class="hdr">
+      <div class="brand">
+        <div class="brand-mark">🚗</div>
         <div>
-          <div class="logo-text">BMW Ads Stats</div>
-          <div class="logo-sub">Realtime Dashboard</div>
+          <div class="brand-name">BMW_ADS.STATS</div>
+          <div class="brand-sub">Realtime Dashboard</div>
         </div>
       </div>
-      <div class="header-right">
-        <div class="live-pill"><div class="dot"></div>Live</div>
-        <div class="theme-toggle">
-          <button class="t-btn ${currentTheme==='dark'?'on':''}" onclick="toggleTheme('dark')" title="Dark">🌙</button>
-          <button class="t-btn ${currentTheme==='light'?'on':''}" onclick="toggleTheme('light')" title="Light">☀️</button>
+      <div class="hdr-right">
+        <div class="status-chip"><div class="pulse"></div>LIVE</div>
+        <div class="theme-sw">
+          <button class="tsw ${theme==='dark'?'on':''}" onclick="toggleTheme('dark')" title="Dark">🌙</button>
+          <button class="tsw ${theme==='light'?'on':''}" onclick="toggleTheme('light')" title="Light">☀️</button>
         </div>
       </div>
-    </header>
+    </div>
 
     <!-- PERIOD TABS -->
-    <div class="period-bar">
-      <button class="p-tab ${activePeriod==='today'?'active':''}" onclick="setPeriod('today')">Azi</button>
-      <button class="p-tab ${activePeriod==='yesterday'?'active':''}" onclick="setPeriod('yesterday')">Ieri</button>
-      <button class="p-tab ${activePeriod==='7d'?'active':''}" onclick="setPeriod('7d')">7 Zile</button>
-      <button class="p-tab ${activePeriod==='30d'?'active':''}" onclick="setPeriod('30d')">30 Zile</button>
-      <button class="p-tab custom-tab ${activePeriod==='custom'?'active':''}" onclick="setPeriod('custom')">📅 Custom</button>
-      <span class="period-label">${periodLabel()}</span>
+    <div class="period-row">
+      <button class="ptab ${activePeriod==='today'?'on':''}" onclick="setPeriod('today')">AZI</button>
+      <button class="ptab ${activePeriod==='yesterday'?'on':''}" onclick="setPeriod('yesterday')">IERI</button>
+      <button class="ptab ${activePeriod==='7d'?'on':''}" onclick="setPeriod('7d')">7 ZILE</button>
+      <button class="ptab ${activePeriod==='30d'?'on':''}" onclick="setPeriod('30d')">30 ZILE</button>
+      <button class="ptab ${activePeriod==='custom'?'on':''}" onclick="setPeriod('custom')">📅 CUSTOM</button>
+      <span class="period-info">${periodLabel()}</span>
     </div>
 
     <!-- HERO -->
     <div class="hero">
       <div class="hero-main">
-        <div class="hero-lbl">Venit · ${periodLabel()}</div>
-        <div class="hero-val">${fmtShort(rev)}</div>
-        <div class="hero-today">&#x25B2; All-time: ${fmtShort(totalRev())}</div>
+        <div class="hero-eyebrow">// VENIT · ${periodLabel()}</div>
+        <div class="hero-amount">${fmtS(ps.rev)}</div>
+        <div class="hero-sub">▲ ALL TIME ${fmtS(totalRev())}</div>
       </div>
-      <div class="hero-divider"></div>
       <div class="hero-stats">
-        <div class="hstat"><div class="hstat-v">${fmt(ps.imp)}</div><div class="hstat-l">Impresii</div></div>
-        <div class="hstat"><div class="hstat-v">${fmt(ps.clk)}</div><div class="hstat-l">Clickuri</div></div>
-        <div class="hstat"><div class="hstat-v">${fmt(ps.sess)}</div><div class="hstat-l">Sesiuni</div></div>
-        <div class="hstat"><div class="hstat-v">${fmtShort(totalRev())}</div><div class="hstat-l">Total All-Time</div></div>
+        <div class="hstat"><div class="hstat-n">${fmt(ps.imp)}</div><div class="hstat-l">Impresii</div></div>
+        <div class="hstat"><div class="hstat-n">${fmt(ps.clk)}</div><div class="hstat-l">Clickuri</div></div>
+        <div class="hstat"><div class="hstat-n">${fmt(ps.sess)}</div><div class="hstat-l">Sesiuni</div></div>
+        <div class="hstat"><div class="hstat-n">${fmtS(totalRev())}</div><div class="hstat-l">All-Time $</div></div>
       </div>
     </div>
 
     <!-- TARGET -->
-    <div class="target-card">
-      <div class="target-hd">
-        <div class="target-title">🎯 Target Zilnic</div>
-        <button class="target-edit" onclick="openModal()">Edit</button>
+    <div class="target-strip">
+      <div class="target-left">
+        <div class="target-label">TARGET ZILNIC <span>${fmtS(ps.rev)} / ${fmtS(dailyTarget)}</span></div>
+        <div class="track"><div class="fill" style="width:${pct.toFixed(1)}%"></div></div>
+        <div class="target-meta">
+          <span>${pct.toFixed(1)}% atins</span>
+          <span class="target-record">🏆 Record: <span class="record-num">${fmtS(bestDay())}</span></span>
+        </div>
       </div>
-      <div class="progress-track">
-        <div class="progress-fill" style="width:${pct.toFixed(1)}%"></div>
-      </div>
-      <div class="progress-meta">
-        <span>${fmtShort(rev)} din ${fmtShort(dailyTarget)}</span>
-        <div class="progress-pct">${pct.toFixed(1)}%</div>
-      </div>
-      <div class="record-row">🏆 Record: <span class="record-val">${fmtShort(best)}</span></div>
+      <div class="target-pct">${pct.toFixed(0)}%</div>
+      <button class="edit-btn" onclick="openModal()">EDIT</button>
     </div>
 
-    <!-- AD CARDS -->
-    <div class="section-label"><span>Statistici per tip reclamă</span></div>
-    <div class="cards">
-      ${adTypes.map(a=>{
+    <!-- AD TYPE CARDS -->
+    <div class="divider"><span>per tip de reclamă · ${periodLabel()}</span></div>
+    <div class="ad-grid">
+      ${adTypes.map(a => {
         const pd = ps[a.key] || {};
-        return `
-        <div class="card ${a.cls}">
-          <div class="card-hd">
-            <div class="card-label-wrap">
-              <div class="card-badge">${a.key}</div>
-              <div class="card-title">${a.label}</div>
-            </div>
-            <div class="card-icon">${a.icon}</div>
-          </div>
-          <div class="srow"><span class="slbl">Impresii</span><span class="sval neutral">${fmt(pd.impressions||0)}</span></div>
-          <div class="srow"><span class="slbl">Clickuri</span><span class="sval neutral">${fmt(pd.clicks||0)}</span></div>
-          <div class="srow"><span class="slbl">CTR</span><span class="sval ctr">${fmtCTR(pd.ctr||0)}</span></div>
-          <div class="srow"><span class="slbl">Venit Perioadă</span><span class="sval rev">${fmtRev(pd.revenue||0)}</span></div>
-          <div class="srow"><span class="slbl">eCPM Mediu</span><span class="sval ecpm">${fmtECPM(pd.ecpm||0)}</span></div>
+        return `<div class="ad-card ${a.cls}">
+          <div class="ad-top-line"></div>
+          <div class="ad-tag">${a.key}</div>
+          <div class="ad-name">${a.label}</div>
+          <div class="stat-line"><span class="sl-key">Impresii</span><span class="sl-val">${fmt(pd.impressions||0)}</span></div>
+          <div class="stat-line"><span class="sl-key">Clickuri</span><span class="sl-val">${fmt(pd.clicks||0)}</span></div>
+          <div class="stat-line"><span class="sl-key">CTR</span><span class="sl-val r">${fmtC(pd.ctr||0)}</span></div>
+          <div class="stat-line"><span class="sl-key">Venit</span><span class="sl-val y">${fmtR(pd.revenue||0)}</span></div>
+          <div class="stat-line"><span class="sl-key">eCPM mediu</span><span class="sl-val b">${fmtE(pd.ecpm||0)}</span></div>
         </div>`;
       }).join('')}
     </div>
 
     <!-- CHARTS -->
-    <div class="section-label"><span>Grafice ultimele 7 zile</span></div>
-    <div class="charts-grid">
-      <div class="chart-card">
-        <div class="chart-header"><div class="chart-title">💰 Venit ($)</div></div>
-        <div class="chart-wrap"><canvas id="chartRevenue"></canvas></div>
+    <div class="divider"><span>grafice · ultimele 7 zile</span></div>
+    <div class="chart-grid">
+      <div class="chart-panel">
+        <div class="chart-eyebrow">// VENIT ($)</div>
+        <div class="chart-wrap"><canvas id="cRev"></canvas></div>
       </div>
-      <div class="chart-card">
-        <div class="chart-header"><div class="chart-title">👁️ Impresii</div></div>
-        <div class="chart-wrap"><canvas id="chartImpressions"></canvas></div>
+      <div class="chart-panel">
+        <div class="chart-eyebrow">// IMPRESII</div>
+        <div class="chart-wrap"><canvas id="cImp"></canvas></div>
       </div>
-      <div class="chart-card">
-        <div class="chart-header"><div class="chart-title">👥 Sesiuni</div></div>
-        <div class="chart-wrap"><canvas id="chartSessions"></canvas></div>
+      <div class="chart-panel">
+        <div class="chart-eyebrow">// SESIUNI</div>
+        <div class="chart-wrap"><canvas id="cSess"></canvas></div>
       </div>
-      <div class="chart-card">
-        <div class="chart-header"><div class="chart-title">🥧 Distribuție Impresii</div></div>
-        <div class="chart-wrap"><canvas id="chartPie"></canvas></div>
-      </div>
-    </div>
-
-    <!-- TOP LISTS -->
-    <div class="section-label"><span>Top Țări & Dispozitive</span></div>
-    <div class="lists-grid">
-      <div class="list-card">
-        <div class="list-title">🌍 Top Țări</div>
-        ${cntry.length ? cntry.map((c,i)=>`
-          <div class="list-item">
-            <div class="list-rank">${i+1}</div>
-            <div class="list-name">${c.name}</div>
-            <div class="list-bar-wrap"><div class="list-bar" style="width:${cntry[0].val>0?(c.val/cntry[0].val*100).toFixed(0):0}%"></div></div>
-            <div class="list-val">${fmt(c.val)}</div>
-          </div>`).join('') : '<div style="color:var(--text3);font-size:13px;padding:8px 0">Fără date</div>'}
-      </div>
-      <div class="list-card">
-        <div class="list-title">📱 Top Dispozitive</div>
-        ${devs.length ? devs.map((d,i)=>`
-          <div class="list-item">
-            <div class="list-rank">${i+1}</div>
-            <div class="list-name">${d.name}</div>
-            <div class="list-bar-wrap"><div class="list-bar" style="width:${devs[0].val>0?(d.val/devs[0].val*100).toFixed(0):0}%;background:var(--purple)"></div></div>
-            <div class="list-val">${fmt(d.val)}</div>
-          </div>`).join('') : '<div style="color:var(--text3);font-size:13px;padding:8px 0">Fără date</div>'}
+      <div class="chart-panel">
+        <div class="chart-eyebrow">// DISTRIBUȚIE IMPRESII</div>
+        <div class="chart-wrap"><canvas id="cPie"></canvas></div>
       </div>
     </div>
 
-    <!-- TIMELINE -->
-    <div class="section-label"><span>Activitate Live</span></div>
-    <div class="timeline-card">
-      <div class="timeline-title">Ultimele Evenimente</div>
-      <div class="timeline-list">
-        ${tl.length ? tl.map(e=>`
-          <div class="tl-item">
-            <div class="tl-dot"></div>
-            <div class="tl-time">${e.time||''}</div>
-            <div class="tl-text">${e.text||''}</div>
-            <div class="tl-meta">${e.country||''} · ${(e.device||'').substring(0,15)}</div>
-          </div>`).join('') : '<div style="color:var(--text3);font-size:13px;padding:8px 0">Nicio activitate</div>'}
+    <!-- BOTTOM: TOP LISTS + TIMELINE -->
+    <div class="divider"><span>țări · dispozitive · activitate live</span></div>
+    <div class="bottom-grid">
+
+      <div class="list-panel">
+        <div class="list-eyebrow">// TOP ȚĂRI</div>
+        ${cnt.length ? cnt.map((c,i)=>`
+          <div class="list-row">
+            <div class="list-rk">${i+1}</div>
+            <div class="list-rname">${c.name}</div>
+            <div class="mini-track"><div class="mini-fill" style="width:${cnt[0].val>0?(c.val/cnt[0].val*100).toFixed(0):0}%"></div></div>
+            <div class="list-rval">${fmt(c.val)}</div>
+          </div>`).join('') : '<div style="color:var(--text3);font-size:12px;padding:12px 0;font-family:var(--mono)">// FĂRĂ DATE</div>'}
       </div>
+
+      <div class="list-panel">
+        <div class="list-eyebrow">// TOP DISPOZITIVE</div>
+        ${dev.length ? dev.map((d,i)=>`
+          <div class="list-row">
+            <div class="list-rk">${i+1}</div>
+            <div class="list-rname">${d.name}</div>
+            <div class="mini-track"><div class="mini-fill" style="width:${dev[0].val>0?(d.val/dev[0].val*100).toFixed(0):0}%;background:var(--violet)"></div></div>
+            <div class="list-rval">${fmt(d.val)}</div>
+          </div>`).join('') : '<div style="color:var(--text3);font-size:12px;padding:12px 0;font-family:var(--mono)">// FĂRĂ DATE</div>'}
+      </div>
+
+      <div class="timeline-panel">
+        <div class="list-eyebrow">// ACTIVITATE LIVE</div>
+        <div class="tl-scroll">
+          ${tl.length ? tl.map(e => `
+            <div class="tl-row">
+              <div class="tl-indicator"></div>
+              <div class="tl-body">
+                <div class="tl-ts">${e.time||''}</div>
+                <div class="tl-msg">${e.text||''}</div>
+                <div class="tl-context">${e.country||''} ${e.device?'· '+String(e.device).substring(0,18):''}</div>
+              </div>
+            </div>`).join('') : '<div class="tl-empty">// NICIO ACTIVITATE</div>'}
+        </div>
+      </div>
+
     </div>
 
     <div class="footer">
       <span>UPDATED</span>
-      <div class="footer-dot"></div>
+      <div class="footer-sep"></div>
       <span id="last-update">${new Date().toLocaleTimeString()}</span>
-      <div class="footer-dot"></div>
+      <div class="footer-sep"></div>
       <span>AUTO-REFRESH LIVE</span>
     </div>
+
   </div>`;
 
   buildCharts(cd);
 }
 
-// ── CHARTS ─────────────────────────────────
+/* ─── CHARTS ───────────────────────────────── */
 function buildCharts(data) {
-  const isDark = currentTheme === 'dark';
-  const gridCol = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.05)';
-  const tickCol = isDark ? '#4d6080' : '#8898b0';
+  const dark = theme === 'dark';
+  const gc   = dark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.05)';
+  const tc   = dark ? '#334155' : '#94a3b8';
 
-  const defaults = {
-    responsive:true, maintainAspectRatio:false,
-    plugins:{ legend:{display:false} },
-    scales:{
-      x:{ grid:{color:gridCol}, ticks:{color:tickCol, font:{family:'Exo 2',size:11}} },
-      y:{ grid:{color:gridCol}, ticks:{color:tickCol, font:{family:'Exo 2',size:11}} }
+  const base = {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: gc }, ticks: { color: tc, font: { family: 'Space Mono', size: 10 } } },
+      y: { grid: { color: gc }, ticks: { color: tc, font: { family: 'Space Mono', size: 10 } } }
     }
   };
 
-  ['chartRevenue','chartImpressions','chartSessions','chartPie'].forEach(id=>{
-    if(charts[id]){ charts[id].destroy(); delete charts[id]; }
-  });
+  ['cRev','cImp','cSess','cPie'].forEach(id => { if(charts[id]){charts[id].destroy();delete charts[id];} });
 
-  const r = document.getElementById('chartRevenue');
-  if(r) charts.chartRevenue = new Chart(r,{type:'bar',data:{labels:data.labels,datasets:[{data:data.revenue,backgroundColor:'rgba(255,201,71,0.5)',borderColor:'#ffc947',borderWidth:0,borderRadius:6,borderSkipped:false}]},options:defaults});
+  const tot = state.total || {};
+  const r = document.getElementById('cRev');
+  if(r) charts.cRev = new Chart(r, { type:'bar', data:{labels:data.labels,datasets:[{data:data.revenue,backgroundColor:'rgba(245,158,11,0.4)',borderColor:'#f59e0b',borderWidth:0,borderRadius:4,borderSkipped:false}]}, options:base });
 
-  const i = document.getElementById('chartImpressions');
-  if(i) charts.chartImpressions = new Chart(i,{type:'line',data:{labels:data.labels,datasets:[{data:data.impressions,borderColor:'#00c6ff',backgroundColor:'rgba(0,198,255,0.08)',borderWidth:2,fill:true,tension:.4,pointRadius:3,pointBackgroundColor:'#00c6ff'}]},options:defaults});
+  const i = document.getElementById('cImp');
+  if(i) charts.cImp = new Chart(i, { type:'line', data:{labels:data.labels,datasets:[{data:data.impressions,borderColor:'#60a5fa',backgroundColor:'rgba(96,165,250,0.07)',borderWidth:1.5,fill:true,tension:.4,pointRadius:3,pointBackgroundColor:'#60a5fa'}]}, options:base });
 
-  const s = document.getElementById('chartSessions');
-  if(s) charts.chartSessions = new Chart(s,{type:'line',data:{labels:data.labels,datasets:[{data:data.sessions,borderColor:'#00d68f',backgroundColor:'rgba(0,214,143,0.08)',borderWidth:2,fill:true,tension:.4,pointRadius:3,pointBackgroundColor:'#00d68f'}]},options:defaults});
+  const s = document.getElementById('cSess');
+  if(s) charts.cSess = new Chart(s, { type:'line', data:{labels:data.labels,datasets:[{data:data.sessions,borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.07)',borderWidth:1.5,fill:true,tension:.4,pointRadius:3,pointBackgroundColor:'#10b981'}]}, options:base });
 
-  const t = state.total||{};
-  const p = document.getElementById('chartPie');
-  if(p) charts.chartPie = new Chart(p,{
-    type:'doughnut',
-    data:{
-      labels:['Interstitial','Banner','Rewarded'],
-      datasets:[{data:[parseInt((t.interstitial||{}).impressions)||0,parseInt((t.banner||{}).impressions)||0,parseInt((t.rewarded||{}).impressions)||0],backgroundColor:['rgba(30,144,255,0.7)','rgba(0,214,143,0.7)','rgba(176,124,255,0.7)'],borderColor:['#1e90ff','#00d68f','#b07cff'],borderWidth:1}]
+  const p = document.getElementById('cPie');
+  if(p) charts.cPie = new Chart(p, {
+    type: 'doughnut',
+    data: {
+      labels: ['Interstitial','Banner','Rewarded'],
+      datasets:[{
+        data: [parseInt((tot.interstitial||{}).impressions)||0, parseInt((tot.banner||{}).impressions)||0, parseInt((tot.rewarded||{}).impressions)||0],
+        backgroundColor: ['rgba(59,130,246,0.65)','rgba(16,185,129,0.65)','rgba(139,92,246,0.65)'],
+        borderColor:     ['#3b82f6','#10b981','#8b5cf6'],
+        borderWidth: 1
+      }]
     },
-    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{color:tickCol,font:{family:'Exo 2',size:11},padding:14,boxWidth:10}}}}
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '65%',
+      plugins: {
+        legend: { position:'bottom', labels:{ color:tc, font:{family:'Space Mono',size:10}, padding:14, boxWidth:10 } }
+      }
+    }
   });
 }
 
-// ── INIT ───────────────────────────────────
-applyTheme(currentTheme);
+/* ─── FIREBASE LISTENERS ───────────────────── */
+applyTheme(theme);
 
-// Ascultam root pentru stats generale
+// Root listener — primește tot arborele
 onValue(ref(db, '/'), snap => {
-  state = snap.val() || {};
+  const fresh = snap.val() || {};
+  // Merge timeline în state (nu override-ui dacă avem deja mai nou din listener dedicat)
+  state = fresh;
   renderAll();
 });
 
-// Ascultam /timeline separat pentru update live instant
-
-const timelineRef = query(ref(db, '/timeline'), limitToLast(15));
-onValue(timelineRef, snap => {
+// Timeline listener separat — FIX: limitToLast + orderByKey
+// Acesta va actualiza DOAR timeline-ul în DOM fără full re-render
+const tlRef = query(ref(db, '/timeline'), orderByKey(), limitToLast(20));
+onValue(tlRef, snap => {
   const data = snap.val();
   if (data) {
     state.timeline = data;
-    // Update doar timeline-ul fara sa re-render totul
-    const container = document.querySelector('.timeline-list');
-    if (container) {
-      const tl = getTimeline();
-      container.innerHTML = tl.length ? tl.map(e => `
-        <div class="tl-item">
-          <div class="tl-dot"></div>
-          <div class="tl-time">${e.time||''}</div>
-          <div class="tl-text">${e.text||''}</div>
-          <div class="tl-meta">${e.country||''} · ${(e.device||'').substring(0,15)}</div>
-        </div>`).join('') : '<div style="color:var(--text3);font-size:13px;padding:8px 0">Nicio activitate</div>';
-    }
+    // Actualizăm NUMAI lista din DOM dacă există deja (post-render)
+    renderTimelineDOM();
+    // Update timestamp
+    const lu = document.getElementById('last-update');
+    if (lu) lu.textContent = new Date().toLocaleTimeString();
   }
 });
 </script>
