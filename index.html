@@ -1,168 +1,247 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ro">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BMW Ads Dashboard</title>
+<title>ADS CONTROL CENTER</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-:root {
-  --bg: #050508;
-  --surface: #0d0d14;
-  --surface2: #13131e;
-  --border: #1e1e2e;
-  --accent: #4fc3f7;
-  --accent2: #00e5ff;
-  --green: #00e676;
-  --yellow: #ffea00;
-  --purple: #ce93d8;
-  --red: #ff5252;
-  --orange: #ff9800;
-  --text: #e0e0e0;
-  --muted: #555570;
+:root{
+  --bg:#030305;--s1:#0a0a12;--s2:#0f0f1a;--s3:#141420;
+  --b:#1a1a28;--b2:#22223a;
+  --cyan:#00e5ff;--cyan2:#4fc3f7;--cyan3:#80deea;
+  --green:#00e676;--green2:#69f0ae;
+  --yellow:#ffea00;--yellow2:#fff176;
+  --purple:#ce93d8;--purple2:#e040fb;
+  --orange:#ff9800;--red:#ff5252;--pink:#f48fb1;
+  --text:#e8e8f0;--muted:#44445a;--muted2:#666688;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Share Tech Mono', monospace;
-  min-height: 100vh;
-}
-body::before {
-  content:'';
-  position:fixed;
-  inset:0;
-  background-image:
-    linear-gradient(rgba(79,195,247,0.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(79,195,247,0.03) 1px,transparent 1px);
-  background-size:40px 40px;
-  pointer-events:none;
-  z-index:0;
-}
-.wrap { position:relative; z-index:1; max-width:1200px; margin:0 auto; padding:32px 20px; }
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
 
-/* HEADER */
-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:40px; flex-wrap:wrap; gap:12px; }
-.logo { font-family:'Orbitron',sans-serif; font-weight:900; font-size:clamp(16px,3vw,26px); color:var(--accent2); text-shadow:0 0 30px rgba(0,229,255,0.5); letter-spacing:0.1em; }
-.logo span { display:block; font-size:0.5em; color:var(--muted); letter-spacing:0.3em; margin-top:2px; }
-.live-badge { display:flex; align-items:center; gap:8px; background:rgba(0,230,118,0.08); border:1px solid rgba(0,230,118,0.3); border-radius:20px; padding:6px 16px; font-size:11px; color:var(--green); letter-spacing:0.2em; }
-.dot { width:8px; height:8px; border-radius:50%; background:var(--green); animation:pulse 1.5s ease-in-out infinite; box-shadow:0 0 8px var(--green); }
-@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+/* GRID BG */
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,229,255,0.025) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(0,229,255,0.025) 1px,transparent 1px);
+  background-size:48px 48px;pointer-events:none;z-index:0;}
 
-/* HERO */
-.hero { background:linear-gradient(135deg,#0d1520,#0a0d1a); border:1px solid rgba(79,195,247,0.2); border-radius:16px; padding:32px; margin-bottom:24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:24px; position:relative; overflow:hidden; }
-.hero::before { content:''; position:absolute; top:-40%; right:-5%; width:300px; height:300px; background:radial-gradient(circle,rgba(79,195,247,0.06),transparent 70%); pointer-events:none; }
-.hero-lbl { font-size:10px; letter-spacing:0.3em; color:var(--muted); margin-bottom:6px; }
-.hero-val { font-family:'Orbitron',sans-serif; font-size:clamp(28px,5vw,48px); font-weight:900; color:var(--accent2); text-shadow:0 0 40px rgba(0,229,255,0.4); }
-.hero-today { font-size:12px; color:var(--green); margin-top:4px; }
-.hero-stats { display:flex; gap:28px; flex-wrap:wrap; }
-.hstat { text-align:center; }
-.hstat-v { font-family:'Orbitron',sans-serif; font-size:20px; font-weight:700; }
-.hstat-l { font-size:9px; color:var(--muted); letter-spacing:0.2em; margin-top:3px; }
+/* SCANLINE */
+body::after{content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
+  pointer-events:none;z-index:0;}
 
-/* SECTION TITLE */
-.section-title { font-family:'Orbitron',sans-serif; font-size:11px; letter-spacing:0.3em; color:var(--muted); margin:28px 0 12px; border-bottom:1px solid var(--border); padding-bottom:8px; }
+.wrap{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:24px 16px;}
 
-/* AD CARDS */
-.cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-bottom:24px; }
-.card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; position:relative; overflow:hidden; transition:border-color .3s,transform .3s; }
-.card:hover { border-color:rgba(79,195,247,0.25); transform:translateY(-2px); }
-.card::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; border-radius:12px 12px 0 0; }
-.card.interstitial::after { background:linear-gradient(90deg,var(--accent),transparent); }
-.card.banner::after { background:linear-gradient(90deg,var(--green),transparent); }
-.card.rewarded::after { background:linear-gradient(90deg,var(--purple),transparent); }
-.card-hd { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
-.card-title { font-family:'Orbitron',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.15em; }
-.card.interstitial .card-title { color:var(--accent); }
-.card.banner .card-title { color:var(--green); }
-.card.rewarded .card-title { color:var(--purple); }
-.card-icon { font-size:18px; opacity:.6; }
-.srow { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
-.srow:last-child { border-bottom:none; }
-.slbl { font-size:10px; color:var(--muted); letter-spacing:0.15em; }
-.sval { font-family:'Orbitron',sans-serif; font-size:14px; font-weight:700; transition:color .3s; }
-.sval.rev { color:var(--yellow); }
-.sval.ecpm { color:var(--accent); }
-.sval.ctr { color:var(--orange); }
+/* ══ HEADER ══════════════════════════════════════════════════════ */
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;padding-bottom:16px;border-bottom:1px solid var(--b);}
+.logo{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(14px,2.5vw,22px);color:var(--cyan);letter-spacing:0.12em;text-shadow:0 0 24px rgba(0,229,255,0.5);}
+.logo span{display:block;font-size:0.45em;color:var(--muted2);letter-spacing:0.35em;margin-top:2px;}
+.header-right{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.live-badge{display:flex;align-items:center;gap:6px;background:rgba(0,230,118,0.07);border:1px solid rgba(0,230,118,0.25);border-radius:20px;padding:5px 14px;font-size:10px;color:var(--green);letter-spacing:0.2em;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.4s ease-in-out infinite;box-shadow:0 0 7px var(--green);}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.75)}}
+#last-update-badge{font-size:9px;color:var(--muted2);letter-spacing:0.15em;}
 
-/* TARGET PROGRESS */
-.target-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; margin-bottom:24px; }
-.target-hd { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
-.target-title { font-family:'Orbitron',sans-serif; font-size:12px; color:var(--accent2); letter-spacing:0.15em; }
-.target-edit { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Share Tech Mono',monospace; font-size:11px; padding:4px 10px; border-radius:6px; cursor:pointer; }
-.target-edit:hover { border-color:var(--accent); color:var(--accent); }
-.progress-wrap { background:rgba(255,255,255,0.04); border-radius:8px; height:12px; overflow:hidden; margin-bottom:8px; }
-.progress-bar { height:100%; border-radius:8px; transition:width 1s ease; background:linear-gradient(90deg,var(--accent),var(--accent2)); box-shadow:0 0 10px rgba(0,229,255,0.3); }
-.progress-info { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); }
-.progress-pct { color:var(--accent2); font-family:'Orbitron',sans-serif; font-size:13px; }
+/* ══ TABS ════════════════════════════════════════════════════════ */
+.tabs-bar{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;}
+.tab{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:0.12em;padding:7px 14px;border-radius:6px;border:1px solid var(--b);background:var(--s1);color:var(--muted2);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.tab:hover{border-color:var(--b2);color:var(--text);}
+.tab.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,0.05);box-shadow:0 0 10px rgba(0,229,255,0.08);}
+.tab.global.active{border-color:var(--yellow);color:var(--yellow);background:rgba(255,234,0,0.05);box-shadow:0 0 10px rgba(255,234,0,0.08);}
 
-/* RECORD */
-.record-row { display:flex; align-items:center; gap:8px; margin-top:12px; font-size:11px; color:var(--muted); }
-.record-val { color:var(--yellow); font-family:'Orbitron',sans-serif; }
+/* ══ SECTION TITLE ════════════════════════════════════════════════ */
+.sec{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:0.3em;color:var(--muted2);margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:8px;}
 
-/* CHARTS GRID */
-.charts-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:16px; margin-bottom:24px; }
-.chart-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; }
-.chart-title { font-family:'Orbitron',sans-serif; font-size:11px; color:var(--muted); letter-spacing:0.2em; margin-bottom:16px; }
-.chart-wrap { position:relative; height:200px; }
+/* ══ KPI STRIP ════════════════════════════════════════════════════ */
+.kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:16px;}
+.kpi{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden;transition:border-color .25s;}
+.kpi:hover{border-color:var(--b2);}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;}
+.kpi.c-cyan::before{background:linear-gradient(90deg,var(--cyan),transparent);}
+.kpi.c-green::before{background:linear-gradient(90deg,var(--green),transparent);}
+.kpi.c-yellow::before{background:linear-gradient(90deg,var(--yellow),transparent);}
+.kpi.c-purple::before{background:linear-gradient(90deg,var(--purple),transparent);}
+.kpi.c-orange::before{background:linear-gradient(90deg,var(--orange),transparent);}
+.kpi.c-pink::before{background:linear-gradient(90deg,var(--pink),transparent);}
+.kpi.c-red::before{background:linear-gradient(90deg,var(--red),transparent);}
+.kpi-lbl{font-size:8px;color:var(--muted2);letter-spacing:0.2em;margin-bottom:5px;}
+.kpi-val{font-family:'Orbitron',sans-serif;font-size:clamp(16px,2.5vw,22px);font-weight:900;line-height:1;}
+.kpi.c-cyan .kpi-val{color:var(--cyan);}
+.kpi.c-green .kpi-val{color:var(--green);}
+.kpi.c-yellow .kpi-val{color:var(--yellow);}
+.kpi.c-purple .kpi-val{color:var(--purple);}
+.kpi.c-orange .kpi-val{color:var(--orange);}
+.kpi.c-pink .kpi-val{color:var(--pink);}
+.kpi.c-red .kpi-val{color:var(--red);}
+.kpi-sub{font-size:9px;color:var(--muted2);margin-top:4px;}
+.kpi-delta{font-size:9px;margin-top:3px;}
+.kpi-delta.up{color:var(--green2);}
+.kpi-delta.dn{color:var(--red);}
 
-/* TOP LISTS */
-.lists-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-bottom:24px; }
-.list-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; }
-.list-title { font-family:'Orbitron',sans-serif; font-size:11px; color:var(--muted); letter-spacing:0.2em; margin-bottom:16px; }
-.list-item { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
-.list-item:last-child { border-bottom:none; }
-.list-rank { font-family:'Orbitron',sans-serif; font-size:11px; color:var(--muted); width:20px; }
-.list-name { flex:1; font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.list-bar-wrap { width:80px; height:4px; background:rgba(255,255,255,0.06); border-radius:4px; overflow:hidden; }
-.list-bar { height:100%; border-radius:4px; background:var(--accent); }
-.list-val { font-family:'Orbitron',sans-serif; font-size:12px; color:var(--text); min-width:32px; text-align:right; }
+/* LIVE PULSE */
+.live-count{display:flex;align-items:center;gap:6px;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse .8s ease-in-out infinite;}
 
-/* TIMELINE */
-.timeline-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; margin-bottom:24px; }
-.timeline-title { font-family:'Orbitron',sans-serif; font-size:11px; color:var(--muted); letter-spacing:0.2em; margin-bottom:16px; }
-.timeline-list { max-height:280px; overflow-y:auto; }
-.timeline-list::-webkit-scrollbar { width:4px; }
-.timeline-list::-webkit-scrollbar-track { background:transparent; }
-.timeline-list::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
-.tl-item { display:flex; align-items:center; gap:12px; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.04); animation:fadeIn .4s ease; }
-.tl-item:last-child { border-bottom:none; }
-@keyframes fadeIn { from{opacity:0;transform:translateX(-10px)} to{opacity:1;transform:translateX(0)} }
-.tl-time { font-size:10px; color:var(--muted); min-width:60px; }
-.tl-text { flex:1; font-size:12px; }
-.tl-meta { font-size:10px; color:var(--muted); text-align:right; }
+/* ══ HERO REVENUE ═════════════════════════════════════════════════ */
+.hero{background:linear-gradient(135deg,#080d18,#080a14);border:1px solid rgba(0,229,255,0.15);border-radius:14px;padding:24px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;position:relative;overflow:hidden;}
+.hero::after{content:'';position:absolute;top:-50%;right:-5%;width:280px;height:280px;background:radial-gradient(circle,rgba(0,229,255,0.04),transparent 70%);pointer-events:none;}
+.hero-left{}
+.hero-lbl{font-size:9px;letter-spacing:0.3em;color:var(--muted2);margin-bottom:4px;}
+.hero-val{font-family:'Orbitron',sans-serif;font-size:clamp(30px,5vw,52px);font-weight:900;color:var(--cyan);text-shadow:0 0 40px rgba(0,229,255,0.35);line-height:1;}
+.hero-today{font-size:11px;color:var(--green);margin-top:5px;}
+.hero-month{font-size:10px;color:var(--muted2);margin-top:2px;}
+.hero-stats{display:flex;gap:20px;flex-wrap:wrap;}
+.hst{text-align:center;}
+.hst-v{font-family:'Orbitron',sans-serif;font-size:17px;font-weight:700;}
+.hst-l{font-size:8px;color:var(--muted2);letter-spacing:0.18em;margin-top:2px;}
 
-/* FOOTER */
-.footer { text-align:center; font-size:10px; color:var(--muted); letter-spacing:0.2em; padding:20px 0; }
-#last-update { color:var(--accent); }
+/* ══ TARGET ═══════════════════════════════════════════════════════ */
+.target-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:16px;margin-bottom:16px;}
+.target-left{}
+.target-lbl{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--cyan);letter-spacing:0.2em;margin-bottom:8px;}
+.prog-wrap{background:rgba(255,255,255,0.04);border-radius:6px;height:8px;overflow:hidden;margin-bottom:6px;}
+.prog-bar{height:100%;border-radius:6px;transition:width 1.2s cubic-bezier(.4,0,.2,1);background:linear-gradient(90deg,var(--cyan),var(--cyan2));box-shadow:0 0 8px rgba(0,229,255,0.25);}
+.prog-bar.warn{background:linear-gradient(90deg,var(--orange),var(--yellow));}
+.prog-bar.done{background:linear-gradient(90deg,var(--green),var(--green2));}
+.prog-info{display:flex;justify-content:space-between;font-size:10px;color:var(--muted2);}
+.prog-pct{color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:11px;}
+.target-right{text-align:center;}
+.btn-sm{background:none;border:1px solid var(--b);color:var(--muted2);font-family:'Share Tech Mono',monospace;font-size:10px;padding:6px 12px;border-radius:6px;cursor:pointer;transition:all .2s;display:block;margin-bottom:6px;width:100%;}
+.btn-sm:hover{border-color:var(--cyan);color:var(--cyan);}
+.record{font-size:9px;color:var(--muted2);text-align:center;}
+.record-val{color:var(--yellow);font-family:'Orbitron',sans-serif;}
 
-/* LOADING */
-.loading { display:flex; flex-direction:column; align-items:center; justify-content:center; height:70vh; gap:16px; }
-.spinner { width:40px; height:40px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite; }
-@keyframes spin { to{transform:rotate(360deg)} }
-.loading-txt { font-size:11px; color:var(--muted); letter-spacing:0.3em; }
+/* ══ AD TYPE CARDS ════════════════════════════════════════════════ */
+.ad-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-bottom:16px;}
+.acard{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:18px;position:relative;overflow:hidden;}
+.acard::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.acard.int::after{background:linear-gradient(90deg,var(--cyan2),transparent);}
+.acard.ban::after{background:linear-gradient(90deg,var(--green),transparent);}
+.acard.rew::after{background:linear-gradient(90deg,var(--purple),transparent);}
+.acard-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.acard-title{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.15em;}
+.acard.int .acard-title{color:var(--cyan2);}
+.acard.ban .acard-title{color:var(--green);}
+.acard.rew .acard-title{color:var(--purple);}
+.acard-icon{font-size:16px;opacity:.5;}
+.arow{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.03);}
+.arow:last-child{border-bottom:none;}
+.albl{font-size:9px;color:var(--muted2);letter-spacing:0.1em;}
+.aval{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:700;}
+.aval.rev{color:var(--yellow);}
+.aval.ecpm{color:var(--cyan);}
+.aval.ctr{color:var(--orange);}
+.aval.fill{color:var(--green);}
 
-/* MODAL */
-.modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:100; align-items:center; justify-content:center; }
-.modal-bg.open { display:flex; }
-.modal { background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:28px; width:320px; }
-.modal h3 { font-family:'Orbitron',sans-serif; font-size:13px; color:var(--accent); margin-bottom:16px; }
-.modal input { width:100%; background:var(--bg); border:1px solid var(--border); color:var(--text); font-family:'Share Tech Mono',monospace; font-size:14px; padding:10px; border-radius:8px; margin-bottom:16px; }
-.modal input:focus { outline:none; border-color:var(--accent); }
-.modal-btns { display:flex; gap:10px; justify-content:flex-end; }
-.btn { background:none; border:1px solid var(--border); color:var(--text); font-family:'Share Tech Mono',monospace; font-size:12px; padding:8px 16px; border-radius:8px; cursor:pointer; }
-.btn.primary { background:var(--accent); border-color:var(--accent); color:#000; font-weight:700; }
-.btn:hover { opacity:.8; }
+/* FILL RATE MINI BAR */
+.fill-wrap{display:flex;align-items:center;gap:6px;}
+.fill-bar-bg{flex:1;height:3px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;}
+.fill-bar-fg{height:100%;border-radius:3px;background:var(--green);}
+
+/* ══ CHARTS ══════════════════════════════════════════════════════ */
+.charts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px;margin-bottom:16px;}
+.ccrd{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:18px;}
+.ccrd-title{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--muted2);letter-spacing:0.2em;margin-bottom:12px;}
+.ccrd-wrap{position:relative;height:160px;}
+
+/* ══ BREAKDOWN TABLES ════════════════════════════════════════════ */
+.breakdown-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:16px;}
+.bcard{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:18px;}
+.bcard-title{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--muted2);letter-spacing:0.2em;margin-bottom:12px;}
+.bitem{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.03);}
+.bitem:last-child{border-bottom:none;}
+.brank{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--muted);width:18px;}
+.bname{flex:1;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bbar-bg{width:60px;height:3px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;}
+.bbar-fg{height:100%;border-radius:3px;background:var(--cyan2);}
+.bval{font-family:'Orbitron',sans-serif;font-size:10px;min-width:28px;text-align:right;}
+
+/* ══ RETENTION ═══════════════════════════════════════════════════ */
+.retention-card{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:18px;margin-bottom:16px;}
+.ret-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;}
+.ret-cell{text-align:center;background:var(--s2);border:1px solid var(--b);border-radius:8px;padding:12px 6px;}
+.ret-day{font-size:8px;color:var(--muted2);letter-spacing:0.2em;margin-bottom:4px;}
+.ret-val{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:var(--cyan);}
+.ret-sub{font-size:8px;color:var(--muted2);margin-top:2px;}
+
+/* ══ GLOBAL APP TABLE ════════════════════════════════════════════ */
+.app-table-wrap{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:18px;margin-bottom:16px;overflow-x:auto;}
+.app-table{width:100%;border-collapse:collapse;font-size:10px;}
+.app-table th{font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:0.18em;color:var(--muted2);padding:8px 10px;text-align:left;border-bottom:1px solid var(--b);}
+.app-table td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,0.03);}
+.app-table tr:last-child td{border-bottom:none;}
+.app-table tr:hover td{background:rgba(0,229,255,0.02);}
+.app-link{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--cyan);cursor:pointer;}
+.app-link:hover{text-decoration:underline;}
+td.td-rev{color:var(--yellow);font-family:'Orbitron',sans-serif;}
+td.td-imp{color:var(--cyan2);}
+td.td-ses{color:var(--green);}
+td.td-pct{color:var(--muted2);}
+
+/* ══ TIMELINE ════════════════════════════════════════════════════ */
+.tl-card{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:18px;margin-bottom:16px;}
+.tl-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.tl-title{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--muted2);letter-spacing:0.2em;}
+.tl-filter{display:flex;gap:4px;}
+.tl-fbtn{background:none;border:1px solid var(--b);color:var(--muted2);font-family:'Share Tech Mono',monospace;font-size:8px;padding:3px 8px;border-radius:4px;cursor:pointer;}
+.tl-fbtn.on{border-color:var(--cyan);color:var(--cyan);}
+.tl-list{max-height:280px;overflow-y:auto;}
+.tl-list::-webkit-scrollbar{width:3px;}
+.tl-list::-webkit-scrollbar-thumb{background:var(--b2);border-radius:3px;}
+.tl-item{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.03);animation:fadeIn .35s ease;}
+.tl-item:last-child{border-bottom:none;}
+@keyframes fadeIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+.tl-time{font-size:9px;color:var(--muted2);min-width:54px;}
+.tl-text{flex:1;font-size:10px;}
+.tl-badge{font-size:8px;padding:2px 6px;border-radius:3px;white-space:nowrap;}
+.tl-badge.session{background:rgba(0,230,118,0.1);color:var(--green);border:1px solid rgba(0,230,118,0.2);}
+.tl-badge.interstitial_imp,.tl-badge.interstitial_click{background:rgba(79,195,247,0.1);color:var(--cyan2);border:1px solid rgba(79,195,247,0.2);}
+.tl-badge.rewarded_imp,.tl-badge.rewarded_click,.tl-badge.reward_earned{background:rgba(206,147,216,0.1);color:var(--purple);border:1px solid rgba(206,147,216,0.2);}
+.tl-badge.banner_click{background:rgba(0,230,118,0.1);color:var(--green2);border:1px solid rgba(0,230,118,0.2);}
+.tl-badge.iap{background:rgba(255,234,0,0.1);color:var(--yellow);border:1px solid rgba(255,234,0,0.2);}
+.tl-badge.error{background:rgba(255,82,82,0.1);color:var(--red);border:1px solid rgba(255,82,82,0.2);}
+.tl-badge.custom{background:rgba(255,152,0,0.1);color:var(--orange);border:1px solid rgba(255,152,0,0.2);}
+.tl-meta{font-size:9px;color:var(--muted2);text-align:right;min-width:40px;}
+.tl-app-badge{font-size:8px;color:var(--cyan);background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.15);border-radius:3px;padding:1px 5px;}
+
+/* ══ MONTHLY ═════════════════════════════════════════════════════ */
+.monthly-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-bottom:16px;}
+.mcrd{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:16px;}
+.mcrd-lbl{font-size:8px;color:var(--muted2);letter-spacing:0.2em;margin-bottom:4px;}
+.mcrd-val{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;}
+
+/* ══ MODAL ════════════════════════════════════════════════════════ */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;align-items:center;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--s2);border:1px solid var(--b2);border-radius:12px;padding:24px;width:300px;}
+.modal h3{font-family:'Orbitron',sans-serif;font-size:11px;color:var(--cyan);margin-bottom:14px;letter-spacing:0.15em;}
+.modal input{width:100%;background:var(--bg);border:1px solid var(--b);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:14px;padding:10px;border-radius:8px;margin-bottom:14px;}
+.modal input:focus{outline:none;border-color:var(--cyan);}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end;}
+.btn{background:none;border:1px solid var(--b);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:10px;padding:7px 14px;border-radius:6px;cursor:pointer;}
+.btn.primary{background:var(--cyan);border-color:var(--cyan);color:#000;font-weight:700;}
+.btn:hover{opacity:.8;}
+
+/* ══ EMPTY / LOADING ═════════════════════════════════════════════ */
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:70vh;gap:14px;}
+.spinner{width:34px;height:34px;border:2px solid var(--b);border-top-color:var(--cyan);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-txt{font-size:10px;color:var(--muted2);letter-spacing:0.3em;}
+.empty{text-align:center;padding:24px;color:var(--muted2);font-size:10px;letter-spacing:0.18em;}
+
+/* ══ FOOTER ══════════════════════════════════════════════════════ */
+footer{text-align:center;font-size:9px;color:var(--muted2);letter-spacing:0.18em;padding:16px 0;}
 </style>
 </head>
 <body>
+
 <div id="app"><div class="loading"><div class="spinner"></div><div class="loading-txt">CONNECTING TO FIREBASE...</div></div></div>
 
-<!-- TARGET MODAL -->
 <div class="modal-bg" id="modal">
   <div class="modal">
-    <h3>SET DAILY TARGET</h3>
+    <h3>🎯 SET DAILY TARGET</h3>
     <input type="number" id="target-input" placeholder="Ex: 10.00" step="0.01" min="0">
     <div class="modal-btns">
       <button class="btn" onclick="closeModal()">CANCEL</button>
@@ -176,324 +255,458 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const app = initializeApp({ databaseURL: "https://bmwadsstats-default-rtdb.firebaseio.com/" });
-const db = getDatabase(app);
+const db  = getDatabase(app);
 
 let state = {};
+let activeTab = 'global';
 let charts = {};
 let dailyTarget = parseFloat(localStorage.getItem('dailyTarget') || '10');
+let tlFilter = 'all'; // all | session | interstitial | rewarded | banner | iap | error
 
-window.openModal = () => {
-  document.getElementById('target-input').value = dailyTarget;
-  document.getElementById('modal').classList.add('open');
-};
+window.openModal  = () => { document.getElementById('target-input').value = dailyTarget; document.getElementById('modal').classList.add('open'); };
 window.closeModal = () => document.getElementById('modal').classList.remove('open');
 window.saveTarget = () => {
   const v = parseFloat(document.getElementById('target-input').value);
   if (!isNaN(v) && v > 0) { dailyTarget = v; localStorage.setItem('dailyTarget', v); }
-  closeModal();
-  renderAll();
+  closeModal(); renderAll();
+};
+window.switchTab = t => { activeTab = t; renderAll(); };
+window.setTlFilter = f => { tlFilter = f; renderAll(); };
+
+// ── Format helpers ────────────────────────────────────────────────
+const FMT = n => { n=parseFloat(n)||0; if(n>=1e6)return(n/1e6).toFixed(1)+'M'; if(n>=1e3)return(n/1e3).toFixed(1)+'K'; return Math.round(n).toString(); };
+const REV  = n => '$'+(parseFloat(n)||0).toFixed(4);
+const REVS = n => '$'+(parseFloat(n)||0).toFixed(2);
+const ECPM = n => '$'+(parseFloat(n)||0).toFixed(2);
+const PCT  = n => (parseFloat(n)||0).toFixed(2)+'%';
+const F6   = n => (parseFloat(n)||0).toFixed(6);
+const TODAY = () => new Date().toISOString().split('T')[0];
+const MONTH = () => new Date().toISOString().substring(0,7);
+
+// ── App helpers ───────────────────────────────────────────────────
+const appIds    = () => Object.keys(state.app_registry||{}).sort();
+const appData   = id => (state.apps&&state.apps[id])||{};
+const appTotal  = id => appData(id).total||{};
+const appToday  = id => { const d=appData(id).daily; return (d&&d[TODAY()])||{}; };
+const appMonth  = id => { const d=appData(id).monthly; return (d&&d[MONTH()])||{}; };
+const appReg    = id => (state.app_registry&&state.app_registry[id])||{};
+const appName   = id => appReg(id).name || id.replace(/_/g,' ');
+
+const appTotalRev  = id => parseFloat(appTotal(id).revenue)||0;
+const appTodayRev  = id => parseFloat(appToday(id).revenue)||0;
+const appMonthRev  = id => parseFloat(appMonth(id).revenue)||0;
+const appTotalSes  = id => parseInt(appTotal(id).sessions)||0;
+const appTodaySes  = id => parseInt(appToday(id).sessions)||0;
+const appDAU       = id => parseInt(appToday(id).dau_count)||0;
+const appMAU       = id => parseInt(appMonth(id).mau_count)||0;
+const appARPDAU    = id => parseFloat(appToday(id).arpdau)||0;
+const appRevPerSes = id => parseFloat(appTotal(id).revenue_per_session)||0;
+
+const appImpTotal = (id,t) => parseInt((appTotal(id)[t]||{}).impressions)||0;
+const appImpToday = (id,t) => parseInt((appToday(id)[t]||{}).impressions)||0;
+const appClkTotal = (id,t) => parseInt((appTotal(id)[t]||{}).clicks)||0;
+const appRevTotal = (id,t) => parseFloat((appTotal(id)[t]||{}).revenue)||0;
+const appRevToday = (id,t) => parseFloat((appToday(id)[t]||{}).revenue)||0;
+const appECPM     = (id,t) => parseFloat((appTotal(id)[t]||{}).ecpm)||0;
+const appCTR      = (id,t) => parseFloat((appTotal(id)[t]||{}).ctr)||0;
+const appFill     = (id,t) => parseFloat((appTotal(id)[t]||{}).fill_rate)||0;
+const appReq      = (id,t) => parseInt((appTotal(id)[t]||{}).requests)||0;
+const appFailed   = (id,t) => parseInt((appTotal(id)[t]||{}).failed)||0;
+const appCompl    = id => parseInt((appTotal(id).rewarded||{}).completions)||0;
+
+const appTotalImpressions = id => ['interstitial','banner','rewarded'].reduce((s,t)=>s+appImpTotal(id,t),0);
+const appTotalClicks      = id => ['interstitial','banner','rewarded'].reduce((s,t)=>s+appClkTotal(id,t),0);
+const appTotalIAPRev  = id => parseFloat((appTotal(id).iap||{}).revenue)||0;
+const appTotalIAPPurch= id => parseInt((appTotal(id).iap||{}).purchases)||0;
+
+const appLiveCount = id => {
+  const live = appData(id).live||{};
+  const now  = Math.floor(Date.now()/1000);
+  return Object.values(live).filter(ts => (now - parseInt(ts)) < 120).length;
+};
+const appBestDay = id => {
+  const daily = appData(id).daily||{};
+  return Math.max(0,...Object.values(daily).map(d=>parseFloat((d||{}).revenue)||0));
+};
+const appDailyChart = id => {
+  const daily = appData(id).daily||{};
+  const days  = Object.keys(daily).sort().slice(-14);
+  return {
+    labels: days.map(d=>d.slice(5)),
+    revenue: days.map(d=>parseFloat((daily[d]||{}).revenue)||0),
+    sessions: days.map(d=>parseInt((daily[d]||{}).sessions)||0),
+    dau: days.map(d=>parseInt((daily[d]||{}).dau_count)||0),
+    impressions: days.map(d=>['interstitial','banner','rewarded'].reduce((s,t)=>s+(parseInt(((daily[d]||{})[t]||{}).impressions)||0),0))
+  };
+};
+const appTopList = (id,node,max=8) => {
+  const data = appData(id)[node]||{};
+  return Object.entries(data).map(([k,v])=>({name:k.replace(/_/g,' '),val:parseInt(v)||0}))
+    .sort((a,b)=>b.val-a.val).slice(0,max);
+};
+const appTimeline = (id,filter='all') => {
+  const tl = appData(id).timeline||{};
+  let items = Object.values(tl).sort((a,b)=>b.time>a.time?1:-1).slice(0,50);
+  if(filter!=='all') items = items.filter(e=>(e.type||'').includes(filter));
+  return items.slice(0,30);
 };
 
-function fmt(n) {
-  n = parseFloat(n) || 0;
-  if (n >= 1000000) return (n/1000000).toFixed(1)+'M';
-  if (n >= 1000) return (n/1000).toFixed(1)+'K';
-  return Math.round(n).toString();
-}
-function fmtRev(n) { return '$'+(parseFloat(n)||0).toFixed(4); }
-function fmtRevShort(n) { return '$'+(parseFloat(n)||0).toFixed(2); }
-function fmtECPM(n) { return '$'+(parseFloat(n)||0).toFixed(2); }
-function fmtCTR(n) { return (parseFloat(n)||0).toFixed(2)+'%'; }
-function today() { return new Date().toISOString().split('T')[0]; }
+// ── Global aggregates ─────────────────────────────────────────────
+const gRev       = ()=>appIds().reduce((s,id)=>s+appTotalRev(id),0);
+const gTodayRev  = ()=>appIds().reduce((s,id)=>s+appTodayRev(id),0);
+const gMonthRev  = ()=>appIds().reduce((s,id)=>s+appMonthRev(id),0);
+const gSes       = ()=>appIds().reduce((s,id)=>s+appTotalSes(id),0);
+const gTodaySes  = ()=>appIds().reduce((s,id)=>s+appTodaySes(id),0);
+const gDAU       = ()=>appIds().reduce((s,id)=>s+appDAU(id),0);
+const gMAU       = ()=>appIds().reduce((s,id)=>s+appMAU(id),0);
+const gImp       = ()=>appIds().reduce((s,id)=>s+appTotalImpressions(id),0);
+const gLive      = ()=>appIds().reduce((s,id)=>s+appLiveCount(id),0);
+const gIAPRev    = ()=>appIds().reduce((s,id)=>s+appTotalIAPRev(id),0);
 
-function getAdData(type) {
-  return (state.total && state.total[type]) || {};
-}
-function getDailyAdData(type) {
-  const d = state.daily && state.daily[today()];
-  return (d && d[type]) || {};
-}
-function getTotalRev() {
-  return (parseFloat((state.total||{}).revenue)||0);
-}
-function getTodayRev() {
-  const d = state.daily && state.daily[today()];
-  return parseFloat((d||{}).revenue)||0;
-}
-function getTotalSessions() { return parseInt((state.total||{}).sessions)||0; }
-function getTodaySessions() {
-  const d = state.daily && state.daily[today()];
-  return parseInt((d||{}).sessions)||0;
-}
-function getTotalImpressions() {
-  const t = state.total || {};
-  return (parseInt((t.interstitial||{}).impressions)||0) +
-         (parseInt((t.banner||{}).impressions)||0) +
-         (parseInt((t.rewarded||{}).impressions)||0);
-}
-function getTotalClicks() {
-  const t = state.total || {};
-  return (parseInt((t.interstitial||{}).clicks)||0) +
-         (parseInt((t.banner||{}).clicks)||0) +
-         (parseInt((t.rewarded||{}).clicks)||0);
-}
-
-// DAILY CHART DATA
-function getDailyChartData() {
-  const daily = state.daily || {};
-  const days = Object.keys(daily).sort().slice(-7);
-  return {
-    labels: days.map(d => d.slice(5)),
-    revenue: days.map(d => parseFloat((daily[d]||{}).revenue)||0),
-    sessions: days.map(d => parseInt((daily[d]||{}).sessions)||0),
-    impressions: days.map(d => {
-      const dd = daily[d] || {};
-      return (parseInt((dd.interstitial||{}).impressions)||0) +
-             (parseInt((dd.banner||{}).impressions)||0) +
-             (parseInt((dd.rewarded||{}).impressions)||0);
-    })
-  };
-}
-
-// TOP LISTS
-function getTopList(node, max=8) {
-  const data = (state[node]) || {};
-  return Object.entries(data)
-    .map(([k,v]) => ({name: k.replace(/_/g,' '), val: parseInt(v)||0}))
-    .sort((a,b) => b.val - a.val)
-    .slice(0, max);
-}
-
-// TIMELINE
-function getTimeline() {
-  const tl = state.timeline || {};
-  return Object.values(tl).sort((a,b) => b.time > a.time ? 1 : -1).slice(0,15);
-}
-
-// RECORD
-function getBestDay() {
-  const daily = state.daily || {};
-  let best = 0;
-  Object.values(daily).forEach(d => {
-    const r = parseFloat((d||{}).revenue)||0;
-    if (r > best) best = r;
+const gTimeline = filter => {
+  let all = [];
+  appIds().forEach(id=>{
+    const tl=appData(id).timeline||{};
+    Object.values(tl).forEach(e=>all.push({...e,_appId:id}));
   });
-  return best;
+  all.sort((a,b)=>b.time>a.time?1:-1);
+  if(filter!=='all') all=all.filter(e=>(e.type||'').includes(filter));
+  return all.slice(0,40);
+};
+
+// ── Render ────────────────────────────────────────────────────────
+function renderAll(){
+  const ids = appIds();
+  if(activeTab!=='global' && !ids.includes(activeTab)) activeTab='global';
+
+  const tabsHtml = `<div class="tabs-bar">
+    <div class="tab global ${activeTab==='global'?'active':''}" onclick="switchTab('global')">🌐 GLOBAL</div>
+    ${ids.map(id=>`<div class="tab ${activeTab===id?'active':''}" onclick="switchTab('${id}')">${appName(id)}</div>`).join('')}
+  </div>`;
+
+  document.getElementById('app').innerHTML = tabsHtml + (activeTab==='global' ? renderGlobal(ids) : renderApp(activeTab));
+  buildCharts(activeTab==='global' ? null : activeTab);
 }
 
-function renderAll() {
-  const todayRev = getTodayRev();
-  const pct = Math.min((todayRev / dailyTarget) * 100, 100);
-  const bestDay = getBestDay();
-  const chartData = getDailyChartData();
-  const topCountries = getTopList('countries');
-  const topDevices = getTopList('devices');
-  const timeline = getTimeline();
+// ── GLOBAL VIEW ───────────────────────────────────────────────────
+function renderGlobal(ids){
+  const todayRev = gTodayRev(), totalRev = gRev();
+  const pct = Math.min(todayRev/dailyTarget*100,100);
+  const pbCls = pct>=100?'done':pct>=70?'warn':'';
+  const timeline = gTimeline(tlFilter);
+  const live = gLive();
 
-  const adTypes = [
-    { key:'interstitial', label:'INTERSTITIAL', icon:'📺', cls:'interstitial' },
-    { key:'banner', label:'BANNER', icon:'🖼️', cls:'banner' },
-    { key:'rewarded', label:'REWARDED', icon:'🎁', cls:'rewarded' }
-  ];
+  const appRows = ids.map(id=>{
+    const rev=appTotalRev(id);
+    const pctOf=totalRev>0?(rev/totalRev*100).toFixed(1):'0.0';
+    return `<tr>
+      <td><span class="app-link" onclick="switchTab('${id}')">${appName(id)}</span></td>
+      <td class="td-rev">${REVS(rev)}</td>
+      <td class="td-rev">${REVS(appTodayRev(id))}</td>
+      <td class="td-rev">${REVS(appMonthRev(id))}</td>
+      <td class="td-imp">${FMT(appTotalImpressions(id))}</td>
+      <td class="td-ses">${FMT(appTotalSes(id))}</td>
+      <td class="td-ses">${FMT(appDAU(id))}</td>
+      <td class="td-ses">${FMT(appMAU(id))}</td>
+      <td><span style="color:var(--green);font-family:Orbitron,sans-serif;font-size:9px">${appLiveCount(id)}</span></td>
+      <td class="td-pct">${pctOf}%</td>
+    </tr>`;
+  }).join('');
 
-  document.getElementById('app').innerHTML = `
-  <div class="wrap">
+  return `<div class="wrap">
     <header>
-      <div class="logo">BMW ADS STATS<span>REALTIME DASHBOARD</span></div>
-      <div class="live-badge"><div class="dot"></div>LIVE</div>
+      <div class="logo">ADS CONTROL CENTER<span>GLOBAL DASHBOARD — ALL APPS</span></div>
+      <div class="header-right">
+        <div class="live-badge"><div class="dot"></div>LIVE · <span id="last-update-badge">${new Date().toLocaleTimeString()}</span></div>
+      </div>
     </header>
 
     <!-- HERO -->
     <div class="hero">
-      <div>
-        <div class="hero-lbl">VENIT TOTAL</div>
-        <div class="hero-val">${fmtRevShort(getTotalRev())}</div>
-        <div class="hero-today">+${fmtRevShort(todayRev)} AZI</div>
+      <div class="hero-left">
+        <div class="hero-lbl">VENIT TOTAL — TOATE APP-URILE</div>
+        <div class="hero-val">${REVS(totalRev)}</div>
+        <div class="hero-today">▲ ${REVS(todayRev)} AZI</div>
+        <div class="hero-month">▲ ${REVS(gMonthRev())} LUNA ACEASTA</div>
       </div>
       <div class="hero-stats">
-        <div class="hstat"><div class="hstat-v">${fmt(getTotalImpressions())}</div><div class="hstat-l">IMPRESII</div></div>
-        <div class="hstat"><div class="hstat-v">${fmt(getTotalClicks())}</div><div class="hstat-l">CLICKURI</div></div>
-        <div class="hstat"><div class="hstat-v">${fmt(getTotalSessions())}</div><div class="hstat-l">SESIUNI</div></div>
-        <div class="hstat"><div class="hstat-v">${fmt(getTodaySessions())}</div><div class="hstat-l">AZI</div></div>
+        <div class="hst"><div class="hst-v" style="color:var(--green)">${live}</div><div class="hst-l">LIVE NOW</div></div>
+        <div class="hst"><div class="hst-v" style="color:var(--cyan)">${FMT(gDAU())}</div><div class="hst-l">DAU AZI</div></div>
+        <div class="hst"><div class="hst-v" style="color:var(--purple)">${FMT(gMAU())}</div><div class="hst-l">MAU</div></div>
+        <div class="hst"><div class="hst-v" style="color:var(--orange)">${FMT(gImp())}</div><div class="hst-l">IMPRESII</div></div>
+        <div class="hst"><div class="hst-v" style="color:var(--yellow)">${REVS(gIAPRev())}</div><div class="hst-l">IAP REV</div></div>
       </div>
     </div>
 
-    <!-- TARGET PROGRESS -->
-    <div class="target-card">
-      <div class="target-hd">
-        <div class="target-title">🎯 TARGET ZILNIC</div>
-        <button class="target-edit" onclick="openModal()">EDIT TARGET</button>
+    <!-- TARGET -->
+    <div class="target-row">
+      <div class="target-left">
+        <div class="target-lbl">🎯 TARGET ZILNIC GLOBAL</div>
+        <div class="prog-wrap"><div class="prog-bar ${pbCls}" style="width:${pct.toFixed(1)}%"></div></div>
+        <div class="prog-info"><span>${REVS(todayRev)} / ${REVS(dailyTarget)}</span><span class="prog-pct">${pct.toFixed(1)}%</span></div>
       </div>
-      <div class="progress-wrap">
-        <div class="progress-bar" style="width:${pct.toFixed(1)}%"></div>
+      <div class="target-right">
+        <button class="btn-sm" onclick="openModal()">EDIT TARGET</button>
       </div>
-      <div class="progress-info">
-        <span>${fmtRevShort(todayRev)} / ${fmtRevShort(dailyTarget)}</span>
-        <span class="progress-pct">${pct.toFixed(1)}%</span>
-      </div>
-      <div class="record-row">🏆 RECORD ZILNIC: <span class="record-val">&nbsp;${fmtRevShort(bestDay)}</span></div>
     </div>
 
-    <!-- AD CARDS -->
-    <div class="section-title">📊 STATISTICI PER TIP RECLAMĂ</div>
-    <div class="cards">
-      ${adTypes.map(a => {
-        const d = getAdData(a.key);
-        const dd = getDailyAdData(a.key);
-        return `
-        <div class="card ${a.cls}">
-          <div class="card-hd">
-            <div class="card-title">${a.label}</div>
-            <div class="card-icon">${a.icon}</div>
+    <!-- APP TABLE -->
+    <div class="sec">📱 BREAKDOWN PER APLICAȚIE</div>
+    <div class="app-table-wrap">
+      ${ids.length?`<table class="app-table">
+        <thead><tr><th>APP</th><th>REV TOTAL</th><th>REV AZI</th><th>REV LUNA</th><th>IMPRESII</th><th>SESIUNI</th><th>DAU</th><th>MAU</th><th>LIVE</th><th>% DIN TOTAL</th></tr></thead>
+        <tbody>${appRows}</tbody>
+      </table>`:'<div class="empty">Nu există aplicații înregistrate.</div>'}
+    </div>
+
+    <!-- TIMELINE -->
+    ${renderTimeline(timeline, true)}
+
+    <footer>LAST UPDATE: ${new Date().toLocaleTimeString()} · AUTO-REFRESH LIVE · ${ids.length} APP-URI ACTIVE</footer>
+  </div>`;
+}
+
+// ── APP VIEW ──────────────────────────────────────────────────────
+function renderApp(id){
+  const name     = appName(id);
+  const todayRev = appTodayRev(id);
+  const totalRev = appTotalRev(id);
+  const monthRev = appMonthRev(id);
+  const pct      = Math.min(todayRev/dailyTarget*100,100);
+  const pbCls    = pct>=100?'done':pct>=70?'warn':'';
+  const best     = appBestDay(id);
+  const live     = appLiveCount(id);
+  const dau      = appDAU(id);
+  const mau      = appMAU(id);
+  const arpdau   = appARPDAU(id);
+  const rps      = appRevPerSes(id);
+  const iapRev   = appTotalIAPRev(id);
+  const iapPurch = appTotalIAPPurch(id);
+  const timeline = appTimeline(id, tlFilter);
+  const topC     = appTopList(id,'countries');
+  const topD     = appTopList(id,'devices');
+  const topV     = appTopList(id,'versions');
+  const topOS    = appTopList(id,'os');
+  const topNet   = appTopList(id,'network');
+  const topBatt  = appTopList(id,'battery');
+  const compl    = appCompl(id);
+  const durTotal = parseInt((appTotal(id).session_duration_total)||0);
+  const durCount = parseInt((appTotal(id).session_count_for_avg)||0);
+  const avgDur   = durCount>0?Math.round(durTotal/durCount):0;
+  const errTotal = parseInt((appTotal(id).errors||{}).total)||0;
+
+  // Retention cohorts
+  const cohorts = appData(id).cohorts||{};
+  const cohortDays = Object.keys(cohorts).sort().slice(-1)[0];
+  const lastCohort = cohortDays ? cohorts[cohortDays] : {};
+  const d0=parseInt(lastCohort.d0)||0, d1=parseInt(lastCohort.d1)||0;
+  const d7=parseInt(lastCohort.d7)||0, d30=parseInt(lastCohort.d30)||0;
+  const retD1  = d0>0?((d1/d0)*100).toFixed(0):'—';
+  const retD7  = d0>0?((d7/d0)*100).toFixed(0):'—';
+  const retD30 = d0>0?((d30/d0)*100).toFixed(0):'—';
+
+  const adTypes = [
+    {k:'interstitial',l:'INTERSTITIAL',i:'📺',c:'int'},
+    {k:'banner',      l:'BANNER',      i:'🖼️',c:'ban'},
+    {k:'rewarded',    l:'REWARDED',    i:'🎁',c:'rew'}
+  ];
+
+  const kpi = (label,val,color,sub='') => `<div class="kpi c-${color}">
+    <div class="kpi-lbl">${label}</div>
+    <div class="kpi-val">${val}</div>
+    ${sub?`<div class="kpi-sub">${sub}</div>`:''}
+  </div>`;
+
+  return `<div class="wrap">
+    <header>
+      <div class="logo">${name}<span>APP ANALYTICS — FULL CONTROL</span></div>
+      <div class="header-right">
+        <div class="live-badge"><div class="dot"></div>LIVE · ${new Date().toLocaleTimeString()}</div>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-left">
+        <div class="hero-lbl">VENIT TOTAL — ${name.toUpperCase()}</div>
+        <div class="hero-val">${REVS(totalRev)}</div>
+        <div class="hero-today">▲ ${REVS(todayRev)} AZI</div>
+        <div class="hero-month">▲ ${REVS(monthRev)} LUNA · IAP: ${REVS(iapRev)}</div>
+      </div>
+      <div class="hero-stats">
+        <div class="hst"><div class="hst-v live-count"><div class="live-dot"></div>${live}</div><div class="hst-l">LIVE NOW</div></div>
+        <div class="hst"><div class="hst-v" style="color:var(--cyan)">${FMT(dau)}</div><div class="hst-l">DAU AZI</div></div>
+        <div class="hst"><div class="hst-v" style="color:var(--purple)">${FMT(mau)}</div><div class="hst-l">MAU</div></div>
+        <div class="hst"><div class="hst-v" style="color:var(--yellow)">'$'${arpdau.toFixed(4)}</div><div class="hst-l">ARPDAU</div></div>
+        <div class="hst"><div class="hst-v" style="color:var(--orange)">${FMT(appTotalSes(id))}</div><div class="hst-l">SESIUNI</div></div>
+      </div>
+    </div>
+
+    <!-- TARGET -->
+    <div class="target-row">
+      <div class="target-left">
+        <div class="target-lbl">🎯 TARGET ZILNIC</div>
+        <div class="prog-wrap"><div class="prog-bar ${pbCls}" style="width:${pct.toFixed(1)}%"></div></div>
+        <div class="prog-info"><span>${REVS(todayRev)} / ${REVS(dailyTarget)}</span><span class="prog-pct">${pct.toFixed(1)}%</span></div>
+      </div>
+      <div class="target-right">
+        <button class="btn-sm" onclick="openModal()">EDIT TARGET</button>
+        <div class="record">RECORD: <span class="record-val">${REVS(best)}</span></div>
+      </div>
+    </div>
+
+    <!-- KPI STRIP 1 — Performance -->
+    <div class="sec">⚡ PERFORMANȚĂ CHEIE</div>
+    <div class="kpi-strip">
+      ${kpi('VENIT AZI',    REVS(todayRev),   'yellow', `TARGET: ${pct.toFixed(0)}%`)}
+      ${kpi('VENIT LUNA',   REVS(monthRev),   'yellow')}
+      ${kpi('ARPDAU',       '$'+arpdau.toFixed(4),'cyan', 'Rev/User/Zi')}
+      ${kpi('REV/SESIUNE',  '$'+rps.toFixed(4),  'cyan2'||'cyan')}
+      ${kpi('LIVE ACUM',    live,             'green', 'Activi <2min')}
+      ${kpi('DAU',          FMT(dau),         'green', 'Unici azi')}
+      ${kpi('MAU',          FMT(mau),         'purple','Unici luna')}
+      ${kpi('AVG SESSION',  avgDur+'s',       'orange', durCount+' sesiuni')}
+      ${kpi('IAP REVENUE',  REVS(iapRev),     'yellow', iapPurch+' achizitii')}
+      ${kpi('REWARD COMPL', FMT(compl),       'purple', 'Completari')}
+      ${kpi('ERRORS',       FMT(errTotal),    'red')}
+      ${kpi('SESIUNI TOTAL',FMT(appTotalSes(id)),'cyan2'||'cyan')}
+    </div>
+
+    <!-- AD TYPE CARDS -->
+    <div class="sec">📊 STATISTICI PER TIP RECLAMĂ</div>
+    <div class="ad-cards">
+      ${adTypes.map(a=>{
+        const imp=appImpTotal(id,a.k),impD=appImpToday(id,a.k),
+              clk=appClkTotal(id,a.k),rev=appRevTotal(id,a.k),revD=appRevToday(id,a.k),
+              ecpm=appECPM(id,a.k),ctr=appCTR(id,a.k),fill=appFill(id,a.k),
+              req=appReq(id,a.k),fail=appFailed(id,a.k);
+        return `<div class="acard ${a.c}">
+          <div class="acard-hd"><div class="acard-title">${a.l}</div><div class="acard-icon">${a.i}</div></div>
+          <div class="arow"><span class="albl">IMPRESII TOTAL</span><span class="aval">${FMT(imp)}</span></div>
+          <div class="arow"><span class="albl">IMPRESII AZI</span><span class="aval">${FMT(impD)}</span></div>
+          <div class="arow"><span class="albl">CLICKURI</span><span class="aval">${FMT(clk)}</span></div>
+          <div class="arow"><span class="albl">CTR</span><span class="aval ctr">${PCT(ctr)}</span></div>
+          <div class="arow"><span class="albl">VENIT TOTAL</span><span class="aval rev">${REV(rev)}</span></div>
+          <div class="arow"><span class="albl">VENIT AZI</span><span class="aval rev">${REV(revD)}</span></div>
+          <div class="arow"><span class="albl">eCPM</span><span class="aval ecpm">${ECPM(ecpm)}</span></div>
+          <div class="arow"><span class="albl">FILL RATE</span>
+            <div class="fill-wrap"><div class="fill-bar-bg"><div class="fill-bar-fg" style="width:${Math.min(fill,100).toFixed(0)}%"></div></div><span class="aval fill">${PCT(fill)}</span></div>
           </div>
-          <div class="srow"><span class="slbl">IMPRESII TOTAL</span><span class="sval">${fmt(d.impressions||0)}</span></div>
-          <div class="srow"><span class="slbl">IMPRESII AZI</span><span class="sval">${fmt(dd.impressions||0)}</span></div>
-          <div class="srow"><span class="slbl">CLICKURI TOTAL</span><span class="sval">${fmt(d.clicks||0)}</span></div>
-          <div class="srow"><span class="slbl">CTR</span><span class="sval ctr">${fmtCTR(d.ctr||0)}</span></div>
-          <div class="srow"><span class="slbl">VENIT TOTAL</span><span class="sval rev">${fmtRev(d.revenue||0)}</span></div>
-          <div class="srow"><span class="slbl">VENIT AZI</span><span class="sval rev">${fmtRev(dd.revenue||0)}</span></div>
-          <div class="srow"><span class="slbl">eCPM</span><span class="sval ecpm">${fmtECPM(d.ecpm||0)}</span></div>
+          <div class="arow"><span class="albl">REQUESTS</span><span class="aval">${FMT(req)}</span></div>
+          <div class="arow"><span class="albl">FAILED</span><span class="aval" style="color:var(--red)">${FMT(fail)}</span></div>
         </div>`;
       }).join('')}
     </div>
 
     <!-- CHARTS -->
-    <div class="section-title">📈 GRAFICE ULTIMELE 7 ZILE</div>
+    <div class="sec">📈 GRAFICE ULTIMELE 14 ZILE</div>
     <div class="charts-grid">
-      <div class="chart-card">
-        <div class="chart-title">💰 VENIT ZILNIC ($)</div>
-        <div class="chart-wrap"><canvas id="chartRevenue"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">👁️ IMPRESII ZILNICE</div>
-        <div class="chart-wrap"><canvas id="chartImpressions"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">👥 SESIUNI ZILNICE</div>
-        <div class="chart-wrap"><canvas id="chartSessions"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">🥧 IMPRESII PE TIP</div>
-        <div class="chart-wrap"><canvas id="chartPie"></canvas></div>
+      <div class="ccrd"><div class="ccrd-title">💰 VENIT ZILNIC ($)</div><div class="ccrd-wrap"><canvas id="cRev"></canvas></div></div>
+      <div class="ccrd"><div class="ccrd-title">👥 DAU ZILNIC</div><div class="ccrd-wrap"><canvas id="cDAU"></canvas></div></div>
+      <div class="ccrd"><div class="ccrd-title">👁️ IMPRESII ZILNICE</div><div class="ccrd-wrap"><canvas id="cImp"></canvas></div></div>
+      <div class="ccrd"><div class="ccrd-title">🥧 VENIT PE TIP RECLAMĂ</div><div class="ccrd-wrap"><canvas id="cPie"></canvas></div></div>
+    </div>
+
+    <!-- RETENTION -->
+    <div class="sec">🔄 RETENTION (ultimul cohort)</div>
+    <div class="retention-card">
+      <div style="font-size:9px;color:var(--muted2)">Cohort: ${cohortDays||'—'} · D0 = ${d0} useri</div>
+      <div class="ret-grid">
+        <div class="ret-cell"><div class="ret-day">D0</div><div class="ret-val">${d0}</div><div class="ret-sub">instalari</div></div>
+        <div class="ret-cell"><div class="ret-day">D1</div><div class="ret-val">${retD1}${retD1!=='—'?'%':''}</div><div class="ret-sub">${d1} useri</div></div>
+        <div class="ret-cell"><div class="ret-day">D7</div><div class="ret-val">${retD7}${retD7!=='—'?'%':''}</div><div class="ret-sub">${d7} useri</div></div>
+        <div class="ret-cell"><div class="ret-day">D30</div><div class="ret-val">${retD30}${retD30!=='—'?'%':''}</div><div class="ret-sub">${d30} useri</div></div>
       </div>
     </div>
 
-    <!-- TOP LISTS -->
-    <div class="section-title">🌍 TOP ȚĂRI & DISPOZITIVE</div>
-    <div class="lists-grid">
-      <div class="list-card">
-        <div class="list-title">🌍 TOP ȚĂRI</div>
-        ${topCountries.length ? topCountries.map((c,i) => `
-          <div class="list-item">
-            <div class="list-rank">#${i+1}</div>
-            <div class="list-name">${c.name}</div>
-            <div class="list-bar-wrap"><div class="list-bar" style="width:${topCountries[0].val>0?(c.val/topCountries[0].val*100).toFixed(0):0}%"></div></div>
-            <div class="list-val">${fmt(c.val)}</div>
-          </div>`).join('') : '<div style="color:var(--muted);font-size:12px">Nu sunt date încă</div>'}
-      </div>
-      <div class="list-card">
-        <div class="list-title">📱 TOP DISPOZITIVE</div>
-        ${topDevices.length ? topDevices.map((d,i) => `
-          <div class="list-item">
-            <div class="list-rank">#${i+1}</div>
-            <div class="list-name">${d.name}</div>
-            <div class="list-bar-wrap"><div class="list-bar" style="width:${topDevices[0].val>0?(d.val/topDevices[0].val*100).toFixed(0):0}%;background:var(--purple)"></div></div>
-            <div class="list-val">${fmt(d.val)}</div>
-          </div>`).join('') : '<div style="color:var(--muted);font-size:12px">Nu sunt date încă</div>'}
-      </div>
+    <!-- BREAKDOWN -->
+    <div class="sec">🌍 BREAKDOWN DISPOZITIVE & DEMOGRAFIE</div>
+    <div class="breakdown-grid">
+      ${renderTopList('🌍 TOP ȚĂRI',    topC, 'var(--cyan2)')}
+      ${renderTopList('📱 TOP DEVICES', topD, 'var(--purple)')}
+      ${renderTopList('📦 VERSIUNI APP',topV, 'var(--green)')}
+      ${renderTopList('🖥️ OS VERSION',  topOS,'var(--orange)')}
+      ${renderTopList('📶 NETWORK TYPE',topNet,'var(--yellow)')}
+      ${renderTopList('🔋 BATTERY',     topBatt,'var(--pink)')}
     </div>
 
     <!-- TIMELINE -->
-    <div class="section-title">⚡ ACTIVITATE LIVE</div>
-    <div class="timeline-card">
-      <div class="timeline-title">ULTIMELE EVENIMENTE</div>
-      <div class="timeline-list">
-        ${timeline.length ? timeline.map(e => `
-          <div class="tl-item">
-            <div class="tl-time">${e.time||''}</div>
-            <div class="tl-text">${e.text||''}</div>
-            <div class="tl-meta">${e.country||''} · ${(e.device||'').substring(0,15)}</div>
-          </div>`).join('') : '<div style="color:var(--muted);font-size:12px;padding:8px 0">Nicio activitate încă</div>'}
-      </div>
-    </div>
+    ${renderTimeline(timeline, false)}
 
-    <div class="footer">LAST UPDATE: <span id="last-update">${new Date().toLocaleTimeString()}</span> &nbsp;·&nbsp; AUTO-REFRESH LIVE</div>
+    <footer>LAST UPDATE: ${new Date().toLocaleTimeString()} · ${name.toUpperCase()} · v${appReg(id).version||'?'}</footer>
   </div>`;
-
-  // CHARTS
-  buildCharts(chartData);
 }
 
-function buildCharts(data) {
-  const chartDefaults = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555570', font: { family: 'Share Tech Mono', size: 10 } } },
-      y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555570', font: { family: 'Share Tech Mono', size: 10 } } }
+function renderTopList(title, items, color){
+  return `<div class="bcard">
+    <div class="bcard-title">${title}</div>
+    ${items.length?items.map((it,i)=>`
+      <div class="bitem">
+        <div class="brank">#${i+1}</div>
+        <div class="bname">${it.name}</div>
+        <div class="bbar-bg"><div class="bbar-fg" style="width:${items[0].val>0?(it.val/items[0].val*100).toFixed(0):0}%;background:${color}"></div></div>
+        <div class="bval" style="color:${color}">${FMT(it.val)}</div>
+      </div>`).join(''):'<div class="empty">—</div>'}
+  </div>`;
+}
+
+function renderTimeline(items, showAppBadge){
+  const filters = ['all','session','interstitial','rewarded','banner','iap','error','custom'];
+  return `<div class="tl-card">
+    <div class="tl-hd">
+      <div class="tl-title">⚡ ACTIVITATE LIVE</div>
+      <div class="tl-filter">
+        ${filters.map(f=>`<button class="tl-fbtn ${tlFilter===f?'on':''}" onclick="setTlFilter('${f}')">${f.toUpperCase()}</button>`).join('')}
+      </div>
+    </div>
+    <div class="tl-list">
+      ${items.length?items.map(e=>`
+        <div class="tl-item">
+          <div class="tl-time">${e.time||''}</div>
+          <div class="tl-text">${e.text||''}</div>
+          ${showAppBadge&&e._appId?`<div class="tl-app-badge">${appName(e._appId)}</div>`:''}
+          <div class="tl-badge ${e.type||''}">${(e.type||'event').replace(/_/g,' ')}</div>
+          <div class="tl-meta">${e.country||''}</div>
+        </div>`).join(''):'<div class="empty">Nicio activitate.</div>'}
+    </div>
+  </div>`;
+}
+
+// ── Charts ────────────────────────────────────────────────────────
+function buildCharts(id){
+  if(!id) return;
+  const data = appDailyChart(id);
+  const t    = appTotal(id);
+  ['cRev','cDAU','cImp','cPie'].forEach(cid=>{ if(charts[cid]){charts[cid].destroy();delete charts[cid];} });
+
+  const def = {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{grid:{color:'rgba(255,255,255,0.03)'},ticks:{color:'#44445a',font:{family:'Share Tech Mono',size:9}}},
+      y:{grid:{color:'rgba(255,255,255,0.03)'},ticks:{color:'#44445a',font:{family:'Share Tech Mono',size:9}}}
     }
   };
 
-  // Destroy old charts
-  ['chartRevenue','chartImpressions','chartSessions','chartPie'].forEach(id => {
-    if (charts[id]) { charts[id].destroy(); delete charts[id]; }
-  });
+  const mk=(cid,type,dataset,opts={})=>{ const c=document.getElementById(cid); if(c) charts[cid]=new Chart(c,{type,data:{labels:data.labels,datasets:[dataset]},options:{...def,...opts}}); };
 
-  const revCtx = document.getElementById('chartRevenue');
-  if (revCtx) charts.chartRevenue = new Chart(revCtx, {
-    type: 'bar',
-    data: {
-      labels: data.labels,
-      datasets: [{ data: data.revenue, backgroundColor: 'rgba(255,234,0,0.5)', borderColor: '#ffea00', borderWidth: 1, borderRadius: 4 }]
-    },
-    options: chartDefaults
-  });
+  mk('cRev','bar',{data:data.revenue,backgroundColor:'rgba(255,234,0,0.4)',borderColor:'#ffea00',borderWidth:1,borderRadius:3});
+  mk('cDAU','line',{data:data.dau,borderColor:'#00e5ff',backgroundColor:'rgba(0,229,255,0.07)',borderWidth:2,fill:true,tension:0.4,pointBackgroundColor:'#00e5ff',pointRadius:3});
+  mk('cImp','line',{data:data.impressions,borderColor:'#4fc3f7',backgroundColor:'rgba(79,195,247,0.07)',borderWidth:2,fill:true,tension:0.4,pointBackgroundColor:'#4fc3f7',pointRadius:3});
 
-  const impCtx = document.getElementById('chartImpressions');
-  if (impCtx) charts.chartImpressions = new Chart(impCtx, {
-    type: 'line',
-    data: {
-      labels: data.labels,
-      datasets: [{ data: data.impressions, borderColor: '#4fc3f7', backgroundColor: 'rgba(79,195,247,0.1)', borderWidth: 2, fill: true, tension: 0.4, pointBackgroundColor: '#4fc3f7' }]
-    },
-    options: chartDefaults
-  });
-
-  const sesCtx = document.getElementById('chartSessions');
-  if (sesCtx) charts.chartSessions = new Chart(sesCtx, {
-    type: 'line',
-    data: {
-      labels: data.labels,
-      datasets: [{ data: data.sessions, borderColor: '#00e676', backgroundColor: 'rgba(0,230,118,0.1)', borderWidth: 2, fill: true, tension: 0.4, pointBackgroundColor: '#00e676' }]
-    },
-    options: chartDefaults
-  });
-
-  const t = state.total || {};
-  const intImp = parseInt((t.interstitial||{}).impressions)||0;
-  const banImp = parseInt((t.banner||{}).impressions)||0;
-  const rewImp = parseInt((t.rewarded||{}).impressions)||0;
-  const pieCtx = document.getElementById('chartPie');
-  if (pieCtx) charts.chartPie = new Chart(pieCtx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Interstitial','Banner','Rewarded'],
-      datasets: [{ data: [intImp, banImp, rewImp], backgroundColor: ['rgba(79,195,247,0.7)','rgba(0,230,118,0.7)','rgba(206,147,216,0.7)'], borderColor: ['#4fc3f7','#00e676','#ce93d8'], borderWidth: 1 }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom', labels: { color: '#555570', font: { family: 'Share Tech Mono', size: 10 }, padding: 12 } }
-      }
-    }
+  // Pie — venit per tip
+  const revI=appRevTotal(id,'interstitial'),revB=appRevTotal(id,'banner'),revR=appRevTotal(id,'rewarded');
+  const pc=document.getElementById('cPie');
+  if(pc) charts.cPie=new Chart(pc,{
+    type:'doughnut',
+    data:{labels:['Interstitial','Banner','Rewarded'],datasets:[{data:[revI,revB,revR],backgroundColor:['rgba(79,195,247,0.7)','rgba(0,230,118,0.7)','rgba(206,147,216,0.7)'],borderColor:['#4fc3f7','#00e676','#ce93d8'],borderWidth:1}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#44445a',font:{family:'Share Tech Mono',size:9},padding:8}}}}
   });
 }
 
-// FIREBASE LISTENER
-onValue(ref(db, '/'), (snap) => {
-  state = snap.val() || {};
+// ── Firebase listener ─────────────────────────────────────────────
+onValue(ref(db,'/'), snap => {
+  state = snap.val()||{};
   renderAll();
 });
 </script>
