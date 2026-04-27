@@ -3,211 +3,436 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ADS CONTROL CENTER</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<title>Ads Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-:root{
-  --bg:#030305;--s1:#0a0a12;--s2:#0f0f1a;--s3:#141420;
-  --b:#1a1a28;--b2:#22223a;
-  --cyan:#00e5ff;--cyan2:#4fc3f7;--cyan3:#80deea;
-  --green:#00e676;--green2:#69f0ae;
-  --yellow:#ffea00;--yellow2:#fff176;
-  --purple:#ce93d8;--purple2:#e040fb;
-  --orange:#ff9800;--red:#ff5252;--pink:#f48fb1;
-  --text:#e8e8f0;--muted:#44445a;--muted2:#666688;
+:root {
+  --bg:       #f7f8fa;
+  --surface:  #ffffff;
+  --border:   #e8eaed;
+  --border2:  #d1d5db;
+  --blue:     #2563eb;
+  --blue-lt:  #eff4ff;
+  --blue-dim: rgba(37,99,235,0.08);
+  --green:    #16a34a;
+  --green-lt: #f0fdf4;
+  --red:      #dc2626;
+  --red-lt:   #fef2f2;
+  --orange:   #ea580c;
+  --orange-lt:#fff7ed;
+  --purple:   #7c3aed;
+  --purple-lt:#f5f3ff;
+  --yellow:   #ca8a04;
+  --yellow-lt:#fefce8;
+  --text:     #111827;
+  --text2:    #6b7280;
+  --text3:    #9ca3af;
+  --nav-h:    52px;
+  --shadow:   0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
 }
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;
-  background-image:linear-gradient(rgba(0,229,255,0.025) 1px,transparent 1px),
-  linear-gradient(90deg,rgba(0,229,255,0.025) 1px,transparent 1px);
-  background-size:48px 48px;pointer-events:none;z-index:0;}
-body::after{content:'';position:fixed;inset:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
-  pointer-events:none;z-index:0;}
-.wrap{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:24px 16px;}
-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;padding-bottom:16px;border-bottom:1px solid var(--b);}
-.logo{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(14px,2.5vw,22px);color:var(--cyan);letter-spacing:0.12em;text-shadow:0 0 24px rgba(0,229,255,0.5);}
-.logo span{display:block;font-size:0.45em;color:var(--muted2);letter-spacing:0.35em;margin-top:2px;}
-.header-right{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-.live-badge{display:flex;align-items:center;gap:6px;background:rgba(0,230,118,0.07);border:1px solid rgba(0,230,118,0.25);border-radius:20px;padding:5px 14px;font-size:10px;color:var(--green);letter-spacing:0.2em;}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.4s ease-in-out infinite;box-shadow:0 0 7px var(--green);}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.75)}}
-.tabs-bar{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;}
-.tab{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:0.12em;padding:7px 14px;border-radius:6px;border:1px solid var(--b);background:var(--s1);color:var(--muted2);cursor:pointer;transition:all .2s;white-space:nowrap;}
-.tab:hover{border-color:var(--b2);color:var(--text);}
-.tab.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,0.05);box-shadow:0 0 10px rgba(0,229,255,0.08);}
-.tab.global.active{border-color:var(--yellow);color:var(--yellow);background:rgba(255,234,0,0.05);box-shadow:0 0 10px rgba(255,234,0,0.08);}
-.sec{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:0.3em;color:var(--muted2);margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:8px;}
-.kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:16px;}
-.kpi{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden;transition:border-color .25s;}
-.kpi:hover{border-color:var(--b2);}
-.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;}
-.kpi.c-cyan::before{background:linear-gradient(90deg,var(--cyan),transparent);}
-.kpi.c-green::before{background:linear-gradient(90deg,var(--green),transparent);}
-.kpi.c-yellow::before{background:linear-gradient(90deg,var(--yellow),transparent);}
-.kpi.c-purple::before{background:linear-gradient(90deg,var(--purple),transparent);}
-.kpi.c-orange::before{background:linear-gradient(90deg,var(--orange),transparent);}
-.kpi.c-pink::before{background:linear-gradient(90deg,var(--pink),transparent);}
-.kpi.c-red::before{background:linear-gradient(90deg,var(--red),transparent);}
-.kpi-lbl{font-size:8px;color:var(--muted2);letter-spacing:0.2em;margin-bottom:5px;}
-.kpi-val{font-family:'Orbitron',sans-serif;font-size:clamp(16px,2.5vw,22px);font-weight:900;line-height:1;}
-.kpi.c-cyan .kpi-val{color:var(--cyan);}
-.kpi.c-green .kpi-val{color:var(--green);}
-.kpi.c-yellow .kpi-val{color:var(--yellow);}
-.kpi.c-purple .kpi-val{color:var(--purple);}
-.kpi.c-orange .kpi-val{color:var(--orange);}
-.kpi.c-pink .kpi-val{color:var(--pink);}
-.kpi.c-red .kpi-val{color:var(--red);}
-.kpi-sub{font-size:9px;color:var(--muted2);margin-top:4px;}
-.live-count{display:flex;align-items:center;gap:6px;}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse .8s ease-in-out infinite;}
-.hero{background:linear-gradient(135deg,#080d18,#080a14);border:1px solid rgba(0,229,255,0.15);border-radius:14px;padding:24px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;position:relative;overflow:hidden;}
-.hero::after{content:'';position:absolute;top:-50%;right:-5%;width:280px;height:280px;background:radial-gradient(circle,rgba(0,229,255,0.04),transparent 70%);pointer-events:none;}
-.hero-lbl{font-size:9px;letter-spacing:0.3em;color:var(--muted2);margin-bottom:4px;}
-.hero-val{font-family:'Orbitron',sans-serif;font-size:clamp(30px,5vw,52px);font-weight:900;color:var(--cyan);text-shadow:0 0 40px rgba(0,229,255,0.35);line-height:1;}
-.hero-today{font-size:11px;color:var(--green);margin-top:5px;}
-.hero-month{font-size:10px;color:var(--muted2);margin-top:2px;}
-.hero-stats{display:flex;gap:20px;flex-wrap:wrap;}
-.hst{text-align:center;}
-.hst-v{font-family:'Orbitron',sans-serif;font-size:17px;font-weight:700;}
-.hst-l{font-size:8px;color:var(--muted2);letter-spacing:0.18em;margin-top:2px;}
-.target-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:16px;margin-bottom:16px;}
-.target-lbl{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--cyan);letter-spacing:0.2em;margin-bottom:8px;}
-.prog-wrap{background:rgba(255,255,255,0.04);border-radius:6px;height:8px;overflow:hidden;margin-bottom:6px;}
-.prog-bar{height:100%;border-radius:6px;transition:width 1.2s cubic-bezier(.4,0,.2,1);background:linear-gradient(90deg,var(--cyan),var(--cyan2));box-shadow:0 0 8px rgba(0,229,255,0.25);}
-.prog-bar.warn{background:linear-gradient(90deg,var(--orange),var(--yellow));}
-.prog-bar.done{background:linear-gradient(90deg,var(--green),var(--green2));}
-.prog-info{display:flex;justify-content:space-between;font-size:10px;color:var(--muted2);}
-.prog-pct{color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:11px;}
-.target-right{text-align:center;}
-.btn-sm{background:none;border:1px solid var(--b);color:var(--muted2);font-family:'Share Tech Mono',monospace;font-size:10px;padding:6px 12px;border-radius:6px;cursor:pointer;transition:all .2s;display:block;margin-bottom:6px;width:100%;}
-.btn-sm:hover{border-color:var(--cyan);color:var(--cyan);}
-.record{font-size:9px;color:var(--muted2);text-align:center;}
-.record-val{color:var(--yellow);font-family:'Orbitron',sans-serif;}
-.ad-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-bottom:16px;}
-.acard{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:18px;position:relative;overflow:hidden;}
-.acard::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
-.acard.int::after{background:linear-gradient(90deg,var(--cyan2),transparent);}
-.acard.ban::after{background:linear-gradient(90deg,var(--green),transparent);}
-.acard.rew::after{background:linear-gradient(90deg,var(--purple),transparent);}
-.acard-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
-.acard-title{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.15em;}
-.acard.int .acard-title{color:var(--cyan2);}
-.acard.ban .acard-title{color:var(--green);}
-.acard.rew .acard-title{color:var(--purple);}
-.acard-icon{font-size:16px;opacity:.5;}
-.arow{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.03);}
-.arow:last-child{border-bottom:none;}
-.albl{font-size:9px;color:var(--muted2);letter-spacing:0.1em;}
-.aval{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:700;}
-.aval.rev{color:var(--yellow);}
-.aval.ecpm{color:var(--cyan);}
-.aval.ctr{color:var(--orange);}
-.aval.fill{color:var(--green);}
-.fill-wrap{display:flex;align-items:center;gap:6px;}
-.fill-bar-bg{flex:1;height:3px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;}
-.fill-bar-fg{height:100%;border-radius:3px;background:var(--green);}
-.charts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px;margin-bottom:16px;}
-.ccrd{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:18px;}
-.ccrd-title{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--muted2);letter-spacing:0.2em;margin-bottom:12px;}
-.ccrd-wrap{position:relative;height:160px;}
-.breakdown-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:16px;}
-.bcard{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:18px;}
-.bcard-title{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--muted2);letter-spacing:0.2em;margin-bottom:12px;}
-.bitem{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.03);}
-.bitem:last-child{border-bottom:none;}
-.brank{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--muted);width:18px;}
-.bname{flex:1;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.bbar-bg{width:60px;height:3px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;}
-.bbar-fg{height:100%;border-radius:3px;background:var(--cyan2);}
-.bval{font-family:'Orbitron',sans-serif;font-size:10px;min-width:28px;text-align:right;}
-.retention-card{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:18px;margin-bottom:16px;}
-.ret-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;}
-.ret-cell{text-align:center;background:var(--s2);border:1px solid var(--b);border-radius:8px;padding:12px 6px;}
-.ret-day{font-size:8px;color:var(--muted2);letter-spacing:0.2em;margin-bottom:4px;}
-.ret-val{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:var(--cyan);}
-.ret-sub{font-size:8px;color:var(--muted2);margin-top:2px;}
-.app-table-wrap{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:18px;margin-bottom:16px;overflow-x:auto;}
-.app-table{width:100%;border-collapse:collapse;font-size:10px;}
-.app-table th{font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:0.18em;color:var(--muted2);padding:8px 10px;text-align:left;border-bottom:1px solid var(--b);}
-.app-table td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,0.03);}
-.app-table tr:last-child td{border-bottom:none;}
-.app-table tr:hover td{background:rgba(0,229,255,0.02);}
-.app-link{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--cyan);cursor:pointer;}
-.app-link:hover{text-decoration:underline;}
-td.td-rev{color:var(--yellow);font-family:'Orbitron',sans-serif;}
-td.td-imp{color:var(--cyan2);}
-td.td-ses{color:var(--green);}
-td.td-pct{color:var(--muted2);}
 
-/* ══ TIMELINE ════════════════════════════════════════════════════ */
-.tl-card{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:18px;margin-bottom:16px;}
-.tl-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
-.tl-title{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--muted2);letter-spacing:0.2em;display:flex;align-items:center;gap:8px;}
-/* indicator live nou eveniment */
-.tl-live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse .8s ease-in-out infinite;display:none;}
-.tl-live-dot.on{display:inline-block;}
-.tl-filter{display:flex;gap:4px;flex-wrap:wrap;}
-.tl-fbtn{background:none;border:1px solid var(--b);color:var(--muted2);font-family:'Share Tech Mono',monospace;font-size:8px;padding:3px 8px;border-radius:4px;cursor:pointer;transition:all .15s;}
-.tl-fbtn:hover{border-color:var(--b2);color:var(--text);}
-.tl-fbtn.on{border-color:var(--cyan);color:var(--cyan);}
-.tl-list{max-height:320px;overflow-y:auto;}
-.tl-list::-webkit-scrollbar{width:3px;}
-.tl-list::-webkit-scrollbar-thumb{background:var(--b2);border-radius:3px;}
-.tl-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.03);}
-.tl-item:last-child{border-bottom:none;}
-/* animatie pentru eveniment NOU */
-.tl-item.new{animation:tlNew .6s ease;}
-@keyframes tlNew{
-  0%{opacity:0;transform:translateX(-10px);background:rgba(0,229,255,0.06);}
-  40%{background:rgba(0,229,255,0.06);}
-  100%{opacity:1;transform:none;background:transparent;}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
-@keyframes fadeIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
-.tl-time{font-size:9px;color:var(--muted2);min-width:60px;font-family:'Share Tech Mono',monospace;}
-.tl-text{flex:1;font-size:10px;}
-.tl-badge{font-size:8px;padding:2px 6px;border-radius:3px;white-space:nowrap;}
-.tl-badge.session{background:rgba(0,230,118,0.1);color:var(--green);border:1px solid rgba(0,230,118,0.2);}
-.tl-badge.interstitial_imp,.tl-badge.interstitial_click{background:rgba(79,195,247,0.1);color:var(--cyan2);border:1px solid rgba(79,195,247,0.2);}
-.tl-badge.rewarded_imp,.tl-badge.rewarded_click,.tl-badge.reward_earned{background:rgba(206,147,216,0.1);color:var(--purple);border:1px solid rgba(206,147,216,0.2);}
-.tl-badge.banner_click{background:rgba(0,230,118,0.1);color:var(--green2);border:1px solid rgba(0,230,118,0.2);}
-.tl-badge.iap{background:rgba(255,234,0,0.1);color:var(--yellow);border:1px solid rgba(255,234,0,0.2);}
-.tl-badge.error{background:rgba(255,82,82,0.1);color:var(--red);border:1px solid rgba(255,82,82,0.2);}
-.tl-badge.custom{background:rgba(255,152,0,0.1);color:var(--orange);border:1px solid rgba(255,152,0,0.2);}
-.tl-meta{font-size:9px;color:var(--muted2);text-align:right;min-width:30px;}
-.tl-app-badge{font-size:8px;color:var(--cyan);background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.15);border-radius:3px;padding:1px 5px;}
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;align-items:center;justify-content:center;}
-.modal-bg.open{display:flex;}
-.modal{background:var(--s2);border:1px solid var(--b2);border-radius:12px;padding:24px;width:300px;}
-.modal h3{font-family:'Orbitron',sans-serif;font-size:11px;color:var(--cyan);margin-bottom:14px;letter-spacing:0.15em;}
-.modal input{width:100%;background:var(--bg);border:1px solid var(--b);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:14px;padding:10px;border-radius:8px;margin-bottom:14px;}
-.modal input:focus{outline:none;border-color:var(--cyan);}
-.modal-btns{display:flex;gap:8px;justify-content:flex-end;}
-.btn{background:none;border:1px solid var(--b);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:10px;padding:7px 14px;border-radius:6px;cursor:pointer;}
-.btn.primary{background:var(--cyan);border-color:var(--cyan);color:#000;font-weight:700;}
-.btn:hover{opacity:.8;}
-.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:70vh;gap:14px;}
-.spinner{width:34px;height:34px;border:2px solid var(--b);border-top-color:var(--cyan);border-radius:50%;animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-txt{font-size:10px;color:var(--muted2);letter-spacing:0.3em;}
-.empty{text-align:center;padding:24px;color:var(--muted2);font-size:10px;letter-spacing:0.18em;}
-footer{text-align:center;font-size:9px;color:var(--muted2);letter-spacing:0.18em;padding:16px 0;}
+
+/* ══ NAV ══════════════════════════════════════════════════════════ */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  height: var(--nav-h);
+  padding: 0 24px;
+  gap: 0;
+}
+.nav-logo {
+  font-weight: 700; font-size: 15px; color: var(--text);
+  letter-spacing: -0.02em;
+  display: flex; align-items: center; gap: 8px;
+  margin-right: 32px; flex-shrink: 0;
+}
+.nav-logo-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--blue);
+  animation: livePulse 1.6s ease-in-out infinite;
+}
+@keyframes livePulse {
+  0%,100% { opacity:1; transform:scale(1); box-shadow:0 0 0 0 rgba(37,99,235,0.4); }
+  50% { opacity:.8; transform:scale(0.8); box-shadow:0 0 0 4px rgba(37,99,235,0); }
+}
+.nav-tabs { display:flex; gap:0; height:100%; }
+.nav-tab {
+  display: flex; align-items: center; padding: 0 16px;
+  font-size: 13px; font-weight: 500; color: var(--text2);
+  cursor: pointer; border-bottom: 2px solid transparent;
+  transition: all .15s; white-space: nowrap;
+  position: relative; top: 1px;
+}
+.nav-tab:hover { color: var(--text); }
+.nav-tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+.nav-right {
+  margin-left: auto; display:flex; align-items:center; gap:10px;
+}
+.live-pill {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--green-lt);
+  border: 1px solid #bbf7d0;
+  border-radius: 20px; padding: 4px 12px;
+  font-size: 11px; font-weight: 600; color: var(--green);
+  letter-spacing: 0.02em;
+}
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green);
+  animation: livePulse 1.2s ease-in-out infinite;
+}
+.time-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--text3);
+}
+.btn-target {
+  display:flex; align-items:center; gap:6px;
+  background: var(--blue); color: #fff;
+  border: none; border-radius: 7px;
+  padding: 7px 14px; font-size: 12px; font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer; transition: background .15s;
+}
+.btn-target:hover { background: #1d4ed8; }
+
+/* ══ LAYOUT ════════════════════════════════════════════════════════ */
+.page { max-width: 1440px; margin: 0 auto; padding: 20px 24px 40px; }
+
+/* ══ STAT STRIP ═══════════════════════════════════════════════════ */
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.stat {
+  background: var(--surface);
+  padding: 16px 20px;
+  transition: background .15s;
+}
+.stat:hover { background: #fafbfc; }
+.stat-lbl {
+  font-size: 11px; font-weight: 500; color: var(--text3);
+  letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px;
+}
+.stat-val {
+  font-size: 22px; font-weight: 700; color: var(--text); line-height: 1;
+  letter-spacing: -0.02em;
+}
+.stat-val.blue   { color: var(--blue); }
+.stat-val.green  { color: var(--green); }
+.stat-val.orange { color: var(--orange); }
+.stat-val.purple { color: var(--purple); }
+.stat-sub {
+  font-size: 11px; color: var(--text3); margin-top: 4px;
+  display: flex; align-items: center; gap: 4px;
+}
+.stat-sub.up   { color: var(--green); }
+.stat-sub.dn   { color: var(--red); }
+
+/* ══ MAIN CHART ════════════════════════════════════════════════════ */
+.main-chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.chart-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px; flex-wrap: wrap; gap: 12px;
+}
+.chart-title {
+  font-size: 14px; font-weight: 600; color: var(--text);
+}
+.chart-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.period-btns { display: flex; gap: 2px; }
+.period-btn {
+  background: none; border: 1px solid var(--border);
+  color: var(--text2); font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 500;
+  padding: 5px 12px; border-radius: 6px;
+  cursor: pointer; transition: all .15s;
+}
+.period-btn:hover { border-color: var(--blue); color: var(--blue); }
+.period-btn.active {
+  background: var(--blue); border-color: var(--blue);
+  color: #fff;
+}
+.metric-select {
+  display: flex; gap: 2px;
+}
+.metric-btn {
+  background: none; border: 1px solid var(--border);
+  color: var(--text2); font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 500;
+  padding: 5px 12px; border-radius: 6px;
+  cursor: pointer; transition: all .15s;
+}
+.metric-btn:hover { border-color: var(--blue-dim); }
+.metric-btn.active { background: var(--blue-lt); border-color: var(--blue); color: var(--blue); }
+.chart-wrap { position: relative; height: 220px; }
+
+/* ══ TARGET BAR ════════════════════════════════════════════════════ */
+.target-bar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  display: flex; align-items: center; gap: 16px;
+  box-shadow: var(--shadow);
+}
+.target-lbl { font-size: 12px; font-weight: 600; color: var(--text2); white-space: nowrap; }
+.target-prog-wrap { flex: 1; }
+.target-track {
+  background: var(--border); border-radius: 4px; height: 6px;
+  overflow: hidden; margin-bottom: 4px;
+}
+.target-fill {
+  height: 100%; border-radius: 4px;
+  background: var(--blue);
+  transition: width 1s cubic-bezier(.4,0,.2,1);
+}
+.target-fill.warn   { background: var(--orange); }
+.target-fill.done   { background: var(--green); }
+.target-info {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: var(--text3);
+}
+.target-pct { font-weight: 600; color: var(--blue); }
+.target-pct.warn { color: var(--orange); }
+.target-pct.done { color: var(--green); }
+.target-record {
+  font-size: 11px; color: var(--text3); white-space: nowrap;
+  font-family: 'DM Mono', monospace;
+}
+
+/* ══ 2-COL GRID ════════════════════════════════════════════════════ */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+@media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+@media (max-width: 1100px) { .three-col { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 700px)  { .three-col { grid-template-columns: 1fr; } }
+
+/* ══ CARD ══════════════════════════════════════════════════════════ */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+}
+.card-title {
+  font-size: 12px; font-weight: 600; color: var(--text2);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.card-title-dot {
+  width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0;
+}
+
+/* ══ AD TYPE CARDS ════════════════════════════════════════════════ */
+.ad-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 0; border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.ad-row:last-child { border-bottom: none; }
+.ad-row-lbl { color: var(--text2); }
+.ad-row-val { font-weight: 600; font-family: 'DM Mono', monospace; font-size: 12px; }
+.ad-row-val.rev    { color: var(--yellow); }
+.ad-row-val.ecpm   { color: var(--blue); }
+.ad-row-val.ctr    { color: var(--orange); }
+.ad-row-val.fill   { color: var(--green); }
+.ad-row-val.red    { color: var(--red); }
+.fill-track { display:flex; align-items:center; gap:6px; }
+.fill-bar { width: 50px; height: 3px; background: var(--border); border-radius:2px; overflow:hidden; }
+.fill-fill { height:100%; border-radius:2px; background: var(--green); }
+
+/* Type accent line */
+.card.int { border-top: 3px solid #3b82f6; }
+.card.ban { border-top: 3px solid #10b981; }
+.card.rew { border-top: 3px solid #8b5cf6; }
+
+/* ══ SMALL CHARTS ══════════════════════════════════════════════════ */
+.small-chart-wrap { position:relative; height:140px; }
+
+/* ══ BREAKDOWN ════════════════════════════════════════════════════ */
+.bd-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 0; border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.bd-item:last-child { border-bottom: none; }
+.bd-rank { font-size: 11px; color: var(--text3); width: 20px; font-family: 'DM Mono', monospace; }
+.bd-name { flex: 1; color: var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.bd-bar  { width: 60px; height: 3px; background: var(--border); border-radius: 2px; overflow:hidden; }
+.bd-bar-fill { height: 100%; border-radius: 2px; }
+.bd-val  { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; color: var(--text2); min-width: 24px; text-align:right; }
+
+/* ══ RETENTION ═════════════════════════════════════════════════════ */
+.ret-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-top: 4px; }
+.ret-cell {
+  text-align: center;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px 6px;
+}
+.ret-day { font-size: 10px; color: var(--text3); margin-bottom: 4px; text-transform: uppercase; letter-spacing:.06em; }
+.ret-val { font-size: 20px; font-weight: 700; color: var(--blue); font-family:'DM Mono',monospace; line-height:1; }
+.ret-sub { font-size: 10px; color: var(--text3); margin-top: 3px; }
+
+/* ══ APP TABLE ════════════════════════════════════════════════════ */
+.table-wrap { overflow-x: auto; margin-top: -2px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th {
+  text-align: left; padding: 8px 12px;
+  font-size: 11px; font-weight: 600; color: var(--text3);
+  text-transform: uppercase; letter-spacing: .06em;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+tbody td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: var(--bg); }
+.td-app { font-weight: 600; color: var(--blue); cursor: pointer; }
+.td-app:hover { text-decoration: underline; }
+.td-mono { font-family: 'DM Mono', monospace; font-size: 12px; }
+.td-green { color: var(--green); font-family: 'DM Mono', monospace; font-size: 12px; }
+.td-muted { color: var(--text3); font-family: 'DM Mono', monospace; font-size: 12px; }
+
+/* ══ TIMELINE ══════════════════════════════════════════════════════ */
+.tl-filters {
+  display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 12px;
+}
+.tl-fbtn {
+  background: none; border: 1px solid var(--border);
+  color: var(--text3); font-family: 'DM Sans', sans-serif;
+  font-size: 11px; font-weight: 500;
+  padding: 4px 10px; border-radius: 20px;
+  cursor: pointer; transition: all .15s;
+}
+.tl-fbtn:hover { border-color: var(--blue); color: var(--blue); }
+.tl-fbtn.on { background: var(--blue-lt); border-color: var(--blue); color: var(--blue); }
+.tl-list { max-height: 300px; overflow-y: auto; }
+.tl-list::-webkit-scrollbar { width: 3px; }
+.tl-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+.tl-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.tl-item:last-child { border-bottom: none; }
+.tl-item.new { animation: tlSlide .4s ease; }
+@keyframes tlSlide {
+  from { opacity:0; transform: translateY(-6px); background: var(--blue-lt); }
+  to   { opacity:1; transform: none; background: transparent; }
+}
+.tl-time { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3); min-width: 62px; }
+.tl-text { flex: 1; color: var(--text); }
+.tl-badge {
+  font-size: 10px; font-weight: 500; padding: 2px 8px;
+  border-radius: 20px; white-space: nowrap;
+}
+.tl-badge.session           { background: var(--green-lt); color: var(--green); }
+.tl-badge.interstitial_imp,
+.tl-badge.interstitial_click{ background: var(--blue-lt);  color: var(--blue); }
+.tl-badge.rewarded_imp,
+.tl-badge.rewarded_click,
+.tl-badge.reward_earned     { background: var(--purple-lt);color: var(--purple); }
+.tl-badge.banner_click      { background: var(--green-lt); color: var(--green); }
+.tl-badge.iap               { background: var(--yellow-lt);color: var(--yellow); }
+.tl-badge.error             { background: var(--red-lt);   color: var(--red); }
+.tl-badge.custom            { background: var(--orange-lt);color: var(--orange); }
+.tl-meta { font-size: 11px; color: var(--text3); font-family:'DM Mono',monospace; }
+.tl-app-badge {
+  font-size: 10px; font-weight: 500; padding: 2px 8px;
+  border-radius: 20px; background: var(--blue-dim); color: var(--blue);
+}
+.tl-live-indicator {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green); flex-shrink: 0;
+  opacity: 0; transition: opacity .3s;
+}
+.tl-live-indicator.on { opacity: 1; animation: livePulse .8s ease-in-out infinite; }
+
+/* ══ SECTION HEADING ═══════════════════════════════════════════════ */
+.sec-heading {
+  font-size: 11px; font-weight: 600; color: var(--text3);
+  text-transform: uppercase; letter-spacing: .08em;
+  margin: 24px 0 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.sec-heading::after { content:''; flex:1; height:1px; background: var(--border); }
+
+/* ══ MODAL ═════════════════════════════════════════════════════════ */
+.modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.35); z-index:200; align-items:center; justify-content:center; backdrop-filter:blur(2px); }
+.modal-bg.open { display:flex; }
+.modal { background:#fff; border-radius:14px; padding:24px; width:320px; box-shadow: var(--shadow-md); }
+.modal h3 { font-size:15px; font-weight:700; color:var(--text); margin-bottom:14px; }
+.modal input { width:100%; border:1px solid var(--border); color:var(--text); font-family:'DM Mono',monospace; font-size:16px; padding:10px 14px; border-radius:8px; margin-bottom:14px; outline:none; }
+.modal input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-dim); }
+.modal-btns { display:flex; gap:8px; justify-content:flex-end; }
+.btn { border:1px solid var(--border); color:var(--text2); background:none; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; padding:8px 16px; border-radius:8px; cursor:pointer; }
+.btn:hover { background: var(--bg); }
+.btn.primary { background:var(--blue); border-color:var(--blue); color:#fff; }
+.btn.primary:hover { background:#1d4ed8; }
+
+/* ══ LOADING ═══════════════════════════════════════════════════════ */
+.loading { display:flex; flex-direction:column; align-items:center; justify-content:center; height:60vh; gap:14px; }
+.spinner { width:32px; height:32px; border:2px solid var(--border); border-top-color:var(--blue); border-radius:50%; animation:spin .7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg) } }
+.loading-txt { font-size:13px; color:var(--text3); }
+.empty { text-align:center; padding:24px; color:var(--text3); font-size:13px; }
+footer { text-align:center; font-size:11px; color:var(--text3); padding:20px 0; font-family:'DM Mono',monospace; }
 </style>
 </head>
 <body>
 
-<div id="app"><div class="loading"><div class="spinner"></div><div class="loading-txt">CONNECTING TO FIREBASE...</div></div></div>
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-logo"><div class="nav-logo-dot"></div>Ads Analytics</div>
+  <div class="nav-tabs" id="nav-tabs"></div>
+  <div class="nav-right">
+    <div class="live-pill"><div class="live-dot"></div>LIVE</div>
+    <div class="time-badge" id="time-badge"></div>
+    <button class="btn-target" onclick="openModal()">🎯 Target</button>
+  </div>
+</nav>
+
+<div id="app">
+  <div class="loading"><div class="spinner"></div><div class="loading-txt">Connecting to Firebase…</div></div>
+</div>
 
 <div class="modal-bg" id="modal">
   <div class="modal">
-    <h3>🎯 SET DAILY TARGET</h3>
-    <input type="number" id="target-input" placeholder="Ex: 10.00" step="0.01" min="0">
+    <h3>Set Daily Target</h3>
+    <input type="number" id="target-input" placeholder="e.g. 10.00" step="0.01" min="0">
     <div class="modal-btns">
-      <button class="btn" onclick="closeModal()">CANCEL</button>
-      <button class="btn primary" onclick="saveTarget()">SAVE</button>
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveTarget()">Save</button>
     </div>
   </div>
 </div>
@@ -220,22 +445,20 @@ import { getDatabase, ref, onValue, query, limitToLast, orderByKey }
 const app = initializeApp({ databaseURL: "https://bmwadsstats-default-rtdb.firebaseio.com/" });
 const db  = getDatabase(app);
 
-// ── State ─────────────────────────────────────────────────────────
 let state       = {};
 let activeTab   = 'global';
 let charts      = {};
 let tlFilter    = 'all';
+let chartMetric = 'revenue'; // revenue | dau | impressions
 let dailyTarget = parseFloat(localStorage.getItem('dailyTarget') || '10');
+let tlByApp = {}, tlGlobal = [], tlListeners = {};
 
-// ── Timeline state separat — actualizat INDEPENDENT de state principal ──
-// { appId: [ {time, text, type, country, _key, _appId} ] }
-let tlByApp = {};
-// Ultimele 40 de evenimente combinate (global)
-let tlGlobal = [];
-// Map listeners activi { appId: unsubscribeFn }
-let tlListeners = {};
+// Time badge
+setInterval(() => {
+  const el = document.getElementById('time-badge');
+  if (el) el.textContent = new Date().toLocaleTimeString();
+}, 1000);
 
-// ── Exposed globals ───────────────────────────────────────────────
 window.openModal  = () => { document.getElementById('target-input').value = dailyTarget; document.getElementById('modal').classList.add('open'); };
 window.closeModal = () => document.getElementById('modal').classList.remove('open');
 window.saveTarget = () => {
@@ -243,11 +466,11 @@ window.saveTarget = () => {
   if (!isNaN(v) && v > 0) { dailyTarget = v; localStorage.setItem('dailyTarget', v); }
   closeModal(); renderAll();
 };
-window.switchTab    = t => { activeTab = t; renderAll(); };
-window.setTlFilter  = f => { tlFilter = f; renderTlOnly(); };
+window.switchTab     = t => { activeTab = t; renderAll(); };
+window.setTlFilter   = f => { tlFilter = f; renderTlOnly(); };
+window.setMetric     = m => { chartMetric = m; buildCharts(activeTab === 'global' ? null : activeTab); };
 
-// ── Format helpers ────────────────────────────────────────────────
-const FMT  = n => { n=parseFloat(n)||0; if(n>=1e6)return(n/1e6).toFixed(1)+'M'; if(n>=1e3)return(n/1e3).toFixed(1)+'K'; return Math.round(n).toString(); };
+const FMT  = n => { n=parseFloat(n)||0; if(n>=1e6)return(n/1e6).toFixed(2)+'M'; if(n>=1e3)return(n/1e3).toFixed(1)+'K'; return Math.round(n).toString(); };
 const REV  = n => '$'+(parseFloat(n)||0).toFixed(4);
 const REVS = n => '$'+(parseFloat(n)||0).toFixed(2);
 const ECPM = n => '$'+(parseFloat(n)||0).toFixed(2);
@@ -255,7 +478,6 @@ const PCT  = n => (parseFloat(n)||0).toFixed(2)+'%';
 const TODAY = () => new Date().toISOString().split('T')[0];
 const MONTH = () => new Date().toISOString().substring(0,7);
 
-// ── App helpers ───────────────────────────────────────────────────
 const appIds    = () => Object.keys(state.app_registry||{}).sort();
 const appData   = id => (state.apps&&state.apps[id])||{};
 const appTotal  = id => appData(id).total||{};
@@ -287,7 +509,6 @@ const appCompl    = id => parseInt((appTotal(id).rewarded||{}).completions)||0;
 const appTotalImpressions = id => ['interstitial','banner','rewarded'].reduce((s,t)=>s+appImpTotal(id,t),0);
 const appTotalIAPRev   = id => parseFloat((appTotal(id).iap||{}).revenue)||0;
 const appTotalIAPPurch = id => parseInt((appTotal(id).iap||{}).purchases)||0;
-
 const appLiveCount = id => {
   const live = appData(id).live||{};
   const now  = Math.floor(Date.now()/1000);
@@ -313,7 +534,6 @@ const appTopList = (id,node,max=8) => {
     .sort((a,b)=>b.val-a.val).slice(0,max);
 };
 
-// ── Global aggregates ─────────────────────────────────────────────
 const gRev      = ()=>appIds().reduce((s,id)=>s+appTotalRev(id),0);
 const gTodayRev = ()=>appIds().reduce((s,id)=>s+appTodayRev(id),0);
 const gMonthRev = ()=>appIds().reduce((s,id)=>s+appMonthRev(id),0);
@@ -323,432 +543,384 @@ const gImp      = ()=>appIds().reduce((s,id)=>s+appTotalImpressions(id),0);
 const gLive     = ()=>appIds().reduce((s,id)=>s+appLiveCount(id),0);
 const gIAPRev   = ()=>appIds().reduce((s,id)=>s+appTotalIAPRev(id),0);
 
-// ════════════════════════════════════════════════════════════════
-// TIMELINE LIVE — LISTENER DEDICAT PER APP
-// Firebase POST generează key unic → onValue pe root NU prinde
-// evenimentele noi dacă Firebase nu re-trimite tot sub-tree-ul.
-// Fix: listener separat pe /apps/{id}/timeline cu limitToLast(25).
-// ════════════════════════════════════════════════════════════════
-
+// ── Timeline listeners ────────────────────────────────────────────
 function setupTimelineListeners(ids) {
-  // Adaugă listeneri pentru app-uri noi
   ids.forEach(id => {
-    if (tlListeners[id]) return; // deja activ
-
-    const tlRef = query(
-      ref(db, `apps/${id}/timeline`),
-      orderByKey(),
-      limitToLast(25)
-    );
-
+    if (tlListeners[id]) return;
+    const tlRef = query(ref(db, `apps/${id}/timeline`), orderByKey(), limitToLast(25));
     const unsub = onValue(tlRef, snap => {
       const raw = snap.val() || {};
-      // Transformă obiectul în array, adaugă _key și _appId
-      const items = Object.entries(raw).map(([k, v]) => ({
-        ...v,
-        _key:   k,
-        _appId: id
-      }));
-      // Sortează după time string DESC (HH:mm:ss — funcționează corect în aceeași zi)
-      items.sort((a, b) => (b.time || '').localeCompare(a.time || ''));
+      const items = Object.entries(raw).map(([k,v])=>({...v,_key:k,_appId:id}));
+      items.sort((a,b)=>(b.time||'').localeCompare(a.time||''));
       tlByApp[id] = items;
-
-      // Rebuild global timeline
       rebuildGlobalTimeline();
-
-      // Dacă tab-ul activ e acest app sau global → re-render doar timeline
       renderTlOnly();
     });
-
     tlListeners[id] = unsub;
   });
-
-  // Oprește listeneri pentru app-uri care nu mai există
-  Object.keys(tlListeners).forEach(id => {
-    if (!ids.includes(id)) {
-      tlListeners[id](); // unsubscribe
-      delete tlListeners[id];
-      delete tlByApp[id];
-    }
+  Object.keys(tlListeners).forEach(id=>{
+    if(!ids.includes(id)){tlListeners[id]();delete tlListeners[id];delete tlByApp[id];}
   });
 }
 
 function rebuildGlobalTimeline() {
   let all = [];
-  Object.entries(tlByApp).forEach(([id, items]) => {
-    items.forEach(e => all.push(e));
-  });
-  all.sort((a, b) => (b.time || '').localeCompare(a.time || ''));
-  tlGlobal = all.slice(0, 40);
+  Object.entries(tlByApp).forEach(([id,items])=>items.forEach(e=>all.push(e)));
+  all.sort((a,b)=>(b.time||'').localeCompare(a.time||''));
+  tlGlobal = all.slice(0,40);
 }
 
-// Returnează timeline-ul filtrat pentru tab-ul activ
 function getCurrentTimeline() {
-  const items = activeTab === 'global'
-    ? tlGlobal
-    : (tlByApp[activeTab] || []);
-
-  if (tlFilter === 'all') return items;
-  return items.filter(e => (e.type || '').includes(tlFilter));
+  const items = activeTab==='global' ? tlGlobal : (tlByApp[activeTab]||[]);
+  if(tlFilter==='all') return items;
+  return items.filter(e=>(e.type||'').includes(tlFilter));
 }
 
-// Re-render DOAR secțiunea timeline fără să rebuild tot DOM-ul
-// Evită flickering și pierderea scroll position pe restul paginii
 function renderTlOnly() {
-  const container = document.getElementById('tl-container');
-  if (!container) return; // pagina nu e încă renderată
-  container.innerHTML = renderTimelineInner(getCurrentTimeline(), activeTab === 'global');
-
-  // Flash pe dot-ul live ca să indice update
+  const c = document.getElementById('tl-container');
+  if(!c) return;
+  c.innerHTML = renderTlInner(getCurrentTimeline(), activeTab==='global');
   const dot = document.getElementById('tl-live-dot');
-  if (dot) {
-    dot.classList.add('on');
-    clearTimeout(window._tlDotTimer);
-    window._tlDotTimer = setTimeout(() => dot.classList.remove('on'), 2000);
-  }
+  if(dot){dot.classList.add('on');clearTimeout(window._tlT);window._tlT=setTimeout(()=>dot.classList.remove('on'),2000);}
 }
 
-// ── Render principal ──────────────────────────────────────────────
+// ── NAV tabs ──────────────────────────────────────────────────────
+function renderNav(ids) {
+  const tabs = document.getElementById('nav-tabs');
+  if(!tabs) return;
+  tabs.innerHTML = [
+    `<div class="nav-tab global ${activeTab==='global'?'active':''}" onclick="switchTab('global')">🌐 Global</div>`,
+    ...ids.map(id=>`<div class="nav-tab ${activeTab===id?'active':''}" onclick="switchTab('${id}')">${appName(id)}</div>`)
+  ].join('');
+}
+
+// ── Render all ────────────────────────────────────────────────────
 function renderAll() {
   const ids = appIds();
-  if (activeTab !== 'global' && !ids.includes(activeTab)) activeTab = 'global';
-
-  // Setup timeline listeners pentru toate app-urile cunoscute
+  if(activeTab!=='global'&&!ids.includes(activeTab)) activeTab='global';
+  renderNav(ids);
   setupTimelineListeners(ids);
-
-  const tabsHtml = `<div class="tabs-bar">
-    <div class="tab global ${activeTab==='global'?'active':''}" onclick="switchTab('global')">🌐 GLOBAL</div>
-    ${ids.map(id=>`<div class="tab ${activeTab===id?'active':''}" onclick="switchTab('${id}')">${appName(id)}</div>`).join('')}
-  </div>`;
-
   document.getElementById('app').innerHTML =
-    tabsHtml + (activeTab === 'global' ? renderGlobal(ids) : renderApp(activeTab));
-
-  buildCharts(activeTab === 'global' ? null : activeTab);
+    activeTab==='global' ? renderGlobal(ids) : renderApp(activeTab);
+  buildCharts(activeTab==='global'?null:activeTab);
 }
 
-// ── GLOBAL VIEW ───────────────────────────────────────────────────
+// ── GLOBAL ────────────────────────────────────────────────────────
 function renderGlobal(ids) {
-  const todayRev = gTodayRev(), totalRev = gRev();
-  const pct   = Math.min(todayRev / dailyTarget * 100, 100);
-  const pbCls = pct >= 100 ? 'done' : pct >= 70 ? 'warn' : '';
-  const live  = gLive();
+  const todayRev=gTodayRev(), totalRev=gRev();
+  const pct=Math.min(todayRev/dailyTarget*100,100);
+  const pbCls=pct>=100?'done':pct>=70?'warn':'';
+  const live=gLive();
 
-  const appRows = ids.map(id => {
-    const rev   = appTotalRev(id);
-    const pctOf = totalRev > 0 ? (rev / totalRev * 100).toFixed(1) : '0.0';
+  const appRows=ids.map(id=>{
+    const rev=appTotalRev(id);
+    const pctOf=totalRev>0?(rev/totalRev*100).toFixed(1):'0.0';
     return `<tr>
-      <td><span class="app-link" onclick="switchTab('${id}')">${appName(id)}</span></td>
-      <td class="td-rev">${REVS(rev)}</td>
-      <td class="td-rev">${REVS(appTodayRev(id))}</td>
-      <td class="td-rev">${REVS(appMonthRev(id))}</td>
-      <td class="td-imp">${FMT(appTotalImpressions(id))}</td>
-      <td class="td-ses">${FMT(appTotalSes(id))}</td>
-      <td class="td-ses">${FMT(appDAU(id))}</td>
-      <td class="td-ses">${FMT(appMAU(id))}</td>
-      <td><span style="color:var(--green);font-family:Orbitron,sans-serif;font-size:9px">${appLiveCount(id)}</span></td>
-      <td class="td-pct">${pctOf}%</td>
+      <td class="td-app" onclick="switchTab('${id}')">${appName(id)}</td>
+      <td class="td-mono">${REVS(rev)}</td>
+      <td class="td-mono">${REVS(appTodayRev(id))}</td>
+      <td class="td-mono">${REVS(appMonthRev(id))}</td>
+      <td class="td-mono">${FMT(appTotalImpressions(id))}</td>
+      <td class="td-mono">${FMT(appTotalSes(id))}</td>
+      <td class="td-green">${FMT(appDAU(id))}</td>
+      <td class="td-green">${FMT(appMAU(id))}</td>
+      <td class="td-green">${appLiveCount(id)}</td>
+      <td class="td-muted">${pctOf}%</td>
     </tr>`;
   }).join('');
 
-  return `<div class="wrap">
-    <header>
-      <div class="logo">ADS CONTROL CENTER<span>GLOBAL DASHBOARD — ALL APPS</span></div>
-      <div class="header-right">
-        <div class="live-badge"><div class="dot"></div>LIVE · ${new Date().toLocaleTimeString()}</div>
-      </div>
-    </header>
-    <div class="hero">
-      <div class="hero-left">
-        <div class="hero-lbl">VENIT TOTAL — TOATE APP-URILE</div>
-        <div class="hero-val">${REVS(totalRev)}</div>
-        <div class="hero-today">▲ ${REVS(todayRev)} AZI</div>
-        <div class="hero-month">▲ ${REVS(gMonthRev())} LUNA ACEASTA</div>
-      </div>
-      <div class="hero-stats">
-        <div class="hst"><div class="hst-v" style="color:var(--green)">${live}</div><div class="hst-l">LIVE NOW</div></div>
-        <div class="hst"><div class="hst-v" style="color:var(--cyan)">${FMT(gDAU())}</div><div class="hst-l">DAU AZI</div></div>
-        <div class="hst"><div class="hst-v" style="color:var(--purple)">${FMT(gMAU())}</div><div class="hst-l">MAU</div></div>
-        <div class="hst"><div class="hst-v" style="color:var(--orange)">${FMT(gImp())}</div><div class="hst-l">IMPRESII</div></div>
-        <div class="hst"><div class="hst-v" style="color:var(--yellow)">${REVS(gIAPRev())}</div><div class="hst-l">IAP REV</div></div>
+  return `<div class="page">
+    <!-- STAT STRIP -->
+    <div class="stat-strip">
+      ${stat('Revenue Total', REVS(totalRev), 'blue')}
+      ${stat('Azi', REVS(todayRev), 'green', todayRev>0?'+'+REVS(todayRev):'')}
+      ${stat('Luna', REVS(gMonthRev()), '')}
+      ${stat('Live Now', live, 'green', 'useri activi')}
+      ${stat('DAU', FMT(gDAU()), '', 'unici azi')}
+      ${stat('MAU', FMT(gMAU()), 'purple', 'unici luna')}
+      ${stat('Impresii', FMT(gImp()), '', 'total')}
+      ${stat('IAP Rev', REVS(gIAPRev()), 'orange', '')}
+    </div>
+
+    <!-- TARGET -->
+    <div class="target-bar">
+      <div class="target-lbl">🎯 Target Zilnic</div>
+      <div class="target-prog-wrap">
+        <div class="target-track"><div class="target-fill ${pbCls}" style="width:${pct.toFixed(1)}%"></div></div>
+        <div class="target-info"><span>${REVS(todayRev)} din ${REVS(dailyTarget)}</span><span class="target-pct ${pbCls}">${pct.toFixed(1)}%</span></div>
       </div>
     </div>
-    <div class="target-row">
-      <div class="target-left">
-        <div class="target-lbl">🎯 TARGET ZILNIC GLOBAL</div>
-        <div class="prog-wrap"><div class="prog-bar ${pbCls}" style="width:${pct.toFixed(1)}%"></div></div>
-        <div class="prog-info"><span>${REVS(todayRev)} / ${REVS(dailyTarget)}</span><span class="prog-pct">${pct.toFixed(1)}%</span></div>
+
+    <!-- APP TABLE -->
+    <div class="sec-heading">Aplicații</div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div class="table-wrap">
+        ${ids.length?`<table>
+          <thead><tr><th>App</th><th>Rev Total</th><th>Rev Azi</th><th>Rev Lună</th><th>Impresii</th><th>Sesiuni</th><th>DAU</th><th>MAU</th><th>Live</th><th>% Total</th></tr></thead>
+          <tbody>${appRows}</tbody>
+        </table>`:'<div class="empty">Nu există aplicații.</div>'}
       </div>
-      <div class="target-right"><button class="btn-sm" onclick="openModal()">EDIT TARGET</button></div>
     </div>
-    <div class="sec">📱 BREAKDOWN PER APLICAȚIE</div>
-    <div class="app-table-wrap">
-      ${ids.length ? `<table class="app-table">
-        <thead><tr><th>APP</th><th>REV TOTAL</th><th>REV AZI</th><th>REV LUNA</th><th>IMPRESII</th><th>SESIUNI</th><th>DAU</th><th>MAU</th><th>LIVE</th><th>% DIN TOTAL</th></tr></thead>
-        <tbody>${appRows}</tbody>
-      </table>` : '<div class="empty">Nu există aplicații înregistrate.</div>'}
-    </div>
+
+    <!-- TIMELINE -->
     ${renderTimeline()}
-    <footer>LAST UPDATE: ${new Date().toLocaleTimeString()} · AUTO-REFRESH LIVE · ${ids.length} APP-URI ACTIVE</footer>
+    <footer>Last update: ${new Date().toLocaleTimeString()} · ${ids.length} apps active</footer>
   </div>`;
 }
 
 // ── APP VIEW ──────────────────────────────────────────────────────
 function renderApp(id) {
-  const name     = appName(id);
-  const todayRev = appTodayRev(id);
-  const totalRev = appTotalRev(id);
-  const monthRev = appMonthRev(id);
-  const pct      = Math.min(todayRev / dailyTarget * 100, 100);
-  const pbCls    = pct >= 100 ? 'done' : pct >= 70 ? 'warn' : '';
-  const best     = appBestDay(id);
-  const live     = appLiveCount(id);
-  const dau      = appDAU(id);
-  const mau      = appMAU(id);
-  const arpdau   = appARPDAU(id);
-  const rps      = appRevPerSes(id);
-  const iapRev   = appTotalIAPRev(id);
-  const iapPurch = appTotalIAPPurch(id);
-  const compl    = appCompl(id);
-  const durTotal = parseInt(appTotal(id).session_duration_total || 0);
-  const durCount = parseInt(appTotal(id).session_count_for_avg  || 0);
-  const avgDur   = durCount > 0 ? Math.round(durTotal / durCount) : 0;
-  const errTotal = parseInt((appTotal(id).errors||{}).total) || 0;
-  const topC     = appTopList(id,'countries');
-  const topD     = appTopList(id,'devices');
-  const topV     = appTopList(id,'versions');
-  const topOS    = appTopList(id,'os');
-  const topNet   = appTopList(id,'network');
-  const topBatt  = appTopList(id,'battery');
+  const name=appName(id), todayRev=appTodayRev(id), totalRev=appTotalRev(id);
+  const monthRev=appMonthRev(id), pct=Math.min(todayRev/dailyTarget*100,100);
+  const pbCls=pct>=100?'done':pct>=70?'warn':'';
+  const best=appBestDay(id), live=appLiveCount(id);
+  const dau=appDAU(id), mau=appMAU(id);
+  const arpdau=appARPDAU(id), rps=appRevPerSes(id);
+  const iapRev=appTotalIAPRev(id), iapPurch=appTotalIAPPurch(id);
+  const compl=appCompl(id);
+  const durTotal=parseInt(appTotal(id).session_duration_total||0);
+  const durCount=parseInt(appTotal(id).session_count_for_avg||0);
+  const avgDur=durCount>0?Math.round(durTotal/durCount):0;
+  const errTotal=parseInt((appTotal(id).errors||{}).total)||0;
+  const topC=appTopList(id,'countries'),topD=appTopList(id,'devices');
+  const topV=appTopList(id,'versions'),topOS=appTopList(id,'os');
+  const topNet=appTopList(id,'network'),topBatt=appTopList(id,'battery');
 
-  const cohorts    = appData(id).cohorts || {};
-  const cohortDay  = Object.keys(cohorts).sort().slice(-1)[0];
-  const lastCohort = cohortDay ? cohorts[cohortDay] : {};
-  const d0  = parseInt(lastCohort.d0)  || 0;
-  const d1  = parseInt(lastCohort.d1)  || 0;
-  const d7  = parseInt(lastCohort.d7)  || 0;
-  const d30 = parseInt(lastCohort.d30) || 0;
-  const retD1  = d0 > 0 ? ((d1  / d0) * 100).toFixed(0) : '—';
-  const retD7  = d0 > 0 ? ((d7  / d0) * 100).toFixed(0) : '—';
-  const retD30 = d0 > 0 ? ((d30 / d0) * 100).toFixed(0) : '—';
+  const cohorts=appData(id).cohorts||{};
+  const cohortDay=Object.keys(cohorts).sort().slice(-1)[0];
+  const lc=cohortDay?cohorts[cohortDay]:{};
+  const d0=parseInt(lc.d0)||0,d1=parseInt(lc.d1)||0,d7=parseInt(lc.d7)||0,d30=parseInt(lc.d30)||0;
+  const retD1=d0>0?((d1/d0)*100).toFixed(0)+'%':'—';
+  const retD7=d0>0?((d7/d0)*100).toFixed(0)+'%':'—';
+  const retD30=d0>0?((d30/d0)*100).toFixed(0)+'%':'—';
 
-  const adTypes = [
-    {k:'interstitial', l:'INTERSTITIAL', i:'📺', c:'int'},
-    {k:'banner',       l:'BANNER',       i:'🖼️', c:'ban'},
-    {k:'rewarded',     l:'REWARDED',     i:'🎁', c:'rew'}
+  const adTypes=[
+    {k:'interstitial',l:'Interstitial',c:'int',col:'#3b82f6'},
+    {k:'banner',l:'Banner',c:'ban',col:'#10b981'},
+    {k:'rewarded',l:'Rewarded',c:'rew',col:'#8b5cf6'}
   ];
 
-  const kpi = (label, val, color, sub='') => `<div class="kpi c-${color}">
-    <div class="kpi-lbl">${label}</div>
-    <div class="kpi-val">${val}</div>
-    ${sub ? `<div class="kpi-sub">${sub}</div>` : ''}
-  </div>`;
+  return `<div class="page">
+    <!-- STAT STRIP -->
+    <div class="stat-strip">
+      ${stat('Revenue Total', REVS(totalRev), 'blue')}
+      ${stat('Azi', REVS(todayRev), 'green', 'TARGET: '+pct.toFixed(0)+'%')}
+      ${stat('Luna', REVS(monthRev), '')}
+      ${stat('ARPDAU', '$'+arpdau.toFixed(4), 'blue', 'rev/user/zi')}
+      ${stat('Live Now', live, 'green', 'activi <2min')}
+      ${stat('DAU', FMT(dau), '', 'unici azi')}
+      ${stat('MAU', FMT(mau), 'purple', 'unici luna')}
+      ${stat('Avg Session', avgDur+'s', 'orange', durCount+' sesiuni')}
+      ${stat('IAP Rev', REVS(iapRev), '', iapPurch+' achizitii')}
+      ${stat('Reward Compl', FMT(compl), 'purple', 'completari')}
+      ${stat('Errors', FMT(errTotal), errTotal>0?'red':'')}
+      ${stat('Sesiuni Total', FMT(appTotalSes(id)), '')}
+    </div>
 
-  return `<div class="wrap">
-    <header>
-      <div class="logo">${name}<span>APP ANALYTICS — FULL CONTROL</span></div>
-      <div class="header-right">
-        <div class="live-badge"><div class="dot"></div>LIVE · ${new Date().toLocaleTimeString()}</div>
+    <!-- TARGET -->
+    <div class="target-bar">
+      <div class="target-lbl">🎯 Target Zilnic</div>
+      <div class="target-prog-wrap">
+        <div class="target-track"><div class="target-fill ${pbCls}" style="width:${pct.toFixed(1)}%"></div></div>
+        <div class="target-info"><span>${REVS(todayRev)} din ${REVS(dailyTarget)}</span><span class="target-pct ${pbCls}">${pct.toFixed(1)}%</span></div>
       </div>
-    </header>
-    <div class="hero">
-      <div class="hero-left">
-        <div class="hero-lbl">VENIT TOTAL — ${name.toUpperCase()}</div>
-        <div class="hero-val">${REVS(totalRev)}</div>
-        <div class="hero-today">▲ ${REVS(todayRev)} AZI</div>
-        <div class="hero-month">▲ ${REVS(monthRev)} LUNA · IAP: ${REVS(iapRev)}</div>
-      </div>
-      <div class="hero-stats">
-        <div class="hst"><div class="hst-v live-count"><div class="live-dot"></div>${live}</div><div class="hst-l">LIVE NOW</div></div>
-        <div class="hst"><div class="hst-v" style="color:var(--cyan)">${FMT(dau)}</div><div class="hst-l">DAU AZI</div></div>
-        <div class="hst"><div class="hst-v" style="color:var(--purple)">${FMT(mau)}</div><div class="hst-l">MAU</div></div>
-        <div class="hst"><div class="hst-v" style="color:var(--yellow)">$${arpdau.toFixed(4)}</div><div class="hst-l">ARPDAU</div></div>
-        <div class="hst"><div class="hst-v" style="color:var(--orange)">${FMT(appTotalSes(id))}</div><div class="hst-l">SESIUNI</div></div>
-      </div>
+      <div class="target-record">Record: ${REVS(best)}</div>
     </div>
-    <div class="target-row">
-      <div class="target-left">
-        <div class="target-lbl">🎯 TARGET ZILNIC</div>
-        <div class="prog-wrap"><div class="prog-bar ${pbCls}" style="width:${pct.toFixed(1)}%"></div></div>
-        <div class="prog-info"><span>${REVS(todayRev)} / ${REVS(dailyTarget)}</span><span class="prog-pct">${pct.toFixed(1)}%</span></div>
-      </div>
-      <div class="target-right">
-        <button class="btn-sm" onclick="openModal()">EDIT TARGET</button>
-        <div class="record">RECORD: <span class="record-val">${REVS(best)}</span></div>
-      </div>
-    </div>
-    <div class="sec">⚡ PERFORMANȚĂ CHEIE</div>
-    <div class="kpi-strip">
-      ${kpi('VENIT AZI',    REVS(todayRev),        'yellow', `TARGET: ${pct.toFixed(0)}%`)}
-      ${kpi('VENIT LUNA',   REVS(monthRev),        'yellow')}
-      ${kpi('ARPDAU',       '$'+arpdau.toFixed(4), 'cyan',   'Rev/User/Zi')}
-      ${kpi('REV/SESIUNE',  '$'+rps.toFixed(4),    'cyan')}
-      ${kpi('LIVE ACUM',    live,                  'green',  'Activi <2min')}
-      ${kpi('DAU',          FMT(dau),              'green',  'Unici azi')}
-      ${kpi('MAU',          FMT(mau),              'purple', 'Unici luna')}
-      ${kpi('AVG SESSION',  avgDur+'s',            'orange', durCount+' sesiuni')}
-      ${kpi('IAP REVENUE',  REVS(iapRev),          'yellow', iapPurch+' achizitii')}
-      ${kpi('REWARD COMPL', FMT(compl),            'purple', 'Completari')}
-      ${kpi('ERRORS',       FMT(errTotal),         'red')}
-      ${kpi('SESIUNI TOTAL',FMT(appTotalSes(id)),  'cyan')}
-    </div>
-    <div class="sec">📊 STATISTICI PER TIP RECLAMĂ</div>
-    <div class="ad-cards">
-      ${adTypes.map(a => {
-        const imp=appImpTotal(id,a.k), impD=appImpToday(id,a.k),
-              clk=appClkTotal(id,a.k), rev=appRevTotal(id,a.k), revD=appRevToday(id,a.k),
-              ecpm=appECPM(id,a.k), ctr=appCTR(id,a.k), fill=appFill(id,a.k),
-              req=appReq(id,a.k), fail=appFailed(id,a.k);
-        return `<div class="acard ${a.c}">
-          <div class="acard-hd"><div class="acard-title">${a.l}</div><div class="acard-icon">${a.i}</div></div>
-          <div class="arow"><span class="albl">IMPRESII TOTAL</span><span class="aval">${FMT(imp)}</span></div>
-          <div class="arow"><span class="albl">IMPRESII AZI</span><span class="aval">${FMT(impD)}</span></div>
-          <div class="arow"><span class="albl">CLICKURI</span><span class="aval">${FMT(clk)}</span></div>
-          <div class="arow"><span class="albl">CTR</span><span class="aval ctr">${PCT(ctr)}</span></div>
-          <div class="arow"><span class="albl">VENIT TOTAL</span><span class="aval rev">${REV(rev)}</span></div>
-          <div class="arow"><span class="albl">VENIT AZI</span><span class="aval rev">${REV(revD)}</span></div>
-          <div class="arow"><span class="albl">eCPM</span><span class="aval ecpm">${ECPM(ecpm)}</span></div>
-          <div class="arow"><span class="albl">FILL RATE</span>
-            <div class="fill-wrap"><div class="fill-bar-bg"><div class="fill-bar-fg" style="width:${Math.min(fill,100).toFixed(0)}%"></div></div><span class="aval fill">${PCT(fill)}</span></div>
+
+    <!-- CHART PRINCIPAL -->
+    <div class="main-chart-card">
+      <div class="chart-header">
+        <div class="chart-title">Evoluție Zilnică</div>
+        <div class="chart-controls">
+          <div class="metric-select">
+            <button class="metric-btn ${chartMetric==='revenue'?'active':''}" onclick="setMetric('revenue')">Revenue</button>
+            <button class="metric-btn ${chartMetric==='dau'?'active':''}" onclick="setMetric('dau')">DAU</button>
+            <button class="metric-btn ${chartMetric==='impressions'?'active':''}" onclick="setMetric('impressions')">Impresii</button>
           </div>
-          <div class="arow"><span class="albl">REQUESTS</span><span class="aval">${FMT(req)}</span></div>
-          <div class="arow"><span class="albl">FAILED</span><span class="aval" style="color:var(--red)">${FMT(fail)}</span></div>
+        </div>
+      </div>
+      <div class="chart-wrap"><canvas id="cMain"></canvas></div>
+    </div>
+
+    <!-- AD CARDS -->
+    <div class="sec-heading">Statistici Reclame</div>
+    <div class="three-col">
+      ${adTypes.map(a=>{
+        const imp=appImpTotal(id,a.k),impD=appImpToday(id,a.k),
+              clk=appClkTotal(id,a.k),rev=appRevTotal(id,a.k),revD=appRevToday(id,a.k),
+              ecpm=appECPM(id,a.k),ctr=appCTR(id,a.k),fill=appFill(id,a.k),
+              req=appReq(id,a.k),fail=appFailed(id,a.k);
+        return `<div class="card ${a.c}">
+          <div class="card-title"><div class="card-title-dot" style="background:${a.col}"></div>${a.l}</div>
+          ${adRow('Impresii Total', FMT(imp))}
+          ${adRow('Impresii Azi',   FMT(impD))}
+          ${adRow('Clickuri',       FMT(clk))}
+          ${adRow('CTR',            PCT(ctr),    'ctr')}
+          ${adRow('Venit Total',    REV(rev),    'rev')}
+          ${adRow('Venit Azi',      REV(revD),   'rev')}
+          ${adRow('eCPM',           ECPM(ecpm),  'ecpm')}
+          ${adRowFill('Fill Rate',  PCT(fill), fill)}
+          ${adRow('Requests',       FMT(req))}
+          ${adRow('Failed',         FMT(fail),   'red')}
         </div>`;
       }).join('')}
     </div>
-    <div class="sec">📈 GRAFICE ULTIMELE 14 ZILE</div>
-    <div class="charts-grid">
-      <div class="ccrd"><div class="ccrd-title">💰 VENIT ZILNIC ($)</div><div class="ccrd-wrap"><canvas id="cRev"></canvas></div></div>
-      <div class="ccrd"><div class="ccrd-title">👥 DAU ZILNIC</div><div class="ccrd-wrap"><canvas id="cDAU"></canvas></div></div>
-      <div class="ccrd"><div class="ccrd-title">👁️ IMPRESII ZILNICE</div><div class="ccrd-wrap"><canvas id="cImp"></canvas></div></div>
-      <div class="ccrd"><div class="ccrd-title">🥧 VENIT PE TIP RECLAMĂ</div><div class="ccrd-wrap"><canvas id="cPie"></canvas></div></div>
+
+    <!-- MINI CHARTS -->
+    <div class="sec-heading">Grafice</div>
+    <div class="two-col">
+      <div class="card"><div class="card-title"><div class="card-title-dot" style="background:#3b82f6"></div>DAU Zilnic</div><div class="small-chart-wrap"><canvas id="cDAU"></canvas></div></div>
+      <div class="card"><div class="card-title"><div class="card-title-dot" style="background:#f59e0b"></div>Venit pe tip</div><div class="small-chart-wrap"><canvas id="cPie"></canvas></div></div>
     </div>
-    <div class="sec">🔄 RETENTION (ultimul cohort)</div>
-    <div class="retention-card">
-      <div style="font-size:9px;color:var(--muted2)">Cohort: ${cohortDay||'—'} · D0 = ${d0} useri</div>
+
+    <!-- RETENTION -->
+    <div class="sec-heading">Retention</div>
+    <div class="card">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:8px">Cohort: ${cohortDay||'—'} · D0 = ${d0} instalări</div>
       <div class="ret-grid">
-        <div class="ret-cell"><div class="ret-day">D0</div><div class="ret-val">${d0}</div><div class="ret-sub">instalari</div></div>
-        <div class="ret-cell"><div class="ret-day">D1</div><div class="ret-val">${retD1}${retD1!=='—'?'%':''}</div><div class="ret-sub">${d1} useri</div></div>
-        <div class="ret-cell"><div class="ret-day">D7</div><div class="ret-val">${retD7}${retD7!=='—'?'%':''}</div><div class="ret-sub">${d7} useri</div></div>
-        <div class="ret-cell"><div class="ret-day">D30</div><div class="ret-val">${retD30}${retD30!=='—'?'%':''}</div><div class="ret-sub">${d30} useri</div></div>
+        <div class="ret-cell"><div class="ret-day">D0</div><div class="ret-val">${d0}</div><div class="ret-sub">instalări</div></div>
+        <div class="ret-cell"><div class="ret-day">D1</div><div class="ret-val">${retD1}</div><div class="ret-sub">${d1} useri</div></div>
+        <div class="ret-cell"><div class="ret-day">D7</div><div class="ret-val">${retD7}</div><div class="ret-sub">${d7} useri</div></div>
+        <div class="ret-cell"><div class="ret-day">D30</div><div class="ret-val">${retD30}</div><div class="ret-sub">${d30} useri</div></div>
       </div>
     </div>
-    <div class="sec">🌍 BREAKDOWN DISPOZITIVE & DEMOGRAFIE</div>
-    <div class="breakdown-grid">
-      ${renderTopList('🌍 TOP ȚĂRI',    topC,  'var(--cyan2)')}
-      ${renderTopList('📱 TOP DEVICES', topD,  'var(--purple)')}
-      ${renderTopList('📦 VERSIUNI APP',topV,  'var(--green)')}
-      ${renderTopList('🖥️ OS VERSION',  topOS, 'var(--orange)')}
-      ${renderTopList('📶 NETWORK TYPE',topNet,'var(--yellow)')}
-      ${renderTopList('🔋 BATTERY',     topBatt,'var(--pink)')}
+
+    <!-- BREAKDOWN -->
+    <div class="sec-heading">Demografie & Dispozitive</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:20px">
+      ${bdCard('Țări',       topC,  '#3b82f6')}
+      ${bdCard('Dispozitive',topD,  '#8b5cf6')}
+      ${bdCard('Versiuni',   topV,  '#10b981')}
+      ${bdCard('OS',         topOS, '#f59e0b')}
+      ${bdCard('Rețea',      topNet,'#ec4899')}
+      ${bdCard('Baterie',    topBatt,'#6b7280')}
     </div>
+
+    <!-- TIMELINE -->
     ${renderTimeline()}
-    <footer>LAST UPDATE: ${new Date().toLocaleTimeString()} · ${name.toUpperCase()} · v${appReg(id).version||'?'}</footer>
+    <footer>Last update: ${new Date().toLocaleTimeString()} · ${name} · v${appReg(id).version||'?'}</footer>
   </div>`;
 }
 
-function renderTopList(title, items, color) {
-  return `<div class="bcard">
-    <div class="bcard-title">${title}</div>
-    ${items.length ? items.map((it,i) => `
-      <div class="bitem">
-        <div class="brank">#${i+1}</div>
-        <div class="bname">${it.name}</div>
-        <div class="bbar-bg"><div class="bbar-fg" style="width:${items[0].val>0?(it.val/items[0].val*100).toFixed(0):0}%;background:${color}"></div></div>
-        <div class="bval" style="color:${color}">${FMT(it.val)}</div>
-      </div>`).join('') : '<div class="empty">—</div>'}
+// ── Helpers render ────────────────────────────────────────────────
+function stat(lbl, val, color='', sub='') {
+  return `<div class="stat">
+    <div class="stat-lbl">${lbl}</div>
+    <div class="stat-val ${color}">${val}</div>
+    ${sub?`<div class="stat-sub">${sub}</div>`:''}
+  </div>`;
+}
+function adRow(lbl, val, cls='') {
+  return `<div class="ad-row"><span class="ad-row-lbl">${lbl}</span><span class="ad-row-val ${cls}">${val}</span></div>`;
+}
+function adRowFill(lbl, val, pct) {
+  return `<div class="ad-row"><span class="ad-row-lbl">${lbl}</span>
+    <div class="fill-track"><div class="fill-bar"><div class="fill-fill" style="width:${Math.min(pct,100).toFixed(0)}%"></div></div><span class="ad-row-val fill">${val}</span></div>
+  </div>`;
+}
+function bdCard(title, items, color) {
+  return `<div class="card">
+    <div class="card-title"><div class="card-title-dot" style="background:${color}"></div>${title}</div>
+    ${items.length?items.map((it,i)=>`
+      <div class="bd-item">
+        <div class="bd-rank">${i+1}</div>
+        <div class="bd-name">${it.name}</div>
+        <div class="bd-bar"><div class="bd-bar-fill" style="width:${items[0].val>0?(it.val/items[0].val*100).toFixed(0):0}%;background:${color}"></div></div>
+        <div class="bd-val">${FMT(it.val)}</div>
+      </div>`).join(''):'<div class="empty">—</div>'}
   </div>`;
 }
 
-// ── Timeline render — shell + container separat ───────────────────
+// ── Timeline ──────────────────────────────────────────────────────
 function renderTimeline() {
-  const filters = ['all','session','interstitial','rewarded','banner','iap','error','custom'];
-  const items   = getCurrentTimeline();
-  const showApp = activeTab === 'global';
-
-  return `<div class="tl-card">
-    <div class="tl-hd">
-      <div class="tl-title">
-        ⚡ ACTIVITATE LIVE
-        <div class="tl-live-dot" id="tl-live-dot"></div>
+  const filters=['all','session','interstitial','rewarded','banner','iap','error','custom'];
+  const showApp=activeTab==='global';
+  return `<div class="sec-heading">Activitate Live</div>
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+      <div style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--text2);">
+        Activitate Live
+        <div class="tl-live-indicator" id="tl-live-dot"></div>
       </div>
-      <div class="tl-filter">
-        ${filters.map(f=>`<button class="tl-fbtn ${tlFilter===f?'on':''}" onclick="setTlFilter('${f}')">${f.toUpperCase()}</button>`).join('')}
+      <div class="tl-filters">
+        ${filters.map(f=>`<button class="tl-fbtn ${tlFilter===f?'on':''}" onclick="setTlFilter('${f}')">${f}</button>`).join('')}
       </div>
     </div>
     <div class="tl-list" id="tl-container">
-      ${renderTimelineInner(items, showApp)}
+      ${renderTlInner(getCurrentTimeline(), showApp)}
     </div>
   </div>`;
 }
-
-// Conținutul listei — poate fi re-rendered fără să atingem restul paginii
-function renderTimelineInner(items, showAppBadge) {
-  if (!items.length) return '<div class="empty">Nicio activitate.</div>';
-  return items.map((e, idx) => `
-    <div class="tl-item${idx === 0 ? ' new' : ''}">
-      <div class="tl-time">${e.time || ''}</div>
-      <div class="tl-text">${e.text || ''}</div>
-      ${showAppBadge && e._appId ? `<div class="tl-app-badge">${appName(e._appId)}</div>` : ''}
-      <div class="tl-badge ${e.type || ''}">${(e.type || 'event').replace(/_/g,' ')}</div>
-      <div class="tl-meta">${e.country || ''}</div>
+function renderTlInner(items, showApp) {
+  if(!items.length) return '<div class="empty">Nicio activitate.</div>';
+  return items.map((e,i)=>`
+    <div class="tl-item${i===0?' new':''}">
+      <div class="tl-time">${e.time||''}</div>
+      <div class="tl-text">${e.text||''}</div>
+      ${showApp&&e._appId?`<div class="tl-app-badge">${appName(e._appId)}</div>`:''}
+      <div class="tl-badge ${e.type||''}">${(e.type||'event').replace(/_/g,' ')}</div>
+      <div class="tl-meta">${e.country||''}</div>
     </div>`).join('');
 }
 
 // ── Charts ────────────────────────────────────────────────────────
 function buildCharts(id) {
-  if (!id) return;
-  const data = appDailyChart(id);
-  ['cRev','cDAU','cImp','cPie'].forEach(cid => {
-    if (charts[cid]) { charts[cid].destroy(); delete charts[cid]; }
-  });
+  if(!id) return;
+  const data=appDailyChart(id);
+  ['cMain','cDAU','cPie'].forEach(cid=>{if(charts[cid]){charts[cid].destroy();delete charts[cid];}});
 
-  const def = {
-    responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: { grid:{color:'rgba(255,255,255,0.03)'}, ticks:{color:'#44445a',font:{family:'Share Tech Mono',size:9}} },
-      y: { grid:{color:'rgba(255,255,255,0.03)'}, ticks:{color:'#44445a',font:{family:'Share Tech Mono',size:9}} }
+  const gridColor='rgba(0,0,0,0.04)';
+  const tickColor='#9ca3af';
+  const fontCfg={family:'DM Mono',size:10};
+  const baseDef={
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{grid:{color:gridColor},ticks:{color:tickColor,font:fontCfg}},
+      y:{grid:{color:gridColor},ticks:{color:tickColor,font:fontCfg}}
     }
   };
 
-  const mk = (cid, type, dataset, opts={}) => {
-    const c = document.getElementById(cid);
-    if (c) charts[cid] = new Chart(c, {type, data:{labels:data.labels,datasets:[dataset]}, options:{...def,...opts}});
+  // Main chart
+  const metricMap={
+    revenue: {data:data.revenue,color:'#2563eb',bg:'rgba(37,99,235,0.08)',label:'Revenue ($)'},
+    dau:     {data:data.dau,color:'#16a34a',bg:'rgba(22,163,74,0.08)',label:'DAU'},
+    impressions:{data:data.impressions,color:'#7c3aed',bg:'rgba(124,58,237,0.08)',label:'Impresii'}
   };
+  const m=metricMap[chartMetric]||metricMap.revenue;
+  const mc=document.getElementById('cMain');
+  if(mc) charts.cMain=new Chart(mc,{
+    type:'line',
+    data:{labels:data.labels,datasets:[{data:m.data,borderColor:m.color,backgroundColor:m.bg,borderWidth:2.5,fill:true,tension:0.4,pointRadius:3,pointBackgroundColor:m.color,pointBorderColor:'#fff',pointBorderWidth:2}]},
+    options:{...baseDef,plugins:{...baseDef.plugins,tooltip:{callbacks:{label:ctx=>m.label+': '+ctx.raw}}}}
+  });
 
-  mk('cRev','bar', {data:data.revenue,    backgroundColor:'rgba(255,234,0,0.4)',  borderColor:'#ffea00',borderWidth:1,borderRadius:3});
-  mk('cDAU','line',{data:data.dau,        borderColor:'#00e5ff',backgroundColor:'rgba(0,229,255,0.07)',borderWidth:2,fill:true,tension:0.4,pointBackgroundColor:'#00e5ff',pointRadius:3});
-  mk('cImp','line',{data:data.impressions,borderColor:'#4fc3f7',backgroundColor:'rgba(79,195,247,0.07)',borderWidth:2,fill:true,tension:0.4,pointBackgroundColor:'#4fc3f7',pointRadius:3});
+  // DAU mini
+  const dc=document.getElementById('cDAU');
+  if(dc) charts.cDAU=new Chart(dc,{
+    type:'bar',
+    data:{labels:data.labels,datasets:[{data:data.dau,backgroundColor:'rgba(22,163,74,0.15)',borderColor:'#16a34a',borderWidth:1.5,borderRadius:3}]},
+    options:{...baseDef,scales:{x:{...baseDef.scales.x,ticks:{...baseDef.scales.x.ticks,maxTicksLimit:7}},y:{...baseDef.scales.y}}}
+  });
 
-  const revI=appRevTotal(activeTab,'interstitial'), revB=appRevTotal(activeTab,'banner'), revR=appRevTotal(activeTab,'rewarded');
-  const pc = document.getElementById('cPie');
-  if (pc) charts.cPie = new Chart(pc, {
+  // Pie
+  const revI=appRevTotal(id,'interstitial'),revB=appRevTotal(id,'banner'),revR=appRevTotal(id,'rewarded');
+  const pc=document.getElementById('cPie');
+  if(pc) charts.cPie=new Chart(pc,{
     type:'doughnut',
     data:{labels:['Interstitial','Banner','Rewarded'],datasets:[{data:[revI,revB,revR],
-      backgroundColor:['rgba(79,195,247,0.7)','rgba(0,230,118,0.7)','rgba(206,147,216,0.7)'],
-      borderColor:['#4fc3f7','#00e676','#ce93d8'],borderWidth:1}]},
+      backgroundColor:['rgba(59,130,246,0.85)','rgba(16,185,129,0.85)','rgba(139,92,246,0.85)'],
+      borderColor:['#fff','#fff','#fff'],borderWidth:2}]},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{position:'bottom',labels:{color:'#44445a',font:{family:'Share Tech Mono',size:9},padding:8}}}}
+      plugins:{legend:{position:'bottom',labels:{color:'#6b7280',font:{family:'DM Sans',size:11},padding:12,boxWidth:10,boxHeight:10}}}}
   });
 }
 
-// ── Firebase listener PRINCIPAL (stats, nu timeline) ──────────────
-// Exclude /apps/*/timeline din listener principal ca să nu descărcăm
-// tot tree-ul de timeline la fiecare update de stats.
-// Ascultăm /apps/{id}/total, /apps/{id}/daily, /apps/{id}/monthly separat
-// sau mai simplu — ascultăm root dar ignorăm timeline în render
-// (timeline vine din listenerii dedicați de mai sus).
-onValue(ref(db, '/'), snap => {
-  const raw = snap.val() || {};
-  // Păstrăm state-ul complet dar timeline-ul NU e folosit din state —
-  // e gestionat de tlByApp prin listenerii dedicați.
-  state = raw;
-
-  // La primul update, setup timeline listeners
-  const ids = Object.keys(raw.app_registry || {}).sort();
+// ── Firebase ──────────────────────────────────────────────────────
+onValue(ref(db,'/'), snap=>{
+  state=snap.val()||{};
+  const ids=Object.keys(state.app_registry||{}).sort();
   setupTimelineListeners(ids);
-
   renderAll();
 });
 </script>
