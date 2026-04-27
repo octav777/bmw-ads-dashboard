@@ -472,11 +472,25 @@ window.setMetric     = m => { chartMetric = m; buildCharts(activeTab === 'global
 
 const FMT  = n => { n=parseFloat(n)||0; if(n>=1e6)return(n/1e6).toFixed(2)+'M'; if(n>=1e3)return(n/1e3).toFixed(1)+'K'; return Math.round(n).toString(); };
 const REV  = n => '$'+(parseFloat(n)||0).toFixed(4);
-const REVS = n => '$'+(parseFloat(n)||0).toFixed(2);
+const REVS = n => {
+  const v = parseFloat(n)||0;
+  if (v === 0) return '$0.00';
+  if (v < 0.01) return '$'+ v.toFixed(4);  // ex: $0.0017 in loc de $0.00
+  if (v < 1)    return '$'+ v.toFixed(3);  // ex: $0.094
+  return '$'+ v.toFixed(2);               // ex: $1.23
+};
 const ECPM = n => '$'+(parseFloat(n)||0).toFixed(2);
 const PCT  = n => (parseFloat(n)||0).toFixed(2)+'%';
-const TODAY = () => new Date().toISOString().split('T')[0];
-const MONTH = () => new Date().toISOString().substring(0,7);
+const TODAY = () => {
+  // Folosim ora locala a browserului (nu UTC) pentru a fi consistent
+  // cu ce vad utilizatorii - ziua lor, nu ziua UTC
+  const d = new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+};
+const MONTH = () => {
+  const d = new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+};
 
 const appIds    = () => Object.keys(state.app_registry||{}).sort();
 const appData   = id => (state.apps&&state.apps[id])||{};
