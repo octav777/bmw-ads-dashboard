@@ -20,21 +20,14 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
-
-/* GRID BG */
 body::before{content:'';position:fixed;inset:0;
   background-image:linear-gradient(rgba(0,229,255,0.025) 1px,transparent 1px),
   linear-gradient(90deg,rgba(0,229,255,0.025) 1px,transparent 1px);
   background-size:48px 48px;pointer-events:none;z-index:0;}
-
-/* SCANLINE */
 body::after{content:'';position:fixed;inset:0;
   background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
   pointer-events:none;z-index:0;}
-
 .wrap{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:24px 16px;}
-
-/* ══ HEADER ══════════════════════════════════════════════════════ */
 header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;padding-bottom:16px;border-bottom:1px solid var(--b);}
 .logo{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(14px,2.5vw,22px);color:var(--cyan);letter-spacing:0.12em;text-shadow:0 0 24px rgba(0,229,255,0.5);}
 .logo span{display:block;font-size:0.45em;color:var(--muted2);letter-spacing:0.35em;margin-top:2px;}
@@ -42,19 +35,12 @@ header{display:flex;align-items:center;justify-content:space-between;margin-bott
 .live-badge{display:flex;align-items:center;gap:6px;background:rgba(0,230,118,0.07);border:1px solid rgba(0,230,118,0.25);border-radius:20px;padding:5px 14px;font-size:10px;color:var(--green);letter-spacing:0.2em;}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.4s ease-in-out infinite;box-shadow:0 0 7px var(--green);}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.75)}}
-#last-update-badge{font-size:9px;color:var(--muted2);letter-spacing:0.15em;}
-
-/* ══ TABS ════════════════════════════════════════════════════════ */
 .tabs-bar{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;}
 .tab{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:0.12em;padding:7px 14px;border-radius:6px;border:1px solid var(--b);background:var(--s1);color:var(--muted2);cursor:pointer;transition:all .2s;white-space:nowrap;}
 .tab:hover{border-color:var(--b2);color:var(--text);}
 .tab.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,0.05);box-shadow:0 0 10px rgba(0,229,255,0.08);}
 .tab.global.active{border-color:var(--yellow);color:var(--yellow);background:rgba(255,234,0,0.05);box-shadow:0 0 10px rgba(255,234,0,0.08);}
-
-/* ══ SECTION TITLE ════════════════════════════════════════════════ */
 .sec{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:0.3em;color:var(--muted2);margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:8px;}
-
-/* ══ KPI STRIP ════════════════════════════════════════════════════ */
 .kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:16px;}
 .kpi{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden;transition:border-color .25s;}
 .kpi:hover{border-color:var(--b2);}
@@ -76,18 +62,10 @@ header{display:flex;align-items:center;justify-content:space-between;margin-bott
 .kpi.c-pink .kpi-val{color:var(--pink);}
 .kpi.c-red .kpi-val{color:var(--red);}
 .kpi-sub{font-size:9px;color:var(--muted2);margin-top:4px;}
-.kpi-delta{font-size:9px;margin-top:3px;}
-.kpi-delta.up{color:var(--green2);}
-.kpi-delta.dn{color:var(--red);}
-
-/* LIVE PULSE */
 .live-count{display:flex;align-items:center;gap:6px;}
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse .8s ease-in-out infinite;}
-
-/* ══ HERO REVENUE ═════════════════════════════════════════════════ */
 .hero{background:linear-gradient(135deg,#080d18,#080a14);border:1px solid rgba(0,229,255,0.15);border-radius:14px;padding:24px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;position:relative;overflow:hidden;}
 .hero::after{content:'';position:absolute;top:-50%;right:-5%;width:280px;height:280px;background:radial-gradient(circle,rgba(0,229,255,0.04),transparent 70%);pointer-events:none;}
-.hero-left{}
 .hero-lbl{font-size:9px;letter-spacing:0.3em;color:var(--muted2);margin-bottom:4px;}
 .hero-val{font-family:'Orbitron',sans-serif;font-size:clamp(30px,5vw,52px);font-weight:900;color:var(--cyan);text-shadow:0 0 40px rgba(0,229,255,0.35);line-height:1;}
 .hero-today{font-size:11px;color:var(--green);margin-top:5px;}
@@ -96,10 +74,7 @@ header{display:flex;align-items:center;justify-content:space-between;margin-bott
 .hst{text-align:center;}
 .hst-v{font-family:'Orbitron',sans-serif;font-size:17px;font-weight:700;}
 .hst-l{font-size:8px;color:var(--muted2);letter-spacing:0.18em;margin-top:2px;}
-
-/* ══ TARGET ═══════════════════════════════════════════════════════ */
 .target-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:16px;margin-bottom:16px;}
-.target-left{}
 .target-lbl{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--cyan);letter-spacing:0.2em;margin-bottom:8px;}
 .prog-wrap{background:rgba(255,255,255,0.04);border-radius:6px;height:8px;overflow:hidden;margin-bottom:6px;}
 .prog-bar{height:100%;border-radius:6px;transition:width 1.2s cubic-bezier(.4,0,.2,1);background:linear-gradient(90deg,var(--cyan),var(--cyan2));box-shadow:0 0 8px rgba(0,229,255,0.25);}
@@ -112,8 +87,6 @@ header{display:flex;align-items:center;justify-content:space-between;margin-bott
 .btn-sm:hover{border-color:var(--cyan);color:var(--cyan);}
 .record{font-size:9px;color:var(--muted2);text-align:center;}
 .record-val{color:var(--yellow);font-family:'Orbitron',sans-serif;}
-
-/* ══ AD TYPE CARDS ════════════════════════════════════════════════ */
 .ad-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-bottom:16px;}
 .acard{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:18px;position:relative;overflow:hidden;}
 .acard::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
@@ -134,19 +107,13 @@ header{display:flex;align-items:center;justify-content:space-between;margin-bott
 .aval.ecpm{color:var(--cyan);}
 .aval.ctr{color:var(--orange);}
 .aval.fill{color:var(--green);}
-
-/* FILL RATE MINI BAR */
 .fill-wrap{display:flex;align-items:center;gap:6px;}
 .fill-bar-bg{flex:1;height:3px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;}
 .fill-bar-fg{height:100%;border-radius:3px;background:var(--green);}
-
-/* ══ CHARTS ══════════════════════════════════════════════════════ */
 .charts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px;margin-bottom:16px;}
 .ccrd{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:18px;}
 .ccrd-title{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--muted2);letter-spacing:0.2em;margin-bottom:12px;}
 .ccrd-wrap{position:relative;height:160px;}
-
-/* ══ BREAKDOWN TABLES ════════════════════════════════════════════ */
 .breakdown-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:16px;}
 .bcard{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:18px;}
 .bcard-title{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--muted2);letter-spacing:0.2em;margin-bottom:12px;}
@@ -157,16 +124,12 @@ header{display:flex;align-items:center;justify-content:space-between;margin-bott
 .bbar-bg{width:60px;height:3px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;}
 .bbar-fg{height:100%;border-radius:3px;background:var(--cyan2);}
 .bval{font-family:'Orbitron',sans-serif;font-size:10px;min-width:28px;text-align:right;}
-
-/* ══ RETENTION ═══════════════════════════════════════════════════ */
 .retention-card{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:18px;margin-bottom:16px;}
 .ret-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;}
 .ret-cell{text-align:center;background:var(--s2);border:1px solid var(--b);border-radius:8px;padding:12px 6px;}
 .ret-day{font-size:8px;color:var(--muted2);letter-spacing:0.2em;margin-bottom:4px;}
 .ret-val{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:var(--cyan);}
 .ret-sub{font-size:8px;color:var(--muted2);margin-top:2px;}
-
-/* ══ GLOBAL APP TABLE ════════════════════════════════════════════ */
 .app-table-wrap{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:18px;margin-bottom:16px;overflow-x:auto;}
 .app-table{width:100%;border-collapse:collapse;font-size:10px;}
 .app-table th{font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:0.18em;color:var(--muted2);padding:8px 10px;text-align:left;border-bottom:1px solid var(--b);}
@@ -182,18 +145,29 @@ td.td-pct{color:var(--muted2);}
 
 /* ══ TIMELINE ════════════════════════════════════════════════════ */
 .tl-card{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:18px;margin-bottom:16px;}
-.tl-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-.tl-title{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--muted2);letter-spacing:0.2em;}
-.tl-filter{display:flex;gap:4px;}
-.tl-fbtn{background:none;border:1px solid var(--b);color:var(--muted2);font-family:'Share Tech Mono',monospace;font-size:8px;padding:3px 8px;border-radius:4px;cursor:pointer;}
+.tl-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+.tl-title{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--muted2);letter-spacing:0.2em;display:flex;align-items:center;gap:8px;}
+/* indicator live nou eveniment */
+.tl-live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse .8s ease-in-out infinite;display:none;}
+.tl-live-dot.on{display:inline-block;}
+.tl-filter{display:flex;gap:4px;flex-wrap:wrap;}
+.tl-fbtn{background:none;border:1px solid var(--b);color:var(--muted2);font-family:'Share Tech Mono',monospace;font-size:8px;padding:3px 8px;border-radius:4px;cursor:pointer;transition:all .15s;}
+.tl-fbtn:hover{border-color:var(--b2);color:var(--text);}
 .tl-fbtn.on{border-color:var(--cyan);color:var(--cyan);}
-.tl-list{max-height:280px;overflow-y:auto;}
+.tl-list{max-height:320px;overflow-y:auto;}
 .tl-list::-webkit-scrollbar{width:3px;}
 .tl-list::-webkit-scrollbar-thumb{background:var(--b2);border-radius:3px;}
-.tl-item{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.03);animation:fadeIn .35s ease;}
+.tl-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.03);}
 .tl-item:last-child{border-bottom:none;}
+/* animatie pentru eveniment NOU */
+.tl-item.new{animation:tlNew .6s ease;}
+@keyframes tlNew{
+  0%{opacity:0;transform:translateX(-10px);background:rgba(0,229,255,0.06);}
+  40%{background:rgba(0,229,255,0.06);}
+  100%{opacity:1;transform:none;background:transparent;}
+}
 @keyframes fadeIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
-.tl-time{font-size:9px;color:var(--muted2);min-width:54px;}
+.tl-time{font-size:9px;color:var(--muted2);min-width:60px;font-family:'Share Tech Mono',monospace;}
 .tl-text{flex:1;font-size:10px;}
 .tl-badge{font-size:8px;padding:2px 6px;border-radius:3px;white-space:nowrap;}
 .tl-badge.session{background:rgba(0,230,118,0.1);color:var(--green);border:1px solid rgba(0,230,118,0.2);}
@@ -203,16 +177,8 @@ td.td-pct{color:var(--muted2);}
 .tl-badge.iap{background:rgba(255,234,0,0.1);color:var(--yellow);border:1px solid rgba(255,234,0,0.2);}
 .tl-badge.error{background:rgba(255,82,82,0.1);color:var(--red);border:1px solid rgba(255,82,82,0.2);}
 .tl-badge.custom{background:rgba(255,152,0,0.1);color:var(--orange);border:1px solid rgba(255,152,0,0.2);}
-.tl-meta{font-size:9px;color:var(--muted2);text-align:right;min-width:40px;}
+.tl-meta{font-size:9px;color:var(--muted2);text-align:right;min-width:30px;}
 .tl-app-badge{font-size:8px;color:var(--cyan);background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.15);border-radius:3px;padding:1px 5px;}
-
-/* ══ MONTHLY ═════════════════════════════════════════════════════ */
-.monthly-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-bottom:16px;}
-.mcrd{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:16px;}
-.mcrd-lbl{font-size:8px;color:var(--muted2);letter-spacing:0.2em;margin-bottom:4px;}
-.mcrd-val{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;}
-
-/* ══ MODAL ════════════════════════════════════════════════════════ */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;align-items:center;justify-content:center;}
 .modal-bg.open{display:flex;}
 .modal{background:var(--s2);border:1px solid var(--b2);border-radius:12px;padding:24px;width:300px;}
@@ -223,15 +189,11 @@ td.td-pct{color:var(--muted2);}
 .btn{background:none;border:1px solid var(--b);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:10px;padding:7px 14px;border-radius:6px;cursor:pointer;}
 .btn.primary{background:var(--cyan);border-color:var(--cyan);color:#000;font-weight:700;}
 .btn:hover{opacity:.8;}
-
-/* ══ EMPTY / LOADING ═════════════════════════════════════════════ */
 .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:70vh;gap:14px;}
 .spinner{width:34px;height:34px;border:2px solid var(--b);border-top-color:var(--cyan);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-txt{font-size:10px;color:var(--muted2);letter-spacing:0.3em;}
 .empty{text-align:center;padding:24px;color:var(--muted2);font-size:10px;letter-spacing:0.18em;}
-
-/* ══ FOOTER ══════════════════════════════════════════════════════ */
 footer{text-align:center;font-size:9px;color:var(--muted2);letter-spacing:0.18em;padding:16px 0;}
 </style>
 </head>
@@ -252,17 +214,28 @@ footer{text-align:center;font-size:9px;color:var(--muted2);letter-spacing:0.18em
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, onValue, query, limitToLast, orderByKey }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const app = initializeApp({ databaseURL: "https://bmwadsstats-default-rtdb.firebaseio.com/" });
 const db  = getDatabase(app);
 
-let state = {};
-let activeTab = 'global';
-let charts = {};
+// ── State ─────────────────────────────────────────────────────────
+let state       = {};
+let activeTab   = 'global';
+let charts      = {};
+let tlFilter    = 'all';
 let dailyTarget = parseFloat(localStorage.getItem('dailyTarget') || '10');
-let tlFilter = 'all'; // all | session | interstitial | rewarded | banner | iap | error
 
+// ── Timeline state separat — actualizat INDEPENDENT de state principal ──
+// { appId: [ {time, text, type, country, _key, _appId} ] }
+let tlByApp = {};
+// Ultimele 40 de evenimente combinate (global)
+let tlGlobal = [];
+// Map listeners activi { appId: unsubscribeFn }
+let tlListeners = {};
+
+// ── Exposed globals ───────────────────────────────────────────────
 window.openModal  = () => { document.getElementById('target-input').value = dailyTarget; document.getElementById('modal').classList.add('open'); };
 window.closeModal = () => document.getElementById('modal').classList.remove('open');
 window.saveTarget = () => {
@@ -270,16 +243,15 @@ window.saveTarget = () => {
   if (!isNaN(v) && v > 0) { dailyTarget = v; localStorage.setItem('dailyTarget', v); }
   closeModal(); renderAll();
 };
-window.switchTab = t => { activeTab = t; renderAll(); };
-window.setTlFilter = f => { tlFilter = f; renderAll(); };
+window.switchTab    = t => { activeTab = t; renderAll(); };
+window.setTlFilter  = f => { tlFilter = f; renderTlOnly(); };
 
 // ── Format helpers ────────────────────────────────────────────────
-const FMT = n => { n=parseFloat(n)||0; if(n>=1e6)return(n/1e6).toFixed(1)+'M'; if(n>=1e3)return(n/1e3).toFixed(1)+'K'; return Math.round(n).toString(); };
+const FMT  = n => { n=parseFloat(n)||0; if(n>=1e6)return(n/1e6).toFixed(1)+'M'; if(n>=1e3)return(n/1e3).toFixed(1)+'K'; return Math.round(n).toString(); };
 const REV  = n => '$'+(parseFloat(n)||0).toFixed(4);
 const REVS = n => '$'+(parseFloat(n)||0).toFixed(2);
 const ECPM = n => '$'+(parseFloat(n)||0).toFixed(2);
 const PCT  = n => (parseFloat(n)||0).toFixed(2)+'%';
-const F6   = n => (parseFloat(n)||0).toFixed(6);
 const TODAY = () => new Date().toISOString().split('T')[0];
 const MONTH = () => new Date().toISOString().substring(0,7);
 
@@ -296,7 +268,6 @@ const appTotalRev  = id => parseFloat(appTotal(id).revenue)||0;
 const appTodayRev  = id => parseFloat(appToday(id).revenue)||0;
 const appMonthRev  = id => parseFloat(appMonth(id).revenue)||0;
 const appTotalSes  = id => parseInt(appTotal(id).sessions)||0;
-const appTodaySes  = id => parseInt(appToday(id).sessions)||0;
 const appDAU       = id => parseInt(appToday(id).dau_count)||0;
 const appMAU       = id => parseInt(appMonth(id).mau_count)||0;
 const appARPDAU    = id => parseFloat(appToday(id).arpdau)||0;
@@ -313,11 +284,9 @@ const appFill     = (id,t) => parseFloat((appTotal(id)[t]||{}).fill_rate)||0;
 const appReq      = (id,t) => parseInt((appTotal(id)[t]||{}).requests)||0;
 const appFailed   = (id,t) => parseInt((appTotal(id)[t]||{}).failed)||0;
 const appCompl    = id => parseInt((appTotal(id).rewarded||{}).completions)||0;
-
 const appTotalImpressions = id => ['interstitial','banner','rewarded'].reduce((s,t)=>s+appImpTotal(id,t),0);
-const appTotalClicks      = id => ['interstitial','banner','rewarded'].reduce((s,t)=>s+appClkTotal(id,t),0);
-const appTotalIAPRev  = id => parseFloat((appTotal(id).iap||{}).revenue)||0;
-const appTotalIAPPurch= id => parseInt((appTotal(id).iap||{}).purchases)||0;
+const appTotalIAPRev   = id => parseFloat((appTotal(id).iap||{}).revenue)||0;
+const appTotalIAPPurch = id => parseInt((appTotal(id).iap||{}).purchases)||0;
 
 const appLiveCount = id => {
   const live = appData(id).live||{};
@@ -332,10 +301,9 @@ const appDailyChart = id => {
   const daily = appData(id).daily||{};
   const days  = Object.keys(daily).sort().slice(-14);
   return {
-    labels: days.map(d=>d.slice(5)),
-    revenue: days.map(d=>parseFloat((daily[d]||{}).revenue)||0),
-    sessions: days.map(d=>parseInt((daily[d]||{}).sessions)||0),
-    dau: days.map(d=>parseInt((daily[d]||{}).dau_count)||0),
+    labels:      days.map(d=>d.slice(5)),
+    revenue:     days.map(d=>parseFloat((daily[d]||{}).revenue)||0),
+    dau:         days.map(d=>parseInt((daily[d]||{}).dau_count)||0),
     impressions: days.map(d=>['interstitial','banner','rewarded'].reduce((s,t)=>s+(parseInt(((daily[d]||{})[t]||{}).impressions)||0),0))
   };
 };
@@ -344,61 +312,131 @@ const appTopList = (id,node,max=8) => {
   return Object.entries(data).map(([k,v])=>({name:k.replace(/_/g,' '),val:parseInt(v)||0}))
     .sort((a,b)=>b.val-a.val).slice(0,max);
 };
-const appTimeline = (id,filter='all') => {
-  const tl = appData(id).timeline||{};
-  let items = Object.values(tl).sort((a,b)=>b.time>a.time?1:-1).slice(0,50);
-  if(filter!=='all') items = items.filter(e=>(e.type||'').includes(filter));
-  return items.slice(0,30);
-};
 
 // ── Global aggregates ─────────────────────────────────────────────
-const gRev       = ()=>appIds().reduce((s,id)=>s+appTotalRev(id),0);
-const gTodayRev  = ()=>appIds().reduce((s,id)=>s+appTodayRev(id),0);
-const gMonthRev  = ()=>appIds().reduce((s,id)=>s+appMonthRev(id),0);
-const gSes       = ()=>appIds().reduce((s,id)=>s+appTotalSes(id),0);
-const gTodaySes  = ()=>appIds().reduce((s,id)=>s+appTodaySes(id),0);
-const gDAU       = ()=>appIds().reduce((s,id)=>s+appDAU(id),0);
-const gMAU       = ()=>appIds().reduce((s,id)=>s+appMAU(id),0);
-const gImp       = ()=>appIds().reduce((s,id)=>s+appTotalImpressions(id),0);
-const gLive      = ()=>appIds().reduce((s,id)=>s+appLiveCount(id),0);
-const gIAPRev    = ()=>appIds().reduce((s,id)=>s+appTotalIAPRev(id),0);
+const gRev      = ()=>appIds().reduce((s,id)=>s+appTotalRev(id),0);
+const gTodayRev = ()=>appIds().reduce((s,id)=>s+appTodayRev(id),0);
+const gMonthRev = ()=>appIds().reduce((s,id)=>s+appMonthRev(id),0);
+const gDAU      = ()=>appIds().reduce((s,id)=>s+appDAU(id),0);
+const gMAU      = ()=>appIds().reduce((s,id)=>s+appMAU(id),0);
+const gImp      = ()=>appIds().reduce((s,id)=>s+appTotalImpressions(id),0);
+const gLive     = ()=>appIds().reduce((s,id)=>s+appLiveCount(id),0);
+const gIAPRev   = ()=>appIds().reduce((s,id)=>s+appTotalIAPRev(id),0);
 
-const gTimeline = filter => {
-  let all = [];
-  appIds().forEach(id=>{
-    const tl=appData(id).timeline||{};
-    Object.values(tl).forEach(e=>all.push({...e,_appId:id}));
+// ════════════════════════════════════════════════════════════════
+// TIMELINE LIVE — LISTENER DEDICAT PER APP
+// Firebase POST generează key unic → onValue pe root NU prinde
+// evenimentele noi dacă Firebase nu re-trimite tot sub-tree-ul.
+// Fix: listener separat pe /apps/{id}/timeline cu limitToLast(25).
+// ════════════════════════════════════════════════════════════════
+
+function setupTimelineListeners(ids) {
+  // Adaugă listeneri pentru app-uri noi
+  ids.forEach(id => {
+    if (tlListeners[id]) return; // deja activ
+
+    const tlRef = query(
+      ref(db, `apps/${id}/timeline`),
+      orderByKey(),
+      limitToLast(25)
+    );
+
+    const unsub = onValue(tlRef, snap => {
+      const raw = snap.val() || {};
+      // Transformă obiectul în array, adaugă _key și _appId
+      const items = Object.entries(raw).map(([k, v]) => ({
+        ...v,
+        _key:   k,
+        _appId: id
+      }));
+      // Sortează după time string DESC (HH:mm:ss — funcționează corect în aceeași zi)
+      items.sort((a, b) => (b.time || '').localeCompare(a.time || ''));
+      tlByApp[id] = items;
+
+      // Rebuild global timeline
+      rebuildGlobalTimeline();
+
+      // Dacă tab-ul activ e acest app sau global → re-render doar timeline
+      renderTlOnly();
+    });
+
+    tlListeners[id] = unsub;
   });
-  all.sort((a,b)=>b.time>a.time?1:-1);
-  if(filter!=='all') all=all.filter(e=>(e.type||'').includes(filter));
-  return all.slice(0,40);
-};
 
-// ── Render ────────────────────────────────────────────────────────
-function renderAll(){
+  // Oprește listeneri pentru app-uri care nu mai există
+  Object.keys(tlListeners).forEach(id => {
+    if (!ids.includes(id)) {
+      tlListeners[id](); // unsubscribe
+      delete tlListeners[id];
+      delete tlByApp[id];
+    }
+  });
+}
+
+function rebuildGlobalTimeline() {
+  let all = [];
+  Object.entries(tlByApp).forEach(([id, items]) => {
+    items.forEach(e => all.push(e));
+  });
+  all.sort((a, b) => (b.time || '').localeCompare(a.time || ''));
+  tlGlobal = all.slice(0, 40);
+}
+
+// Returnează timeline-ul filtrat pentru tab-ul activ
+function getCurrentTimeline() {
+  const items = activeTab === 'global'
+    ? tlGlobal
+    : (tlByApp[activeTab] || []);
+
+  if (tlFilter === 'all') return items;
+  return items.filter(e => (e.type || '').includes(tlFilter));
+}
+
+// Re-render DOAR secțiunea timeline fără să rebuild tot DOM-ul
+// Evită flickering și pierderea scroll position pe restul paginii
+function renderTlOnly() {
+  const container = document.getElementById('tl-container');
+  if (!container) return; // pagina nu e încă renderată
+  container.innerHTML = renderTimelineInner(getCurrentTimeline(), activeTab === 'global');
+
+  // Flash pe dot-ul live ca să indice update
+  const dot = document.getElementById('tl-live-dot');
+  if (dot) {
+    dot.classList.add('on');
+    clearTimeout(window._tlDotTimer);
+    window._tlDotTimer = setTimeout(() => dot.classList.remove('on'), 2000);
+  }
+}
+
+// ── Render principal ──────────────────────────────────────────────
+function renderAll() {
   const ids = appIds();
-  if(activeTab!=='global' && !ids.includes(activeTab)) activeTab='global';
+  if (activeTab !== 'global' && !ids.includes(activeTab)) activeTab = 'global';
+
+  // Setup timeline listeners pentru toate app-urile cunoscute
+  setupTimelineListeners(ids);
 
   const tabsHtml = `<div class="tabs-bar">
     <div class="tab global ${activeTab==='global'?'active':''}" onclick="switchTab('global')">🌐 GLOBAL</div>
     ${ids.map(id=>`<div class="tab ${activeTab===id?'active':''}" onclick="switchTab('${id}')">${appName(id)}</div>`).join('')}
   </div>`;
 
-  document.getElementById('app').innerHTML = tabsHtml + (activeTab==='global' ? renderGlobal(ids) : renderApp(activeTab));
-  buildCharts(activeTab==='global' ? null : activeTab);
+  document.getElementById('app').innerHTML =
+    tabsHtml + (activeTab === 'global' ? renderGlobal(ids) : renderApp(activeTab));
+
+  buildCharts(activeTab === 'global' ? null : activeTab);
 }
 
 // ── GLOBAL VIEW ───────────────────────────────────────────────────
-function renderGlobal(ids){
+function renderGlobal(ids) {
   const todayRev = gTodayRev(), totalRev = gRev();
-  const pct = Math.min(todayRev/dailyTarget*100,100);
-  const pbCls = pct>=100?'done':pct>=70?'warn':'';
-  const timeline = gTimeline(tlFilter);
-  const live = gLive();
+  const pct   = Math.min(todayRev / dailyTarget * 100, 100);
+  const pbCls = pct >= 100 ? 'done' : pct >= 70 ? 'warn' : '';
+  const live  = gLive();
 
-  const appRows = ids.map(id=>{
-    const rev=appTotalRev(id);
-    const pctOf=totalRev>0?(rev/totalRev*100).toFixed(1):'0.0';
+  const appRows = ids.map(id => {
+    const rev   = appTotalRev(id);
+    const pctOf = totalRev > 0 ? (rev / totalRev * 100).toFixed(1) : '0.0';
     return `<tr>
       <td><span class="app-link" onclick="switchTab('${id}')">${appName(id)}</span></td>
       <td class="td-rev">${REVS(rev)}</td>
@@ -417,11 +455,9 @@ function renderGlobal(ids){
     <header>
       <div class="logo">ADS CONTROL CENTER<span>GLOBAL DASHBOARD — ALL APPS</span></div>
       <div class="header-right">
-        <div class="live-badge"><div class="dot"></div>LIVE · <span id="last-update-badge">${new Date().toLocaleTimeString()}</span></div>
+        <div class="live-badge"><div class="dot"></div>LIVE · ${new Date().toLocaleTimeString()}</div>
       </div>
     </header>
-
-    <!-- HERO -->
     <div class="hero">
       <div class="hero-left">
         <div class="hero-lbl">VENIT TOTAL — TOATE APP-URILE</div>
@@ -437,43 +473,34 @@ function renderGlobal(ids){
         <div class="hst"><div class="hst-v" style="color:var(--yellow)">${REVS(gIAPRev())}</div><div class="hst-l">IAP REV</div></div>
       </div>
     </div>
-
-    <!-- TARGET -->
     <div class="target-row">
       <div class="target-left">
         <div class="target-lbl">🎯 TARGET ZILNIC GLOBAL</div>
         <div class="prog-wrap"><div class="prog-bar ${pbCls}" style="width:${pct.toFixed(1)}%"></div></div>
         <div class="prog-info"><span>${REVS(todayRev)} / ${REVS(dailyTarget)}</span><span class="prog-pct">${pct.toFixed(1)}%</span></div>
       </div>
-      <div class="target-right">
-        <button class="btn-sm" onclick="openModal()">EDIT TARGET</button>
-      </div>
+      <div class="target-right"><button class="btn-sm" onclick="openModal()">EDIT TARGET</button></div>
     </div>
-
-    <!-- APP TABLE -->
     <div class="sec">📱 BREAKDOWN PER APLICAȚIE</div>
     <div class="app-table-wrap">
-      ${ids.length?`<table class="app-table">
+      ${ids.length ? `<table class="app-table">
         <thead><tr><th>APP</th><th>REV TOTAL</th><th>REV AZI</th><th>REV LUNA</th><th>IMPRESII</th><th>SESIUNI</th><th>DAU</th><th>MAU</th><th>LIVE</th><th>% DIN TOTAL</th></tr></thead>
         <tbody>${appRows}</tbody>
-      </table>`:'<div class="empty">Nu există aplicații înregistrate.</div>'}
+      </table>` : '<div class="empty">Nu există aplicații înregistrate.</div>'}
     </div>
-
-    <!-- TIMELINE -->
-    ${renderTimeline(timeline, true)}
-
+    ${renderTimeline()}
     <footer>LAST UPDATE: ${new Date().toLocaleTimeString()} · AUTO-REFRESH LIVE · ${ids.length} APP-URI ACTIVE</footer>
   </div>`;
 }
 
 // ── APP VIEW ──────────────────────────────────────────────────────
-function renderApp(id){
+function renderApp(id) {
   const name     = appName(id);
   const todayRev = appTodayRev(id);
   const totalRev = appTotalRev(id);
   const monthRev = appMonthRev(id);
-  const pct      = Math.min(todayRev/dailyTarget*100,100);
-  const pbCls    = pct>=100?'done':pct>=70?'warn':'';
+  const pct      = Math.min(todayRev / dailyTarget * 100, 100);
+  const pbCls    = pct >= 100 ? 'done' : pct >= 70 ? 'warn' : '';
   const best     = appBestDay(id);
   const live     = appLiveCount(id);
   const dau      = appDAU(id);
@@ -482,39 +509,39 @@ function renderApp(id){
   const rps      = appRevPerSes(id);
   const iapRev   = appTotalIAPRev(id);
   const iapPurch = appTotalIAPPurch(id);
-  const timeline = appTimeline(id, tlFilter);
+  const compl    = appCompl(id);
+  const durTotal = parseInt(appTotal(id).session_duration_total || 0);
+  const durCount = parseInt(appTotal(id).session_count_for_avg  || 0);
+  const avgDur   = durCount > 0 ? Math.round(durTotal / durCount) : 0;
+  const errTotal = parseInt((appTotal(id).errors||{}).total) || 0;
   const topC     = appTopList(id,'countries');
   const topD     = appTopList(id,'devices');
   const topV     = appTopList(id,'versions');
   const topOS    = appTopList(id,'os');
   const topNet   = appTopList(id,'network');
   const topBatt  = appTopList(id,'battery');
-  const compl    = appCompl(id);
-  const durTotal = parseInt((appTotal(id).session_duration_total)||0);
-  const durCount = parseInt((appTotal(id).session_count_for_avg)||0);
-  const avgDur   = durCount>0?Math.round(durTotal/durCount):0;
-  const errTotal = parseInt((appTotal(id).errors||{}).total)||0;
 
-  // Retention cohorts
-  const cohorts = appData(id).cohorts||{};
-  const cohortDays = Object.keys(cohorts).sort().slice(-1)[0];
-  const lastCohort = cohortDays ? cohorts[cohortDays] : {};
-  const d0=parseInt(lastCohort.d0)||0, d1=parseInt(lastCohort.d1)||0;
-  const d7=parseInt(lastCohort.d7)||0, d30=parseInt(lastCohort.d30)||0;
-  const retD1  = d0>0?((d1/d0)*100).toFixed(0):'—';
-  const retD7  = d0>0?((d7/d0)*100).toFixed(0):'—';
-  const retD30 = d0>0?((d30/d0)*100).toFixed(0):'—';
+  const cohorts    = appData(id).cohorts || {};
+  const cohortDay  = Object.keys(cohorts).sort().slice(-1)[0];
+  const lastCohort = cohortDay ? cohorts[cohortDay] : {};
+  const d0  = parseInt(lastCohort.d0)  || 0;
+  const d1  = parseInt(lastCohort.d1)  || 0;
+  const d7  = parseInt(lastCohort.d7)  || 0;
+  const d30 = parseInt(lastCohort.d30) || 0;
+  const retD1  = d0 > 0 ? ((d1  / d0) * 100).toFixed(0) : '—';
+  const retD7  = d0 > 0 ? ((d7  / d0) * 100).toFixed(0) : '—';
+  const retD30 = d0 > 0 ? ((d30 / d0) * 100).toFixed(0) : '—';
 
   const adTypes = [
-    {k:'interstitial',l:'INTERSTITIAL',i:'📺',c:'int'},
-    {k:'banner',      l:'BANNER',      i:'🖼️',c:'ban'},
-    {k:'rewarded',    l:'REWARDED',    i:'🎁',c:'rew'}
+    {k:'interstitial', l:'INTERSTITIAL', i:'📺', c:'int'},
+    {k:'banner',       l:'BANNER',       i:'🖼️', c:'ban'},
+    {k:'rewarded',     l:'REWARDED',     i:'🎁', c:'rew'}
   ];
 
-  const kpi = (label,val,color,sub='') => `<div class="kpi c-${color}">
+  const kpi = (label, val, color, sub='') => `<div class="kpi c-${color}">
     <div class="kpi-lbl">${label}</div>
     <div class="kpi-val">${val}</div>
-    ${sub?`<div class="kpi-sub">${sub}</div>`:''}
+    ${sub ? `<div class="kpi-sub">${sub}</div>` : ''}
   </div>`;
 
   return `<div class="wrap">
@@ -524,8 +551,6 @@ function renderApp(id){
         <div class="live-badge"><div class="dot"></div>LIVE · ${new Date().toLocaleTimeString()}</div>
       </div>
     </header>
-
-    <!-- HERO -->
     <div class="hero">
       <div class="hero-left">
         <div class="hero-lbl">VENIT TOTAL — ${name.toUpperCase()}</div>
@@ -537,12 +562,10 @@ function renderApp(id){
         <div class="hst"><div class="hst-v live-count"><div class="live-dot"></div>${live}</div><div class="hst-l">LIVE NOW</div></div>
         <div class="hst"><div class="hst-v" style="color:var(--cyan)">${FMT(dau)}</div><div class="hst-l">DAU AZI</div></div>
         <div class="hst"><div class="hst-v" style="color:var(--purple)">${FMT(mau)}</div><div class="hst-l">MAU</div></div>
-        <div class="hst"><div class="hst-v" style="color:var(--yellow)">'$'${arpdau.toFixed(4)}</div><div class="hst-l">ARPDAU</div></div>
+        <div class="hst"><div class="hst-v" style="color:var(--yellow)">$${arpdau.toFixed(4)}</div><div class="hst-l">ARPDAU</div></div>
         <div class="hst"><div class="hst-v" style="color:var(--orange)">${FMT(appTotalSes(id))}</div><div class="hst-l">SESIUNI</div></div>
       </div>
     </div>
-
-    <!-- TARGET -->
     <div class="target-row">
       <div class="target-left">
         <div class="target-lbl">🎯 TARGET ZILNIC</div>
@@ -554,32 +577,28 @@ function renderApp(id){
         <div class="record">RECORD: <span class="record-val">${REVS(best)}</span></div>
       </div>
     </div>
-
-    <!-- KPI STRIP 1 — Performance -->
     <div class="sec">⚡ PERFORMANȚĂ CHEIE</div>
     <div class="kpi-strip">
-      ${kpi('VENIT AZI',    REVS(todayRev),   'yellow', `TARGET: ${pct.toFixed(0)}%`)}
-      ${kpi('VENIT LUNA',   REVS(monthRev),   'yellow')}
-      ${kpi('ARPDAU',       '$'+arpdau.toFixed(4),'cyan', 'Rev/User/Zi')}
-      ${kpi('REV/SESIUNE',  '$'+rps.toFixed(4),  'cyan2'||'cyan')}
-      ${kpi('LIVE ACUM',    live,             'green', 'Activi <2min')}
-      ${kpi('DAU',          FMT(dau),         'green', 'Unici azi')}
-      ${kpi('MAU',          FMT(mau),         'purple','Unici luna')}
-      ${kpi('AVG SESSION',  avgDur+'s',       'orange', durCount+' sesiuni')}
-      ${kpi('IAP REVENUE',  REVS(iapRev),     'yellow', iapPurch+' achizitii')}
-      ${kpi('REWARD COMPL', FMT(compl),       'purple', 'Completari')}
-      ${kpi('ERRORS',       FMT(errTotal),    'red')}
-      ${kpi('SESIUNI TOTAL',FMT(appTotalSes(id)),'cyan2'||'cyan')}
+      ${kpi('VENIT AZI',    REVS(todayRev),        'yellow', `TARGET: ${pct.toFixed(0)}%`)}
+      ${kpi('VENIT LUNA',   REVS(monthRev),        'yellow')}
+      ${kpi('ARPDAU',       '$'+arpdau.toFixed(4), 'cyan',   'Rev/User/Zi')}
+      ${kpi('REV/SESIUNE',  '$'+rps.toFixed(4),    'cyan')}
+      ${kpi('LIVE ACUM',    live,                  'green',  'Activi <2min')}
+      ${kpi('DAU',          FMT(dau),              'green',  'Unici azi')}
+      ${kpi('MAU',          FMT(mau),              'purple', 'Unici luna')}
+      ${kpi('AVG SESSION',  avgDur+'s',            'orange', durCount+' sesiuni')}
+      ${kpi('IAP REVENUE',  REVS(iapRev),          'yellow', iapPurch+' achizitii')}
+      ${kpi('REWARD COMPL', FMT(compl),            'purple', 'Completari')}
+      ${kpi('ERRORS',       FMT(errTotal),         'red')}
+      ${kpi('SESIUNI TOTAL',FMT(appTotalSes(id)),  'cyan')}
     </div>
-
-    <!-- AD TYPE CARDS -->
     <div class="sec">📊 STATISTICI PER TIP RECLAMĂ</div>
     <div class="ad-cards">
-      ${adTypes.map(a=>{
-        const imp=appImpTotal(id,a.k),impD=appImpToday(id,a.k),
-              clk=appClkTotal(id,a.k),rev=appRevTotal(id,a.k),revD=appRevToday(id,a.k),
-              ecpm=appECPM(id,a.k),ctr=appCTR(id,a.k),fill=appFill(id,a.k),
-              req=appReq(id,a.k),fail=appFailed(id,a.k);
+      ${adTypes.map(a => {
+        const imp=appImpTotal(id,a.k), impD=appImpToday(id,a.k),
+              clk=appClkTotal(id,a.k), rev=appRevTotal(id,a.k), revD=appRevToday(id,a.k),
+              ecpm=appECPM(id,a.k), ctr=appCTR(id,a.k), fill=appFill(id,a.k),
+              req=appReq(id,a.k), fail=appFailed(id,a.k);
         return `<div class="acard ${a.c}">
           <div class="acard-hd"><div class="acard-title">${a.l}</div><div class="acard-icon">${a.i}</div></div>
           <div class="arow"><span class="albl">IMPRESII TOTAL</span><span class="aval">${FMT(imp)}</span></div>
@@ -597,8 +616,6 @@ function renderApp(id){
         </div>`;
       }).join('')}
     </div>
-
-    <!-- CHARTS -->
     <div class="sec">📈 GRAFICE ULTIMELE 14 ZILE</div>
     <div class="charts-grid">
       <div class="ccrd"><div class="ccrd-title">💰 VENIT ZILNIC ($)</div><div class="ccrd-wrap"><canvas id="cRev"></canvas></div></div>
@@ -606,11 +623,9 @@ function renderApp(id){
       <div class="ccrd"><div class="ccrd-title">👁️ IMPRESII ZILNICE</div><div class="ccrd-wrap"><canvas id="cImp"></canvas></div></div>
       <div class="ccrd"><div class="ccrd-title">🥧 VENIT PE TIP RECLAMĂ</div><div class="ccrd-wrap"><canvas id="cPie"></canvas></div></div>
     </div>
-
-    <!-- RETENTION -->
     <div class="sec">🔄 RETENTION (ultimul cohort)</div>
     <div class="retention-card">
-      <div style="font-size:9px;color:var(--muted2)">Cohort: ${cohortDays||'—'} · D0 = ${d0} useri</div>
+      <div style="font-size:9px;color:var(--muted2)">Cohort: ${cohortDay||'—'} · D0 = ${d0} useri</div>
       <div class="ret-grid">
         <div class="ret-cell"><div class="ret-day">D0</div><div class="ret-val">${d0}</div><div class="ret-sub">instalari</div></div>
         <div class="ret-cell"><div class="ret-day">D1</div><div class="ret-val">${retD1}${retD1!=='—'?'%':''}</div><div class="ret-sub">${d1} useri</div></div>
@@ -618,95 +633,122 @@ function renderApp(id){
         <div class="ret-cell"><div class="ret-day">D30</div><div class="ret-val">${retD30}${retD30!=='—'?'%':''}</div><div class="ret-sub">${d30} useri</div></div>
       </div>
     </div>
-
-    <!-- BREAKDOWN -->
     <div class="sec">🌍 BREAKDOWN DISPOZITIVE & DEMOGRAFIE</div>
     <div class="breakdown-grid">
-      ${renderTopList('🌍 TOP ȚĂRI',    topC, 'var(--cyan2)')}
-      ${renderTopList('📱 TOP DEVICES', topD, 'var(--purple)')}
-      ${renderTopList('📦 VERSIUNI APP',topV, 'var(--green)')}
-      ${renderTopList('🖥️ OS VERSION',  topOS,'var(--orange)')}
+      ${renderTopList('🌍 TOP ȚĂRI',    topC,  'var(--cyan2)')}
+      ${renderTopList('📱 TOP DEVICES', topD,  'var(--purple)')}
+      ${renderTopList('📦 VERSIUNI APP',topV,  'var(--green)')}
+      ${renderTopList('🖥️ OS VERSION',  topOS, 'var(--orange)')}
       ${renderTopList('📶 NETWORK TYPE',topNet,'var(--yellow)')}
       ${renderTopList('🔋 BATTERY',     topBatt,'var(--pink)')}
     </div>
-
-    <!-- TIMELINE -->
-    ${renderTimeline(timeline, false)}
-
+    ${renderTimeline()}
     <footer>LAST UPDATE: ${new Date().toLocaleTimeString()} · ${name.toUpperCase()} · v${appReg(id).version||'?'}</footer>
   </div>`;
 }
 
-function renderTopList(title, items, color){
+function renderTopList(title, items, color) {
   return `<div class="bcard">
     <div class="bcard-title">${title}</div>
-    ${items.length?items.map((it,i)=>`
+    ${items.length ? items.map((it,i) => `
       <div class="bitem">
         <div class="brank">#${i+1}</div>
         <div class="bname">${it.name}</div>
         <div class="bbar-bg"><div class="bbar-fg" style="width:${items[0].val>0?(it.val/items[0].val*100).toFixed(0):0}%;background:${color}"></div></div>
         <div class="bval" style="color:${color}">${FMT(it.val)}</div>
-      </div>`).join(''):'<div class="empty">—</div>'}
+      </div>`).join('') : '<div class="empty">—</div>'}
   </div>`;
 }
 
-function renderTimeline(items, showAppBadge){
+// ── Timeline render — shell + container separat ───────────────────
+function renderTimeline() {
   const filters = ['all','session','interstitial','rewarded','banner','iap','error','custom'];
+  const items   = getCurrentTimeline();
+  const showApp = activeTab === 'global';
+
   return `<div class="tl-card">
     <div class="tl-hd">
-      <div class="tl-title">⚡ ACTIVITATE LIVE</div>
+      <div class="tl-title">
+        ⚡ ACTIVITATE LIVE
+        <div class="tl-live-dot" id="tl-live-dot"></div>
+      </div>
       <div class="tl-filter">
         ${filters.map(f=>`<button class="tl-fbtn ${tlFilter===f?'on':''}" onclick="setTlFilter('${f}')">${f.toUpperCase()}</button>`).join('')}
       </div>
     </div>
-    <div class="tl-list">
-      ${items.length?items.map(e=>`
-        <div class="tl-item">
-          <div class="tl-time">${e.time||''}</div>
-          <div class="tl-text">${e.text||''}</div>
-          ${showAppBadge&&e._appId?`<div class="tl-app-badge">${appName(e._appId)}</div>`:''}
-          <div class="tl-badge ${e.type||''}">${(e.type||'event').replace(/_/g,' ')}</div>
-          <div class="tl-meta">${e.country||''}</div>
-        </div>`).join(''):'<div class="empty">Nicio activitate.</div>'}
+    <div class="tl-list" id="tl-container">
+      ${renderTimelineInner(items, showApp)}
     </div>
   </div>`;
 }
 
+// Conținutul listei — poate fi re-rendered fără să atingem restul paginii
+function renderTimelineInner(items, showAppBadge) {
+  if (!items.length) return '<div class="empty">Nicio activitate.</div>';
+  return items.map((e, idx) => `
+    <div class="tl-item${idx === 0 ? ' new' : ''}">
+      <div class="tl-time">${e.time || ''}</div>
+      <div class="tl-text">${e.text || ''}</div>
+      ${showAppBadge && e._appId ? `<div class="tl-app-badge">${appName(e._appId)}</div>` : ''}
+      <div class="tl-badge ${e.type || ''}">${(e.type || 'event').replace(/_/g,' ')}</div>
+      <div class="tl-meta">${e.country || ''}</div>
+    </div>`).join('');
+}
+
 // ── Charts ────────────────────────────────────────────────────────
-function buildCharts(id){
-  if(!id) return;
+function buildCharts(id) {
+  if (!id) return;
   const data = appDailyChart(id);
-  const t    = appTotal(id);
-  ['cRev','cDAU','cImp','cPie'].forEach(cid=>{ if(charts[cid]){charts[cid].destroy();delete charts[cid];} });
+  ['cRev','cDAU','cImp','cPie'].forEach(cid => {
+    if (charts[cid]) { charts[cid].destroy(); delete charts[cid]; }
+  });
 
   const def = {
-    responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
-    scales:{
-      x:{grid:{color:'rgba(255,255,255,0.03)'},ticks:{color:'#44445a',font:{family:'Share Tech Mono',size:9}}},
-      y:{grid:{color:'rgba(255,255,255,0.03)'},ticks:{color:'#44445a',font:{family:'Share Tech Mono',size:9}}}
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid:{color:'rgba(255,255,255,0.03)'}, ticks:{color:'#44445a',font:{family:'Share Tech Mono',size:9}} },
+      y: { grid:{color:'rgba(255,255,255,0.03)'}, ticks:{color:'#44445a',font:{family:'Share Tech Mono',size:9}} }
     }
   };
 
-  const mk=(cid,type,dataset,opts={})=>{ const c=document.getElementById(cid); if(c) charts[cid]=new Chart(c,{type,data:{labels:data.labels,datasets:[dataset]},options:{...def,...opts}}); };
+  const mk = (cid, type, dataset, opts={}) => {
+    const c = document.getElementById(cid);
+    if (c) charts[cid] = new Chart(c, {type, data:{labels:data.labels,datasets:[dataset]}, options:{...def,...opts}});
+  };
 
-  mk('cRev','bar',{data:data.revenue,backgroundColor:'rgba(255,234,0,0.4)',borderColor:'#ffea00',borderWidth:1,borderRadius:3});
-  mk('cDAU','line',{data:data.dau,borderColor:'#00e5ff',backgroundColor:'rgba(0,229,255,0.07)',borderWidth:2,fill:true,tension:0.4,pointBackgroundColor:'#00e5ff',pointRadius:3});
+  mk('cRev','bar', {data:data.revenue,    backgroundColor:'rgba(255,234,0,0.4)',  borderColor:'#ffea00',borderWidth:1,borderRadius:3});
+  mk('cDAU','line',{data:data.dau,        borderColor:'#00e5ff',backgroundColor:'rgba(0,229,255,0.07)',borderWidth:2,fill:true,tension:0.4,pointBackgroundColor:'#00e5ff',pointRadius:3});
   mk('cImp','line',{data:data.impressions,borderColor:'#4fc3f7',backgroundColor:'rgba(79,195,247,0.07)',borderWidth:2,fill:true,tension:0.4,pointBackgroundColor:'#4fc3f7',pointRadius:3});
 
-  // Pie — venit per tip
-  const revI=appRevTotal(id,'interstitial'),revB=appRevTotal(id,'banner'),revR=appRevTotal(id,'rewarded');
-  const pc=document.getElementById('cPie');
-  if(pc) charts.cPie=new Chart(pc,{
+  const revI=appRevTotal(activeTab,'interstitial'), revB=appRevTotal(activeTab,'banner'), revR=appRevTotal(activeTab,'rewarded');
+  const pc = document.getElementById('cPie');
+  if (pc) charts.cPie = new Chart(pc, {
     type:'doughnut',
-    data:{labels:['Interstitial','Banner','Rewarded'],datasets:[{data:[revI,revB,revR],backgroundColor:['rgba(79,195,247,0.7)','rgba(0,230,118,0.7)','rgba(206,147,216,0.7)'],borderColor:['#4fc3f7','#00e676','#ce93d8'],borderWidth:1}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#44445a',font:{family:'Share Tech Mono',size:9},padding:8}}}}
+    data:{labels:['Interstitial','Banner','Rewarded'],datasets:[{data:[revI,revB,revR],
+      backgroundColor:['rgba(79,195,247,0.7)','rgba(0,230,118,0.7)','rgba(206,147,216,0.7)'],
+      borderColor:['#4fc3f7','#00e676','#ce93d8'],borderWidth:1}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{color:'#44445a',font:{family:'Share Tech Mono',size:9},padding:8}}}}
   });
 }
 
-// ── Firebase listener ─────────────────────────────────────────────
-onValue(ref(db,'/'), snap => {
-  state = snap.val()||{};
+// ── Firebase listener PRINCIPAL (stats, nu timeline) ──────────────
+// Exclude /apps/*/timeline din listener principal ca să nu descărcăm
+// tot tree-ul de timeline la fiecare update de stats.
+// Ascultăm /apps/{id}/total, /apps/{id}/daily, /apps/{id}/monthly separat
+// sau mai simplu — ascultăm root dar ignorăm timeline în render
+// (timeline vine din listenerii dedicați de mai sus).
+onValue(ref(db, '/'), snap => {
+  const raw = snap.val() || {};
+  // Păstrăm state-ul complet dar timeline-ul NU e folosit din state —
+  // e gestionat de tlByApp prin listenerii dedicați.
+  state = raw;
+
+  // La primul update, setup timeline listeners
+  const ids = Object.keys(raw.app_registry || {}).sort();
+  setupTimelineListeners(ids);
+
   renderAll();
 });
 </script>
